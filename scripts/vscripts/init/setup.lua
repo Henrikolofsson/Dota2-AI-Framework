@@ -29,7 +29,7 @@ function Setup:Select_radiant_heroes()
             print("Selecting radiant heroes after delay")
             for player_id = 0, 4 do
                 PlayerResource:SetCustomTeamAssignment(player_id, DOTA_TEAM_GOODGUYS)
-                PlayerResource:GetPlayer(player_id):MakeRandomHeroSelection()
+                PlayerResource:GetPlayer(player_id):SetSelectedHero(Setup:Get_random_hero())
                 if player_id ~= 0 then
                     SendToServerConsole("kickid " .. tostring(player_id + 1))
                 end
