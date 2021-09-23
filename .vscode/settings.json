@@ -1,0 +1,18 @@
+{
+    "Lua.diagnostics.globals": [
+        "PlayerResource",
+        "DOTA_TEAM_GOODGUYS",
+        "SendToServerConsole",
+        "Tutorial",
+        "GameRules",
+        "DOTA_GAMERULES_STATE_HERO_SELECTION",
+        "DOTA_GAMERULES_STATE_PRE_GAME",
+        "DOTA_GAMERULES_STATE_GAME_IN_PROGRESS",
+        "ListenToGameEvent",
+        "Dynamic_Wrap",
+        "class",
+        "SpawnEntityFromTableSynchronous",
+        "DoUniqueString",
+        "Time"
+    ]
+}
