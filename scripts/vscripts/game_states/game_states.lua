@@ -1,4 +1,4 @@
-Setup = require "init/setup"
+HeroSetup = require "init/hero_setup"
 
 Game_states = {}
 
@@ -18,7 +18,7 @@ function Game_states:On_game_rules_state_change()
 
     if Game_states:Is_hero_selection_state() then
         print("Entered game selection state")
-        Setup:Select_heroes()
+        HeroSetup:Select_heroes()
 
     elseif Game_states:Is_pre_game_state() then
         print("Entered pre game state")
