@@ -5,8 +5,8 @@ end
 require "libraries/timers"
 Game_states = require "game_states/game_states"
 Hero_ids = require "init/config/hero_id"
-
 Setup = require "init/setup"
+Utilities = require "utilities.utilities"
 
 function Activate()
     GameRules.SimpleAI = SimpleAI()

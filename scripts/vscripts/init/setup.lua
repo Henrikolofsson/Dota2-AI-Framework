@@ -43,9 +43,7 @@ function Setup:Select_dire_heroes()
 
     Timers:CreateTimer(
         function()
-            local current_state = GameRules:State_Get()
-
-            if current_state ~= DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+            if not Game_states:Is_game_in_progress_state() then
                 return 1.0
             end
 
@@ -68,26 +66,13 @@ function Setup:Select_heroes()
     Setup:Select_dire_heroes()
 end
 
----@param tableToSearch table
----@param valueToFind any
----@return boolean
-local function Table_includes_value(tableToSearch, valueToFind)
-    for _index, value in ipairs(tableToSearch) do
-        if value == valueToFind then
-            return true
-        end
-    end
-
-    return false
-end
-
 ---@return string
 function Setup:Get_random_hero()
     local hero
 
     repeat
         hero = Hero_ids[math.random(#Hero_ids)]
-    until not Table_includes_value(selected_heroes, hero)
+    until not Utilities:Table_includes_value(selected_heroes, hero)
 
     table.insert(selected_heroes, hero)
 
