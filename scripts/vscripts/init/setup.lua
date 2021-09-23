@@ -33,33 +33,18 @@ end
 
 function setup:Select_dire_heroes()
     print("Selecting dire heroes")
-    
+
     Timers:CreateTimer(
         function()
-            
-            -- local bot_id = 5
-            -- while bot_id < 10 do
-            --     PlayerResource:SetCustomTeamAssignment(bot_id, DOTA_TEAM_DIRE)
-            --     local bot = PlayerResource:GetPlayer(bot_id)
-            --     bot:MakeRandomHeroSelection()
-            -- end
+            local current_state = GameRules:State_Get()
 
-            local currentState = GameRules:State_Get()
-            if currentState ~= DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+            if current_state ~= DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
                 return 1.0
             end
-            for i = 1, 5 do
-                local lane = nil
-                print("Index: " .. i)
-                if i == 1 then
-                    lane = "mid"
-                elseif i == 2 or i == 4 then
-                    lane = "top"
-                else
-                    lane = "bot"
-                end
 
-                Tutorial:AddBot(setup:Get_random_hero(), lane, "easy", false)
+            local lanes = {"mid", "top", "bot", "top", "bot"}
+            for i = 1, 5 do
+                Tutorial:AddBot(setup:Get_random_hero(), lanes[i], "easy", false)
             end
         end
     )
@@ -91,15 +76,15 @@ end
 
 ---@return string
 function setup:Get_random_hero()
-    local hero = Hero_ids[math.random(#Hero_ids)]
-    if Table_includes_value(selected_heroes, hero) then
-        return setup:Get_random_hero()
-    else
-        table.insert(selected_heroes, hero)
-        return hero
-    end
-end
+    local hero
 
-print(Hero_ids)
+    repeat
+        hero = Hero_ids[math.random(#Hero_ids)]
+    until not Table_includes_value(selected_heroes, hero)
+
+    table.insert(selected_heroes, hero)
+
+    return hero
+end
 
 return setup
