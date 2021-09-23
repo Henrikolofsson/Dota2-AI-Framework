@@ -14,8 +14,6 @@ end
 
 function SimpleAI:Init_game_mode()
     print( "Template addon is loaded." )
-    local GameMode = GameRules:GetGameModeEntity()
-    GameMode:SetBotThinkingEnabled(true)
 
     Setup:Developer_setups()
 
