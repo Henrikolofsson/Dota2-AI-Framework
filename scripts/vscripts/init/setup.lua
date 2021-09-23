@@ -89,6 +89,7 @@ local function Table_includes_value(tableToSearch, valueToFind)
     return false
 end
 
+---@return string
 function setup:Get_random_hero()
     local hero = Hero_ids[math.random(#Hero_ids)]
     if Table_includes_value(selected_heroes, hero) then
