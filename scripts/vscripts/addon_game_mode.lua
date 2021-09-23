@@ -18,7 +18,7 @@ function SimpleAI:Init_game_mode()
     local GameMode = GameRules:GetGameModeEntity()
     GameMode:SetBotThinkingEnabled(true)
 
-    Setup:Remove_all_game_rule_starting_delays()
+    Setup:Developer_setups()
 
     ListenToGameEvent("game_rules_state_change", Dynamic_Wrap( SimpleAI, "On_game_rules_state_change" ), self)
 

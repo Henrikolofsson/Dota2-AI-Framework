@@ -1,37 +1,44 @@
-local setup = {}
+local Setup = {}
 
 local selected_heroes = {}
 
-function setup:Remove_all_game_rule_starting_delays()
+function Setup:Remove_all_game_rule_starting_delays()
     GameRules:SetShowcaseTime(1)
     GameRules:SetStrategyTime(1)
     GameRules:SetHeroSelectionTime(1)
     GameRules:SetCustomGameSetupTimeout(1)
     GameRules:SetPreGameTime(5)
-    SendToServerConsole("dota_all_vision 1")
     --Game.SetRemainingSetupTime(4);
 end
 
-function setup:Select_radiant_heroes()
+function Setup:Grant_global_vision()
+    SendToServerConsole("dota_all_vision 1")
+end
+
+function Setup:Developer_setups()
+    Setup:Remove_all_game_rule_starting_delays()
+    Setup:Grant_global_vision()
+end
+
+
+
+function Setup:Select_radiant_heroes()
     print("Selecting radiant heroes")
     Timers:CreateTimer(
         function()
             print("Selecting radiant heroes after delay")
-            local player_id = 0
-            while player_id < 5 do
+            for player_id = 0, 4 do
                 PlayerResource:SetCustomTeamAssignment(player_id, DOTA_TEAM_GOODGUYS)
-                local player = PlayerResource:GetPlayer(player_id)
-                player:MakeRandomHeroSelection()
+                PlayerResource:GetPlayer(player_id):MakeRandomHeroSelection()
                 if player_id ~= 0 then
                     SendToServerConsole("kickid " .. tostring(player_id + 1))
                 end
-                player_id = player_id + 1
             end
         end
     )
 end
 
-function setup:Select_dire_heroes()
+function Setup:Select_dire_heroes()
     print("Selecting dire heroes")
 
     Timers:CreateTimer(
@@ -44,21 +51,21 @@ function setup:Select_dire_heroes()
 
             local lanes = {"mid", "top", "bot", "top", "bot"}
             for i = 1, 5 do
-                Tutorial:AddBot(setup:Get_random_hero(), lanes[i], "easy", false)
+                Tutorial:AddBot(Setup:Get_random_hero(), lanes[i], "easy", false)
             end
         end
     )
 end
 
-function setup:Populate_game()
+function Setup:Populate_game()
     SendToServerConsole("dota_create_fake_clients")
 end
 
-function setup:Select_heroes()
-    setup:Populate_game()
+function Setup:Select_heroes()
+    Setup:Populate_game()
     print("Entered Select_heroes")
-    setup:Select_radiant_heroes()
-    setup:Select_dire_heroes()
+    Setup:Select_radiant_heroes()
+    Setup:Select_dire_heroes()
 end
 
 ---@param tableToSearch table
@@ -75,7 +82,7 @@ local function Table_includes_value(tableToSearch, valueToFind)
 end
 
 ---@return string
-function setup:Get_random_hero()
+function Setup:Get_random_hero()
     local hero
 
     repeat
@@ -87,4 +94,4 @@ function setup:Get_random_hero()
     return hero
 end
 
-return setup
+return Setup
