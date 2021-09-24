@@ -1,0 +1,26 @@
+Tower_ids = {
+    "npc_dota_goodguys_tower3_bot",
+    "npc_dota_goodguys_tower3_mid",
+    "npc_dota_goodguys_tower3_top",
+    "npc_dota_goodguys_tower2_bot",
+    "npc_dota_goodguys_tower1_bot",
+    "npc_dota_goodguys_tower2_mid",
+    "npc_dota_goodguys_tower2_top",
+    "npc_dota_goodguys_tower1_top",
+    "npc_dota_goodguys_tower4",
+    "npc_dota_goodguys_tower1_mid",
+    "npc_dota_goodguys_tower4",
+    "npc_dota_badguys_tower4",
+    "npc_dota_badguys_tower2_top",
+    "npc_dota_badguys_tower1_top",
+    "npc_dota_badguys_tower2_mid",
+    "npc_dota_badguys_tower1_mid",
+    "npc_dota_badguys_tower2_bot",
+    "npc_dota_badguys_tower3_bot",
+    "npc_dota_badguys_tower3_top",
+    "npc_dota_badguys_tower3_mid",
+    "npc_dota_badguys_tower4",
+    "npc_dota_badguys_tower1_bot",
+}
+
+return Tower_ids

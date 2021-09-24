@@ -13,6 +13,8 @@
         "class",
         "SpawnEntityFromTableSynchronous",
         "DoUniqueString",
-        "Time"
+        "Time",
+        "CreateHTTPRequestScriptVM",
+        "DOTA_TEAM_BADGUYS"
     ]
 }
