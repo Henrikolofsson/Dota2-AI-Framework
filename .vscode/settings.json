@@ -15,6 +15,7 @@
         "DoUniqueString",
         "Time",
         "CreateHTTPRequestScriptVM",
-        "DOTA_TEAM_BADGUYS"
+        "DOTA_TEAM_BADGUYS",
+        "Entities"
     ]
 }
