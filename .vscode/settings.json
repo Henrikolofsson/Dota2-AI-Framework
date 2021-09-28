@@ -16,6 +16,7 @@
         "Time",
         "CreateHTTPRequestScriptVM",
         "DOTA_TEAM_BADGUYS",
-        "Entities"
+        "Entities",
+        "DeepPrintTable"
     ]
 }

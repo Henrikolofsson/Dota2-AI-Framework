@@ -1,4 +1,4 @@
-Hero_ids = {
+local Hero_ids = {
     "npc_dota_hero_abaddon",
     "npc_dota_hero_alchemist",
     "npc_dota_hero_antimage",
@@ -117,7 +117,7 @@ Hero_ids = {
     "npc_dota_hero_witch_doctor",
     "npc_dota_hero_skeleton_king",
     "npc_dota_hero_grimstroke",
-    "npc_dota_hero_zeus"
+    "npc_dota_hero_zuus"
 }
 
 return Hero_ids

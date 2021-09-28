@@ -1,4 +1,4 @@
-Tower_ids = {
+local Tower_ids = {
     "npc_dota_goodguys_tower3_bot",
     "npc_dota_goodguys_tower3_mid",
     "npc_dota_goodguys_tower3_top",

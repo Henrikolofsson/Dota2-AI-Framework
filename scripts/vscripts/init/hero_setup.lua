@@ -1,133 +1,119 @@
-Utilities = require "utilities.utilities"
+local Game_states = require "game_states.game_states"
 
-local HeroSetup = {}
+local ONE_SECOND_DELAY = 1.0
+local PLAYER_ADMIN_ID = 0
 
-local selected_heroes = {}
+local Hero_setup = {}
 
 local good_guys_heroes = {}
+-- List for future second team
+local bad_guys_heroes = {}
 
-function HeroSetup:Pick_radiant_team_heroes(picked_hero_names_data, team, from_player_id, to_player_id)
-    print("Selecting radiant heroes after delay")
-    local picked_hero_names = package.loaded["game/dkjson"].decode(picked_hero_names_data["Body"])
-    for player_id = from_player_id, to_player_id do
-        local hero_name_index = player_id + 1
-        PlayerResource:SetCustomTeamAssignment(player_id, team)
-        table.insert(selected_heroes, picked_hero_names[hero_name_index])
-        PlayerResource:GetPlayer(player_id):SetSelectedHero(picked_hero_names[hero_name_index])
+function Hero_setup:Decode_hero_names_response(picked_hero_names_data)
+    return package.loaded["game/dkjson"].decode(picked_hero_names_data["Body"])
+end
 
-        if team == DOTA_TEAM_GOODGUYS then
-            Timers:CreateTimer(
-                function()
-                    if not PlayerResource:GetSelectedHeroEntity(player_id) then
-                        print("PlayerResource:GetSelectedHeroEntity(player_id) was nil")
-                        return 1.0
-                    end
-                    table.insert(good_guys_heroes, PlayerResource:GetSelectedHeroEntity(player_id))
-                end
-            )
-        end
+function Hero_setup:Put_player_on_team(player_id, team)
+    PlayerResource:SetCustomTeamAssignment(player_id, team)
+end
 
-        if player_id ~= 0 then
-            SendToServerConsole("kickid " .. tostring(player_id + 1))
-        end
-    end
+function Hero_setup:Select_hero_for_player(player_id, hero_name)
+    PlayerResource:GetPlayer(player_id):SetSelectedHero(hero_name)
+end
 
+function Hero_setup:Player_has_selected_hero(player_id)
+    return not PlayerResource:GetSelectedHeroEntity(player_id)
+end
+
+function Hero_setup:Append_hero_to_team_table(player_id, team)
     Timers:CreateTimer(
         function()
-            for i = 1, 5 do
-                if not good_guys_heroes[i] then
-                    return 1.0
-                end
+            if Hero_setup:Player_has_selected_hero(player_id) then
+                return ONE_SECOND_DELAY
             end
-            HeroSetup:Destroy_towers()
-            HeroSetup:MoveToTower(HeroSetup:GetTowerByName("npc_dota_badguys_tower4"))
+            table.insert(
+                (team == DOTA_TEAM_GOODGUYS and good_guys_heroes or bad_guys_heroes),
+                PlayerResource:GetSelectedHeroEntity(player_id)
+            )
         end
     )
 end
 
-function HeroSetup:GetTowerByName(to_find)
-    local allTowers = Entities:FindAllByClassname("npc_dota_tower")
+function Hero_setup:Player_is_fake_client(player_id)
+    return player_id ~= PLAYER_ADMIN_ID
+end
 
-    for _index, tower in pairs(allTowers) do
-        if tower:GetUnitName() == to_find then
-            return tower
-        end
+function Hero_setup:Kick_player(player_id)
+    -- Player ids are 1-10 in Server Console, making it necessary
+    -- to increase player_id by 1 before sending the kick command.
+    SendToServerConsole("kickid " .. tostring(player_id + 1))
+end
+
+function Hero_setup:Kick_player_if_fake_client(player_id)
+    if Hero_setup:Player_is_fake_client(player_id) then
+        Hero_setup:Kick_player(player_id)
     end
 end
 
-function HeroSetup:Destroy_towers()
-    HeroSetup:GetTowerByName("npc_dota_badguys_tower1_mid"):ForceKill(false)
-    HeroSetup:GetTowerByName("npc_dota_badguys_tower2_mid"):ForceKill(false)
-    HeroSetup:GetTowerByName("npc_dota_badguys_tower3_mid"):ForceKill(false)
-    HeroSetup:GetTowerByName("npc_dota_badguys_tower4"):ForceKill(false)
-end
+function Hero_setup:Pick_heroes(picked_hero_names_data, team, from_player_id, to_player_id)
+    local picked_hero_names = Hero_setup:Decode_hero_names_response(picked_hero_names_data)
 
-function HeroSetup:MoveToTower(tower)
-    for i = 1, 5 do
-        good_guys_heroes[i]:MoveToNPC(tower)
+    for player_id = from_player_id, to_player_id do
+        local hero_name_index = player_id + 1
+
+        Hero_setup:Put_player_on_team(player_id, team)
+        Hero_setup:Select_hero_for_player(player_id, picked_hero_names[hero_name_index])
+        Hero_setup:Append_hero_to_team_table(player_id, team)
+        Hero_setup:Kick_player_if_fake_client(player_id)
     end
 end
 
-function HeroSetup:AttackToTower(tower)
-    for i = 1, 5 do
-        good_guys_heroes[i]:MoveToNPC(tower)
-    end
+function Hero_setup:Handle_radiant_party_response(picked_hero_names_data)
+    Hero_setup:Pick_heroes(
+        picked_hero_names_data,
+        DOTA_TEAM_GOODGUYS,
+        0,
+        4
+    )
 end
 
-function HeroSetup:Select_radiant_heroes()
-    print("Selecting radiant heroes")
+function Hero_setup:Request_radiant_party()
     local request = CreateHTTPRequestScriptVM("GET", "http://localhost:8080/api/party")
-    request:Send(
-        function(picked_hero_names_data)
-            HeroSetup:Pick_radiant_team_heroes(picked_hero_names_data, DOTA_TEAM_GOODGUYS, 0, 4)
-        end
-    )
+    request:Send(Hero_setup.Handle_radiant_party_response)
 end
 
-function HeroSetup.Set_dire_team_bots(picked_hero_names_data)
-    local picked_hero_names = package.loaded["game/dkjson"].decode(picked_hero_names_data["Body"])
+function Hero_setup:Select_radiant_heroes()
+    Hero_setup:Request_radient_party()
+end
+
+---@param picked_hero_names_data table
+function Hero_setup.Handle_dire_party_response(picked_hero_names_data)
+    local picked_hero_names = Hero_setup:Decode_hero_names_response(picked_hero_names_data)
     local lanes = {"mid", "top", "bot", "top", "bot"}
     for i = 1, 5 do
         Tutorial:AddBot(picked_hero_names[i], lanes[i], "easy", false)
     end
 end
 
-function HeroSetup:Select_dire_heroes()
-    print("Selecting dire heroes")
+function Hero_setup:Request_dire_party()
+    local request = CreateHTTPRequestScriptVM("GET", "http://localhost:8080/api/enemy_party")
+    request:Send(Hero_setup.Handle_dire_party_response)
+end
 
+function Hero_setup:Select_dire_heroes()
     Timers:CreateTimer(
         function()
             if not Game_states:Is_game_in_progress_state() then
-                return 1.0
+                return ONE_SECOND_DELAY
             end
-            local request = CreateHTTPRequestScriptVM("GET", "http://localhost:8080/api/enemy_party")
-            request:Send(HeroSetup.Set_dire_team_bots)
+            Hero_setup:Request_dire_party()
         end
     )
 end
 
-function HeroSetup:Populate_game()
-    SendToServerConsole("dota_create_fake_clients")
+function Hero_setup:Select_heroes()
+    Hero_setup:Select_radiant_heroes()
+    Hero_setup:Select_dire_heroes()
 end
 
-function HeroSetup:Select_heroes()
-    HeroSetup:Populate_game()
-    print("Entered Select_heroes")
-    HeroSetup:Select_radiant_heroes()
-    HeroSetup:Select_dire_heroes()
-end
-
----@return string
-function HeroSetup:Get_random_hero()
-    local hero
-
-    repeat
-        hero = Hero_ids[math.random(#Hero_ids)]
-    until not Utilities:Table_includes_value(selected_heroes, hero)
-
-    table.insert(selected_heroes, hero)
-
-    return hero
-end
-
-return HeroSetup
+return Hero_setup

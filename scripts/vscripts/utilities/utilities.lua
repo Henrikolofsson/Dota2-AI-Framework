@@ -1,4 +1,4 @@
-Utilities = {}
+local Utilities = {}
 
 ---@param tableToSearch table
 ---@param valueToFind any
