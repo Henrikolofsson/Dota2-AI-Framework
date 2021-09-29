@@ -1,20 +1,28 @@
+-- imports
 local Game_states = require "game_states.game_states"
 local Hero_setup = require "init.hero_setup"
+local Bot_thinking_setup = require "init.python_AI_setup"
 
+
+
+-- Event_listeners
 local Event_listeners = {}
+Event_listeners.match_setup = nil
 
-function Event_listeners:Add_on_game_rules_state_change(Match_setup)
-    Event_listeners.Match_setup = Match_setup
+---@param match_setup table
+function Event_listeners:Add_on_game_rules_state_change(match_setup)
+    Event_listeners.match_setup = match_setup
     ListenToGameEvent("game_rules_state_change", Dynamic_Wrap( Event_listeners, "On_game_rules_state_change" ), self)
 end
 
 function Event_listeners:On_game_rules_state_change()
     if Game_states:Is_hero_selection_state() then
-        self.Match_setup:Populate_game()
+        self.match_setup:Populate_game()
         Hero_setup:Select_heroes()
+        Bot_thinking_setup:Initialize_bot_thinking(Hero_setup)
 
     elseif Game_states:Is_pre_game_state() then
-        GameRules:ForceGameStart()
+        self.match_setup:Force_game_start()
 
     elseif Game_states:Is_game_in_progress_state() then
     end
