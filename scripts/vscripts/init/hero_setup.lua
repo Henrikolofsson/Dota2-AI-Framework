@@ -69,11 +69,13 @@ function Hero_setup:Pick_heroes(picked_hero_names_data, team, from_player_id, to
 end
 
 function Hero_setup:Handle_radiant_party_response(picked_hero_names_data)
+    local FROM_PLAYER_ID, TO_PLAYER_ID = 0, 4
+
     Hero_setup:Pick_heroes(
         picked_hero_names_data,
         DOTA_TEAM_GOODGUYS,
-        0,
-        4
+        FROM_PLAYER_ID,
+        TO_PLAYER_ID
     )
 end
 
