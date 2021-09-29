@@ -1,13 +1,19 @@
+-- imports
 local Game_states = require "game_states.game_states"
 
+
+
+-- constants
 local ONE_SECOND_DELAY = 1.0
 local PLAYER_ADMIN_ID = 0
 
-local Hero_setup = {}
 
-local good_guys_heroes = {}
+
+-- Hero_setup
+local Hero_setup = {}
+Hero_setup.good_guys_heroes = {}
 -- List for future second team
-local bad_guys_heroes = {}
+Hero_setup.bad_guys_heroes = {}
 
 ---@param picked_hero_names_data table
 ---@return table
@@ -42,7 +48,7 @@ function Hero_setup:Append_hero_to_team_table(player_id, team)
                 return ONE_SECOND_DELAY
             end
             table.insert(
-                (team == DOTA_TEAM_GOODGUYS and good_guys_heroes or bad_guys_heroes),
+                (team == DOTA_TEAM_GOODGUYS and self.good_guys_heroes or self.bad_guys_heroes),
                 PlayerResource:GetSelectedHeroEntity(player_id)
             )
         end
