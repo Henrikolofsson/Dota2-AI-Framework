@@ -1,5 +1,9 @@
+-- imports
 local Event_listeners = require "listeners.event_listeners"
 
+
+
+-- Match_setup
 local Match_setup = {}
 
 function Match_setup:SetBotThinkingEnabled()
