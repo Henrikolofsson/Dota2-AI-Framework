@@ -13,7 +13,6 @@ function Match_setup:Remove_all_game_rule_starting_delays()
     GameRules:SetHeroSelectionTime(1)
     GameRules:SetCustomGameSetupTimeout(1)
     GameRules:SetPreGameTime(5)
-    --Game.SetRemainingSetupTime(4);
 end
 
 function Match_setup:Grant_global_vision()
