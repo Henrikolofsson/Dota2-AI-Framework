@@ -21,14 +21,14 @@ function Hero_setup:Select_hero_for_player(player_id, hero_name)
     PlayerResource:GetPlayer(player_id):SetSelectedHero(hero_name)
 end
 
-function Hero_setup:Player_has_selected_hero(player_id)
+function Hero_setup:Player_has_not_selected_hero(player_id)
     return not PlayerResource:GetSelectedHeroEntity(player_id)
 end
 
 function Hero_setup:Append_hero_to_team_table(player_id, team)
     Timers:CreateTimer(
         function()
-            if Hero_setup:Player_has_selected_hero(player_id) then
+            if Hero_setup:Player_has_not_selected_hero(player_id) then
                 return ONE_SECOND_DELAY
             end
             table.insert(
