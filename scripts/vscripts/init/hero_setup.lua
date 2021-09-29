@@ -9,22 +9,32 @@ local good_guys_heroes = {}
 -- List for future second team
 local bad_guys_heroes = {}
 
+---@param picked_hero_names_data table
+---@return table
 function Hero_setup:Decode_hero_names_response(picked_hero_names_data)
     return package.loaded["game/dkjson"].decode(picked_hero_names_data["Body"])
 end
 
+---@param player_id integer
+---@param team integer
 function Hero_setup:Put_player_on_team(player_id, team)
     PlayerResource:SetCustomTeamAssignment(player_id, team)
 end
 
+---@param player_id integer
+---@param hero_name string
 function Hero_setup:Select_hero_for_player(player_id, hero_name)
     PlayerResource:GetPlayer(player_id):SetSelectedHero(hero_name)
 end
 
+---@param player_id integer
+---@return boolean
 function Hero_setup:Player_has_not_selected_hero(player_id)
     return not PlayerResource:GetSelectedHeroEntity(player_id)
 end
 
+---@param player_id integer
+---@param team integer
 function Hero_setup:Append_hero_to_team_table(player_id, team)
     Timers:CreateTimer(
         function()
@@ -39,22 +49,30 @@ function Hero_setup:Append_hero_to_team_table(player_id, team)
     )
 end
 
+---@param player_id integer
+---@return boolean
 function Hero_setup:Player_is_fake_client(player_id)
     return player_id ~= PLAYER_ADMIN_ID
 end
 
+---@param player_id integer
 function Hero_setup:Kick_player(player_id)
     -- Player ids are 1-10 in Server Console, making it necessary
     -- to increase player_id by 1 before sending the kick command.
     SendToServerConsole("kickid " .. tostring(player_id + 1))
 end
 
+---@param player_id integer
 function Hero_setup:Kick_player_if_fake_client(player_id)
     if Hero_setup:Player_is_fake_client(player_id) then
         Hero_setup:Kick_player(player_id)
     end
 end
 
+---@param picked_hero_names_data table
+---@param team integer
+---@param from_player_id integer
+---@param to_player_id integer
 function Hero_setup:Pick_heroes(picked_hero_names_data, team, from_player_id, to_player_id)
     local picked_hero_names = Hero_setup:Decode_hero_names_response(picked_hero_names_data)
 
@@ -68,6 +86,7 @@ function Hero_setup:Pick_heroes(picked_hero_names_data, team, from_player_id, to
     end
 end
 
+---@param picked_hero_names_data table
 function Hero_setup:Handle_radiant_party_response(picked_hero_names_data)
     local FROM_PLAYER_ID, TO_PLAYER_ID = 0, 4
 
