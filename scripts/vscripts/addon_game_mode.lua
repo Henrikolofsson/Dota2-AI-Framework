@@ -11,10 +11,10 @@ local Setup = require "init.setup"
 
 
 
--- Addon entry point
+-- Addon entry point.
 function Activate()
     GameRules.SimpleAI = SimpleAI()
-    GameRules.SimpleAI:Init_game_mode()
+    GameRules.SimpleAI.Init_game_mode()
 end
 
 function SimpleAI:Init_game_mode()

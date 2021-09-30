@@ -17,9 +17,11 @@ Python_AI_setup.hero_setup = nil
 ---@param hero table
 function Python_AI_setup:Set_context_think_for_hero(hero)
     hero:SetContextThink(
+        "Python_AI_thinking:OnThink",
         function()
             return Python_AI_thinking:OnThink(hero)
-        end
+        end,
+        0.33
     )
 end
 

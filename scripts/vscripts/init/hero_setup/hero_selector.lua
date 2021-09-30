@@ -69,14 +69,14 @@ end
 ---@param player_id integer
 ---@return boolean
 function Hero_selector:Is_not_admin(player_id)
-    return player_id ~= PLAYER_ADMIN_ID
+    return player_id ~= PLAYER_ADMIN_ID and player_id ~= 5
 end
 
 ---@param player_id integer
 function Hero_selector:Kick_player(player_id)
     -- Player ids are 1-10 in Server Console, making it necessary
     -- to increase player_id by 1 before sending the kick command.
-    SendToServerConsole("kickid " .. tostring(player_id + 1))
+    -- SendToServerConsole("kickid " .. tostring(player_id + 1))
 end
 
 ---@param player_id integer
@@ -86,15 +86,16 @@ function Hero_selector:Clear_player_slot_if_fake_client(player_id)
     end
 end
 
----@param picked_hero_names_data table
+---@param picked_hero_names table
 ---@param team integer
 ---@param from_player_id integer
 ---@param to_player_id integer
-function Hero_selector:Pick_heroes(picked_hero_names_data, team, from_player_id, to_player_id)
-    local picked_hero_names = Hero_selector:Decode_hero_names_response(picked_hero_names_data)
-
+function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_player_id)
     for player_id = from_player_id, to_player_id do
         local hero_name_index = player_id + 1
+        if player_id > 4 then
+            hero_name_index = player_id - 4
+        end
 
         Hero_selector:Put_player_on_team(player_id, team)
         Hero_selector:Select_hero_for_player(player_id, picked_hero_names[hero_name_index])
