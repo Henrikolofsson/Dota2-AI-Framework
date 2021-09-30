@@ -16,7 +16,7 @@ function Match_setup:Remove_all_game_rule_starting_delays()
     GameRules:SetStrategyTime(1)
     GameRules:SetHeroSelectionTime(1)
     GameRules:SetCustomGameSetupTimeout(1)
-    if SHOULD_HAVE_PRE_GAME_DELAY then
+    if Settings.SHOULD_HAVE_PRE_GAME_DELAY then
         GameRules:SetPreGameTime(90)
     end
 end
@@ -43,7 +43,7 @@ function Match_setup:Populate_game()
 end
 
 function Match_setup:Force_game_start()
-    if not SHOULD_HAVE_PRE_GAME_DELAY then
+    if not Settings.SHOULD_HAVE_PRE_GAME_DELAY then
         SendToServerConsole("dota_dev forcegamestart")
     end
 end
