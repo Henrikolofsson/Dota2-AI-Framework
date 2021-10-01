@@ -6,15 +6,15 @@ local Event_listeners = require "listeners.event_listeners"
 -- Match_setup
 local Match_setup = {}
 
-function Match_setup:SetBotThinkingEnabled()
+function Match_setup:Set_bot_thinking_enabled()
     local GameMode = GameRules:GetGameModeEntity()
     GameMode:SetBotThinkingEnabled(true)
 end
 
 function Match_setup:Remove_all_game_rule_starting_delays()
+    GameRules:SetHeroSelectionTime(1)
     GameRules:SetShowcaseTime(1)
     GameRules:SetStrategyTime(1)
-    GameRules:SetHeroSelectionTime(1)
     GameRules:SetCustomGameSetupTimeout(1)
     if Settings.SHOULD_HAVE_PRE_GAME_DELAY then
         GameRules:SetPreGameTime(90)
@@ -43,14 +43,12 @@ function Match_setup:Populate_game()
 end
 
 function Match_setup:Force_game_start()
-    if not Settings.SHOULD_HAVE_PRE_GAME_DELAY then
-        SendToServerConsole("dota_dev forcegamestart")
-    end
+    SendToServerConsole("dota_dev forcegamestart")
 end
 
 function Match_setup:Run()
     Match_setup:Auto_launch_custom_game()
-    Match_setup:SetBotThinkingEnabled()
+    Match_setup:Set_bot_thinking_enabled()
     Match_setup:Remove_all_game_rule_starting_delays()
     Match_setup:Grant_global_vision()
     Match_setup:Add_listeners()

@@ -22,7 +22,9 @@ function Event_listeners:On_game_rules_state_change()
         Python_AI_setup:Initialize_bot_thinking(Hero_setup_controller)
 
     elseif Game_states:Is_pre_game_state() then
-        self.match_setup:Force_game_start()
+        if not Settings.SHOULD_HAVE_PRE_GAME_DELAY then
+            self.match_setup:Force_game_start()
+        end
 
     elseif Game_states:Is_game_in_progress_state() then
     end
