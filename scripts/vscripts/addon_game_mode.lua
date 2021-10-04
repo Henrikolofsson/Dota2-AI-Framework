@@ -1,5 +1,5 @@
-if SimpleAI == nil then
-    _G.SimpleAI = class({})
+if Main_controller == nil then
+    _G.Main_controller = class({})
 end
 
 
@@ -7,16 +7,12 @@ end
 -- imports
 require "libraries.timers"
 require "settings.settings"
-local Setup = require "init.setup"
+require "main_controller"
 
 
 
 -- Addon entry point.
 function Activate()
-    GameRules.SimpleAI = SimpleAI()
-    GameRules.SimpleAI.Init_game_mode()
-end
-
-function SimpleAI:Init_game_mode()
-    Setup:Run()
+    GameRules.Main_controller = Main_controller()
+    GameRules.Main_controller:Run()
 end

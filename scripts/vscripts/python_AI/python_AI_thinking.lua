@@ -1,5 +1,7 @@
 local Python_AI_thinking = {}
 
+
+
 function Python_AI_thinking:OnThink(hero)
     -- pseudo
     -- local team_of_hero = hero:GetTeam()
@@ -14,5 +16,7 @@ function Python_AI_thinking:OnThink(hero)
     -- anropa python api: "/update" med allEntities
     return 0.33
 end
+
+
 
 return Python_AI_thinking

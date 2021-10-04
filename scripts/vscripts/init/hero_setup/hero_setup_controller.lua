@@ -16,6 +16,14 @@ Hero_setup_controller.radiant_heroes = nil
 -- List for future dire team
 Hero_setup_controller.dire_heroes = nil
 
+function Hero_setup_controller:Get_radiant_heroes()
+    return Hero_setup_controller.radiant_heroes
+end
+
+function Hero_setup_controller:Get_dire_heroes()
+    return Hero_setup_controller.dire_heroes
+end
+
 ---@return boolean
 function Hero_setup_controller:All_players_have_chosen_hero()
     return not not Hero_setup_controller.radiant_heroes
