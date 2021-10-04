@@ -1,11 +1,11 @@
 local Utilities = {}
 
----@param tableToSearch table
----@param valueToFind any
+---@param table_to_search table
+---@param value_to_find any
 ---@return boolean
-function Utilities:Table_includes_value(tableToSearch, valueToFind) -- unused
-    for _index, value in ipairs(tableToSearch) do
-        if value == valueToFind then
+function Utilities:Table_includes_value(table_to_search, value_to_find) -- unused
+    for _index, value in ipairs(table_to_search) do
+        if value == value_to_find then
             return true
         end
     end
@@ -13,6 +13,8 @@ function Utilities:Table_includes_value(tableToSearch, valueToFind) -- unused
     return false
 end
 
+---@param table_to_count table
+---@return integer
 function Utilities:Get_table_length(table_to_count)
     local count = 0
     for _ in pairs(table_to_count) do

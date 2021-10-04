@@ -16,10 +16,12 @@ Hero_setup_controller.radiant_heroes = nil
 -- List for future dire team
 Hero_setup_controller.dire_heroes = nil
 
+---@return table
 function Hero_setup_controller:Get_radiant_heroes()
     return Hero_setup_controller.radiant_heroes
 end
 
+---@return table
 function Hero_setup_controller:Get_dire_heroes()
     return Hero_setup_controller.dire_heroes
 end

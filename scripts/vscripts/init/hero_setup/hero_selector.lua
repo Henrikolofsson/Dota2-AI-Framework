@@ -15,6 +15,7 @@ local Hero_selector = {}
 Hero_selector.radiant_heroes = {}
 Hero_selector.dire_heroes = {}
 
+---@return boolean
 function Hero_selector:All_players_have_chosen_hero()
     if Settings.SHOULD_DIRE_BE_NATIVE_BOTS then
         return Utilities:Get_table_length(Hero_selector.radiant_heroes) == FULL_TEAM_COUNT
@@ -68,7 +69,7 @@ end
 
 ---@param player_id integer
 ---@return boolean
-function Hero_selector:Is_not_admin_(player_id)
+function Hero_selector:Is_not_admin(player_id)
     return player_id ~= PLAYER_ADMIN_ID
 end
 
@@ -81,7 +82,7 @@ end
 
 ---@param player_id integer
 function Hero_selector:Clear_player_slot_if_fake_client(player_id)
-    if Hero_selector:Is_not_admin_(player_id) then
+    if Hero_selector:Is_not_admin(player_id) then
         Hero_selector:Kick_player(player_id)
     end
 end

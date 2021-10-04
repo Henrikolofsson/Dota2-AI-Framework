@@ -1,4 +1,4 @@
-local Hero_ids = {
+local hero_names = {
     "npc_dota_hero_abaddon",
     "npc_dota_hero_alchemist",
     "npc_dota_hero_antimage",
@@ -120,4 +120,4 @@ local Hero_ids = {
     "npc_dota_hero_zuus"
 }
 
-return Hero_ids
+return hero_names

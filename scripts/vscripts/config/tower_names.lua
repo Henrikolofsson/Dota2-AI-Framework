@@ -1,4 +1,4 @@
-local Tower_ids = {
+local tower_names = {
     "npc_dota_goodguys_tower3_bot",
     "npc_dota_goodguys_tower3_mid",
     "npc_dota_goodguys_tower3_top",
@@ -23,4 +23,4 @@ local Tower_ids = {
     "npc_dota_badguys_tower1_bot",
 }
 
-return Tower_ids
+return tower_names
