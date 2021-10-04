@@ -21,29 +21,29 @@ function Hero_setup_controller:All_players_have_chosen_hero()
     return not not Hero_setup_controller.radiant_heroes
 end
 
----@param picked_hero_names_data table
-function Hero_setup_controller.Handle_radiant_party_response(picked_hero_names_data)
+---@param picked_hero_names table
+function Hero_setup_controller.Handle_radiant_party_response(picked_hero_names)
     local FROM_PLAYER_ID, TO_PLAYER_ID = 0, 4
 
     Hero_selector:Pick_heroes(
-        picked_hero_names_data,
+        picked_hero_names,
         DOTA_TEAM_GOODGUYS,
         FROM_PLAYER_ID,
         TO_PLAYER_ID
     )
 end
 
----@param picked_hero_names_data table
-function Hero_setup_controller.Handle_dire_party_response(picked_hero_names_data)
+---@param picked_hero_names table
+function Hero_setup_controller.Handle_dire_party_response(picked_hero_names)
     if Settings.SHOULD_DIRE_BE_NATIVE_BOTS then
-        Native_bot_setup:Create_bots()
+        Native_bot_setup:Create_bots(picked_hero_names)
         return
     end
 
     local FROM_PLAYER_ID, TO_PLAYER_ID = 5, 9
 
     Hero_selector:Pick_heroes(
-        picked_hero_names_data,
+        picked_hero_names,
         DOTA_TEAM_BADGUYS,
         FROM_PLAYER_ID,
         TO_PLAYER_ID

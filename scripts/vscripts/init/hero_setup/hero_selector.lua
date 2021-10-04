@@ -68,20 +68,20 @@ end
 
 ---@param player_id integer
 ---@return boolean
-function Hero_selector:Is_not_admin(player_id)
-    return player_id ~= PLAYER_ADMIN_ID and player_id ~= 5
+function Hero_selector:Is_not_admin_(player_id)
+    return player_id ~= PLAYER_ADMIN_ID
 end
 
 ---@param player_id integer
 function Hero_selector:Kick_player(player_id)
     -- Player ids are 1-10 in Server Console, making it necessary
     -- to increase player_id by 1 before sending the kick command.
-    -- SendToServerConsole("kickid " .. tostring(player_id + 1))
+    SendToServerConsole("kickid " .. tostring(player_id + 1))
 end
 
 ---@param player_id integer
 function Hero_selector:Clear_player_slot_if_fake_client(player_id)
-    if Hero_selector:Is_not_admin(player_id) then
+    if Hero_selector:Is_not_admin_(player_id) then
         Hero_selector:Kick_player(player_id)
     end
 end
