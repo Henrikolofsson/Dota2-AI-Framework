@@ -5,7 +5,6 @@ local Python_AI_thinking = require "python_AI.python_AI_thinking"
 
 -- Bot_thinking_setup
 local Python_AI_setup = {}
-Python_AI_setup.hero_setup = nil
 
 
 
