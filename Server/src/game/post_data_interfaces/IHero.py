@@ -1,0 +1,14 @@
+from typing import Any, Union
+from src.game.post_data_interfaces.IAbility import IAbility
+from src.game.post_data_interfaces.IItem import IItem
+from src.game.post_data_interfaces.IUnit import IUnit
+
+class IHero(IUnit):
+    denies: int
+    abilityPoints: int
+    abilities: dict[str, IAbility]
+    items: dict[str, Union[IItem, list[Any]]]
+    xp: int
+    hasTowerAggro: bool
+    gold: int
+    deaths: int

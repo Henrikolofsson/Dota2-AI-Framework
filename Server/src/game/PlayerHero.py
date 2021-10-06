@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 from typing import Any
+from src.game.post_data_interfaces.IEntity import IEntity
 from src.game.Hero import Hero
 
 
 class PlayerHero(Hero):
-    def __init__(self, data):
-        super().__init__(data)
+    def __init__(self, entity_id: str):
+        super().__init__(entity_id)
         self.commands = [
             "ATTACK",
             "MOVE",

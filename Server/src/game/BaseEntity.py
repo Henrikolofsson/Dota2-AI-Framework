@@ -1,33 +1,25 @@
 #!/usr/bin/env python3
 
 
-from src.game.Position import Position
+from abc import ABC, abstractmethod
+
+from src.game.post_data_interfaces.IEntity import IEntity
 
 
-class BaseEntity:
-    def __init__(self, data):
-        self.data = data
+class BaseEntity(ABC):
+    
+    _entity_id: str
 
-    def setData(self, data):
-        self.data = data
+    def __init__(self, entity_id: str):
+        self._entity_id = entity_id
 
-    def getHealth(self):
-        return self.data["health"]
+    @abstractmethod
+    def get_type(self) -> str:
+        pass
 
-    def getMaxHealth(self):
-        return self.data["maxHealth"]
+    def get_id(self) -> str:
+        return self._entity_id
 
-    def getName(self):
-        return self.data["name"]
-
-    def getOrigin(self) -> Position:
-        return self.data["origin"]
-
-    def get_team(self):
-        return self.data["team"]
-
-    def getForwardVector(self):
-        return self.data["forwardVector"]
-
-    def get_id(self) -> int:
-        raise NotImplemented
+    @abstractmethod
+    def update(self, data: IEntity):
+        pass

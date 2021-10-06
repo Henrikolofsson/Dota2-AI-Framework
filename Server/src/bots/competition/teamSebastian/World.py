@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import math
 
-from src.game.BaseNPC import BaseNPC
+from src.game.BaseNPC import Unit
 from src.game.Tower import Tower
 from src.game.Building import Building
 from src.game.Hero import Hero
@@ -44,7 +44,7 @@ class World:
         elif data["type"] == "Building":
             return Building(data)
         elif data["type"] == "BaseNPC":
-            return BaseNPC(data)
+            return Unit(data)
         elif data["type"] == "Tree":
             return Tree(data)
         print(data)

@@ -2,7 +2,7 @@ import random
 import math
 
 from src.game.BaseEntity import BaseEntity
-from src.game.BaseNPC import BaseNPC
+from src.game.BaseNPC import Unit
 from src.game.Hero import Hero
 from src.game.Tower import Tower
 from src.game.Building import Building

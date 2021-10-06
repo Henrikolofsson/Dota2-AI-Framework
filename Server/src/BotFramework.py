@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from typing import Any
+from src.game.post_data_interfaces.IRoot import IRoot
 from src.game.World import World
 
 class BotFramework:
@@ -16,7 +17,7 @@ class BotFramework:
     def get_party(self) -> list[str]:
         return self.agent.party
 
-    def update(self, data: Any) -> None:
+    def update(self, data: IRoot) -> None:
         self.world.update(data["world"]["entities"])
 
     def generate_bot_commands(self) -> None:

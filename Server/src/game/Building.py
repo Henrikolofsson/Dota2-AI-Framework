@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-from src.game.BaseNPC import BaseNPC
+from src.game.Unit import Unit
 
 
-class Building(BaseNPC):
-    def __init__(self, data):
-        super().__init__(data)
+class Building(Unit):
+
+    def get_type(self) -> str:
+        return "Building"

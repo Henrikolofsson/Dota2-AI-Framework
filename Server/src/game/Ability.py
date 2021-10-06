@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from src.game.post_data_interfaces.IAbility import IAbility
+from src.game.post_data_interfaces.IEntity import IEntity
 from src.game.BaseEntity import BaseEntity
 
 
@@ -62,8 +64,8 @@ class Ability(BaseEntity):
     DOTA_UNIT_TARGET_TREE = 64
     DOTA_UNIT_TARGET_CUSTOM = 128
 
-    def __init__(self, data):
-        super().__init__(data)
+    def update(self, data: IEntity):
+        super().update(data)
 
     def getAbilityDamage(self):
         return self.data["abilityDamage"]
@@ -103,3 +105,6 @@ class Ability(BaseEntity):
 
     def getToggleState(self):
         return self.data["toggleState"]
+
+    def get_type(self) -> str:
+        return "Ability"

@@ -1,43 +1,64 @@
 #!/usr/bin/env python3
-from src.game.BaseNPC import BaseNPC
+from typing import cast
+from src.game.post_data_interfaces.IEntity import IEntity
+from src.game.post_data_interfaces.IHero import IHero
+from src.game.Unit import Unit
 from src.game.Ability import Ability
 
 
-class Hero(BaseNPC):
-    def __init__(self, data):
-        super().__init__(data)
-        self.abilities = {}
-        self.__set_abilities()
+class Hero(Unit):
 
-    def __set_abilities(self):
-        self.abilities = {}
-        for i, data in self.data["abilities"].items():
-            self.abilities[i] = Ability(data)
+    _ability_points: int
+    _abilities: list[Ability]
+    _has_tower_aggro: bool
+    _deaths: int
+    _denies: int
+    _gold: int
+    _type: str
+    _xp: int
 
-    def setData(self, data):
-        super().setData(data)
-        self.__set_abilities()
+    def update(self, data: IEntity):
+        super().update(data)
+        hero_data = cast(IHero, data)
+        self._ability_points = hero_data["abilityPoints"]
+        self._has_tower_aggro = hero_data["hasTowerAggro"]
+        self._deaths = hero_data["deaths"]
+        self._denies = hero_data["denies"]
+        self._gold = hero_data["gold"]
+        self._type = hero_data["type"]
+        self._xp = hero_data["xp"]
+        self._set_abilities(hero_data)
 
-    def getAbilityPoints(self):
-        return self.data["abilityPoints"]
+    def _set_abilities(self, data: IHero):
+        self._abilities = []
 
-    def getAbilities(self):
-        return self.abilities
+        ability_id = 0
+        for abilityData in data["abilities"].values():
+            ability = Ability("ability_" + str(ability_id))
+            ability.update(abilityData)
+            self._abilities.append(ability)
+            ability_id += 1
 
-    def getHasTowerAggro(self):
-        return self.data["hasTowerAggro"]
+    def get_ability_points(self) -> int:
+        return self._ability_points
 
-    def getDeaths(self):
-        return self.data["deaths"]
+    def get_abilities(self) -> list[Ability]:
+        return self._abilities
 
-    def getDenies(self):
-        return self.data["denies"]
+    def get_has_tower_aggro(self) -> bool:
+        return self._has_tower_aggro
 
-    def getGold(self):
-        return self.data["gold"]
+    def get_deaths(self) -> int:
+        return self._deaths
 
-    def getType(self):
-        return self.data["type"]
+    def get_denies(self) -> int:
+        return self._denies
 
-    def getXp(self):
-        return self.data["xp"]
+    def get_gold(self) -> int:
+        return self._gold
+
+    def get_xp(self) -> int:
+        return self._xp
+
+    def get_type(self) -> str:
+        return "Hero"

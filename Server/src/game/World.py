@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 import math
-from typing import Any
+from typing import Any, cast
+from src.game.post_data_interfaces.IEntity import IEntity
+from src.game.post_data_interfaces.IHero import IHero
+from src.game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 from src.game.BaseEntity import BaseEntity
 from src.game.Position import Position
 
-from src.game.BaseNPC import BaseNPC
+from src.game.Unit import Unit
 from src.game.Tower import Tower
 from src.game.Building import Building
 from src.game.Hero import Hero
@@ -18,8 +21,8 @@ class World:
     game_ticks: int = 0
     player_heroes: list[PlayerHero] = []
 
-    def update(self, world: Any) -> None:
-        self.game_ticks = self.game_ticks + 1
+    def update(self, world: dict[str, IPhysicalEntity]) -> None:
+        self.game_ticks += 1
         new_entities = {}
         for eid, data in world.items():
             entity = None
@@ -27,7 +30,7 @@ class World:
                 entity = self.entities[eid]
                 entity.setData(data)
             else:
-                entity = self._create_entity_from_data(data)
+                entity = self._create_entity_from_data(eid, data)
             new_entities[eid] = entity
 
         for eid, edata in self.entities.items():
@@ -37,21 +40,39 @@ class World:
                     new_entities[eid] = edata
         self.entities = new_entities
 
-    def _create_entity_from_data(self, data: Any) -> BaseEntity:
-        if data["type"] == "Hero" and data["team"] == 2:
-            player_hero: PlayerHero = PlayerHero(data)
-            self.player_heroes.append(player_hero)
-            return player_hero
-        elif data["type"] == "Hero":
-            return Hero(data)
+    def _create_entity_from_data(self, entity_id: str, data: IPhysicalEntity) -> BaseEntity:
+        if data["type"] == "Hero":
+            hero_data: IHero = cast(IHero, data)
+
+            if hero_data["team"] == 2:
+                player_hero: PlayerHero = PlayerHero(entity_id)
+                player_hero.update(data)
+                self.player_heroes.append(player_hero)
+                return player_hero
+            else:
+                hero = Hero(entity_id)
+                hero.update(data)
+                return hero
+
         elif data["type"] == "Tower":
-            return Tower(data)
+            tower = Tower(entity_id)
+            tower.update(data)
+            return tower
+
         elif data["type"] == "Building":
-            return Building(data)
+            building = Building(entity_id)
+            building.update(data)
+            return building
+
         elif data["type"] == "BaseNPC":
-            return BaseNPC(data)
+            unit = Unit(entity_id)
+            unit.update(data)
+            return unit
+
         elif data["type"] == "Tree":
-            return Tree(data)
+            tree = Tree(entity_id)
+            tree.update(data)
+            return tree
 
         raise Exception(
             "Error, the following entity did not match our entities:\n{}".format(data)
@@ -74,23 +95,23 @@ class World:
         y2 = pos2.y
         return math.sqrt(((x2 - x1)**2) + ((y2 - y1)**2))
 
-    def get_distance_units(self, entity1: BaseNPC, entity2: BaseNPC) -> float:
+    def get_distance_units(self, entity1: Unit, entity2: Unit) -> float:
         return self.get_distance_position(
-            entity1.getOrigin(),
-            entity2.getOrigin()
+            entity1.get_origin(),
+            entity2.get_origin()
         )
 
     def get_id(self, entity: BaseEntity) -> int:
         return entity.get_id()
 
-    def get_enemies_in_attack_range(self, entity: BaseNPC) -> list[BaseNPC]:
+    def get_enemies_in_attack_range(self, entity: Unit) -> list[Unit]:
         return self.get_enemies_in_range(
             entity,
-            range = entity.getAttackRange()
+            range = entity.get_attack_range()
         )
 
-    def get_enemies_in_range(self, entity: BaseNPC, range: float) -> list[BaseNPC]:
-        enemies: list[BaseNPC] = []
+    def get_enemies_in_range(self, entity: Unit, range: float) -> list[Unit]:
+        enemies: list[Unit] = []
 
         for enemy_entity in self.get_enemies(entity):
             if self.get_distance_units(entity, enemy_entity) <= range\
@@ -99,8 +120,8 @@ class World:
 
         return enemies
 
-    def get_allies_in_range(self, entity: BaseNPC, range: float) -> list[BaseNPC]:
-        allies: list[BaseNPC] = []
+    def get_allies_in_range(self, entity: Unit, range: float) -> list[Unit]:
+        allies: list[Unit] = []
 
         for allied_entity in self.get_allies(entity):
             if self.get_distance_units(entity, allied_entity) <= range\
@@ -109,27 +130,27 @@ class World:
 
         return allies
 
-    def get_allies(self, to_get_allies_of: BaseNPC) -> list[BaseNPC]:
-        allies: list[BaseNPC] = []
+    def get_allies(self, to_get_allies_of: Unit) -> list[Unit]:
+        allies: list[Unit] = []
 
         for unit in self.entities.values():
-            if isinstance(unit, BaseNPC)\
+            if isinstance(unit, Unit)\
             and unit.get_team() == to_get_allies_of.get_team():
                 allies.append(unit)
 
         return allies
 
-    def get_enemies(self, to_get_enemies_of: BaseNPC) -> list[BaseNPC]:
-        enemies: list[BaseNPC] = []
+    def get_enemies(self, to_get_enemies_of: Unit) -> list[Unit]:
+        enemies: list[Unit] = []
         
         for unit in self.entities.values():
-            if isinstance(unit, BaseNPC)\
+            if isinstance(unit, Unit)\
             and unit.get_team() == to_get_enemies_of.get_team():
                 enemies.append(unit)
 
         return enemies
 
-    def get_enemy_towers(self, entity: BaseNPC) -> list[Tower]:
+    def get_enemy_towers(self, entity: Unit) -> list[Tower]:
         enemy_towers: list[Tower] = []
 
         for enemy_tower_entitiy in self.get_enemies(entity):
@@ -138,8 +159,8 @@ class World:
 
         return enemy_towers
 
-    def get_allied_creeps(self, entity: BaseNPC) -> list[BaseNPC]:
-        creeps: list[BaseNPC] = []
+    def get_allied_creeps(self, entity: Unit) -> list[Unit]:
+        creeps: list[Unit] = []
 
         for allied_creep_entity in self.get_allies(entity):
             if not isinstance(allied_creep_entity, Building)\
