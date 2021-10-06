@@ -58,8 +58,8 @@ if len(sys.argv) > 4 and sys.argv[3] == "--folder":
 if len(sys.argv) > 6 and sys.argv[5] == "--dif":
     difficulty = str(sys.argv[6])
 
-# exec("from src.bots.{1}{0} import {0}".format(bot_name, selected_folder))
-# exec("FRAMEWORK = BotFramework({0})".format(bot_name))
+exec("from src.bots.{1}{0} import {0}".format(bot_name, selected_folder))
+exec("FRAMEWORK = BotFramework({0})".format(bot_name))
 
 
 while path.exists("data/" + bot_name + "/" + difficulty + "/" + str(attempt_nmb)):
