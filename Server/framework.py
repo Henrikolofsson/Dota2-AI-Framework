@@ -1,10 +1,12 @@
 import importlib
 import json
-import sys
-from typing import Union, Any
-from library.bottle.bottle import run, post, get, request
 import os
+import sys
+
 from os import path
+from typing import Union, Any
+
+from webserver import setup_web_server
 
 # To run from CMD: python framework.py --bot BOTNAME --folder FOLDER_NUMBER --dif DIFFICULTY_NAME
 
@@ -110,52 +112,5 @@ except AttributeError as attr_error:
                     f"that it's in: {attr_error}")
 
 
-@get("/api/party")
-def party():
-    global FRAMEWORK
-    return json.dumps(FRAMEWORK.get_party())
-
-
-# @post("/api/chat")
-# def chat():
-#     postdata = request.json
-
-#     # print(postdata)
-#     return json.dumps("ok")
-
-# @post("/api/game_ended")
-# def game_ended():
-
-#     post_data = request.body.read()
-#     # Dump data to file
-#     f = open(final_save_path + "/final_data.txt", "w+")
-#     f.write(post_data.decode("utf-8"))
-#     f.close()
-
-#     # postdata = request.body.read()
-
-#     # print(postdata)
-#     return json.dumps("ok")
-
-
-
-
-
-@post("/api/update")
-def update():
-    post_data = request.body.read()
-    # Dump data to file
-    f = open("gamedata.txt", "w+")
-    f.write(post_data.decode("utf-8"))
-    f.close()
-
-    world = json.loads(post_data)
-
-    FRAMEWORK.update(world)
-    FRAMEWORK.generate_bot_commands()
-    commands = FRAMEWORK.receive_bot_commands()
-
-    return json.dumps(commands)
-
-
-run(host="localhost", port=8080, debug=False, quiet=True)
+webserver = setup_web_server(FRAMEWORK)
+webserver.run(host="localhost", port=8080, debug=False, quiet=False)
