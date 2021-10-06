@@ -101,9 +101,6 @@ class World:
             entity2.get_origin()
         )
 
-    def get_id(self, entity: BaseEntity) -> int:
-        return entity.get_id()
-
     def get_enemies_in_attack_range(self, entity: Unit) -> list[Unit]:
         return self.get_enemies_in_range(
             entity,
