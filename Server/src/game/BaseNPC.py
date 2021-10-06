@@ -24,7 +24,7 @@ class BaseNPC(BaseEntity):
     def getMaxMana(self):
         return self.data["maxMana"]
 
-    def isAlive(self):
+    def is_alive(self):
         return self.data["alive"]
 
     def isBlind(self):

@@ -310,7 +310,7 @@ def get_least_hp_building(units):
     building_name = ['bad_rax_range_mid', 'bad_rax_melee_mid', 'dota_badguys_fort']
     for units_id, units_ent in units.items():
         if (isinstance(units_ent, Tower) or units_ent.getName() in building_name) and \
-                units_ent.getTeam() == 3 and units_ent.isAlive():
+                units_ent.get_team() == 3 and units_ent.is_alive():
             entity_hp = units_ent.getHealth()
             entity_max_hp = units_ent.getMaxHealth()
             if entity_hp < least_hp and (entity_hp / entity_max_hp) < 1:
@@ -326,8 +326,8 @@ def get_enemy_hero_count_in_range(world, hero, radius):
     """
     enemy_hero_count = 0
     for entity in world.entities.values():
-        if isinstance(entity, Hero) and entity.getTeam() == 3 and world.get_distance_units(hero, entity) < radius:
-            if entity.isAlive():
+        if isinstance(entity, Hero) and entity.get_team() == 3 and world.get_distance_units(hero, entity) < radius:
+            if entity.is_alive():
                 enemy_hero_count += 1
     return enemy_hero_count
 
@@ -356,14 +356,14 @@ def get_enemy_tower_in_range(world, hero, radius):
     for entity_id, entity in world.entities.items():
         if entity.getName() in nan_building:
             continue
-        if isinstance(entity, Tower) and entity.getTeam() == 3 and world.get_distance_units(hero, entity) < radius:
-            if entity.isAlive() and entity.getName() not in building_name:
+        if isinstance(entity, Tower) and entity.get_team() == 3 and world.get_distance_units(hero, entity) < radius:
+            if entity.is_alive() and entity.getName() not in building_name:
                 enemy_tower_count += 1
                 enemy_towers[entity_id] = entity
                 # if len(enemy_towers) > 0:
                 #     return enemy_tower_count, enemy_towers
         elif entity.getName() in building_name and world.get_distance_units(hero, entity) < radius + 300:
-            if entity.isAlive():
+            if entity.is_alive():
                 enemy_tower_count += 1
                 enemy_towers[int(entity_id)] = entity
     return enemy_tower_count, enemy_towers
@@ -381,13 +381,13 @@ def get_enemy_tower_in_range_pugna(world, hero, radius):
     for entity_id, entity in world.entities.items():
         if entity.getName() in nan_building:
             continue
-        if isinstance(entity, Tower) and entity.getTeam() == 3 and world.get_distance_units(hero, entity) < radius:
-            if entity.isAlive():
+        if isinstance(entity, Tower) and entity.get_team() == 3 and world.get_distance_units(hero, entity) < radius:
+            if entity.is_alive():
                 enemy_tower_count += 1
                 enemy_towers.append(entity)
                 enemy_towers_name.append(entity.getName())
         elif entity.getName() in building_name and world.get_distance_units(hero, entity) < radius + 300:
-            if entity.isAlive():
+            if entity.is_alive():
                 enemy_tower_count += 1
                 enemy_towers.append(entity)
                 enemy_towers_name.append(entity.getName())
@@ -400,8 +400,8 @@ def get_enemy_creep_count_in_range(world, hero, radius):
     """
     enemy_hero_count = 0
     for entity in world.entities.values():
-        if isinstance(entity, Hero) and entity.getTeam() == 3 and world.get_distance_units(hero, entity) < radius:
-            if entity.isAlive():
+        if isinstance(entity, Hero) and entity.get_team() == 3 and world.get_distance_units(hero, entity) < radius:
+            if entity.is_alive():
                 enemy_hero_count += 1
     return enemy_hero_count
 

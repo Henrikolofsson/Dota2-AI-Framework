@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-from Server.src.game.Position import Position
+from src.game.Position import Position
 
 
 class BaseEntity:
@@ -23,7 +23,7 @@ class BaseEntity:
     def getOrigin(self) -> Position:
         return self.data["origin"]
 
-    def getTeam(self):
+    def get_team(self):
         return self.data["team"]
 
     def getForwardVector(self):

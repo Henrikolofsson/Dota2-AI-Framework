@@ -129,7 +129,7 @@ class World:
 
         for e in self.entities:
             if isinstance(e,
-                          Tower) and e.getTeam() != entity.getTeam():
+                          Tower) and e.get_team() != entity.getTeam():
                 towers.append(e)
         return towers
 

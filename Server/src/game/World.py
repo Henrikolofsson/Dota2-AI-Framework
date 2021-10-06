@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import math
 from typing import Any
-from Server.src.game.BaseEntity import BaseEntity
-from Server.src.game.Position import Position
+from src.game.BaseEntity import BaseEntity
+from src.game.Position import Position
 
 from src.game.BaseNPC import BaseNPC
 from src.game.Tower import Tower
@@ -67,7 +67,7 @@ class World:
 
         raise Exception("No entity with name: {0}".format(name))
 
-    def get_distance_pos(self, pos1: Position, pos2: Position) -> float:
+    def get_distance_position(self, pos1: Position, pos2: Position) -> float:
         x1 = pos1.x
         y1 = pos1.y
         x2 = pos2.x
@@ -75,7 +75,7 @@ class World:
         return math.sqrt(((x2 - x1)**2) + ((y2 - y1)**2))
 
     def get_distance_units(self, entity1: BaseNPC, entity2: BaseNPC) -> float:
-        return self.get_distance_pos(
+        return self.get_distance_position(
             entity1.getOrigin(),
             entity2.getOrigin()
         )
@@ -91,55 +91,59 @@ class World:
 
     def get_enemies_in_range(self, entity: BaseNPC, range: float) -> list[BaseNPC]:
         enemies: list[BaseNPC] = []
-        for enemy_entities in self.entities.values():
-            if enemy_entities.getTeam() != entity.getTeam()\
-            and self.get_distance_units(entity, enemy_entities) <= range\
-            and enemy_entities.isAlive():
-                enemies.append(enemy_entities)
+
+        for enemy_entity in self.get_enemies(entity):
+            if self.get_distance_units(entity, enemy_entity) <= range\
+            and enemy_entity.is_alive():
+                enemies.append(enemy_entity)
 
         return enemies
 
-    def get_allies_in_range(self, entity, range):
-        allies = []
-        for allied_entities in self.entities.values():
-            if isinstance(allied_entities, Tree):
-                continue
-            if isinstance(allied_entities, Building):
-                continue
-            if self.get_distance_units(entity, allied_entities) > range:
-                continue
-            if allied_entities.getTeam() == entity.getTeam() and allied_entities.isAlive():
-                allies.append(allied_entities)
+    def get_allies_in_range(self, entity: BaseNPC, range: float) -> list[BaseNPC]:
+        allies: list[BaseNPC] = []
+
+        for allied_entity in self.get_allies(entity):
+            if self.get_distance_units(entity, allied_entity) <= range\
+            and allied_entity.is_alive():
+                allies.append(allied_entity)
+
         return allies
 
-    def get_allies(self, entity: BaseNPC) -> list[BaseNPC]:
-        entity
-        for 
+    def get_allies(self, to_get_allies_of: BaseNPC) -> list[BaseNPC]:
+        allies: list[BaseNPC] = []
 
-    def set_console_command(self, command):
-        self.console_command = command
+        for unit in self.entities.values():
+            if isinstance(unit, BaseNPC)\
+            and unit.get_team() == to_get_allies_of.get_team():
+                allies.append(unit)
 
-    def get_console_command(self):
-        return self.console_command
+        return allies
 
-    def get_enemy_towers(self, entity):
-        towers = []
+    def get_enemies(self, to_get_enemies_of: BaseNPC) -> list[BaseNPC]:
+        enemies: list[BaseNPC] = []
+        
+        for unit in self.entities.values():
+            if isinstance(unit, BaseNPC)\
+            and unit.get_team() == to_get_enemies_of.get_team():
+                enemies.append(unit)
 
-        for e in self.entities:
-            if isinstance(e,
-                          Tower) and e.getTeam() != entity.getTeam():
-                towers.append(e)
-        return towers
+        return enemies
 
-    def get_friendly_creeps(self, entity):
-        creeps = []
+    def get_enemy_towers(self, entity: BaseNPC) -> list[Tower]:
+        enemy_towers: list[Tower] = []
 
-        for e in self.entities.values():
-            if isinstance(e, Building):
-                continue
-            if isinstance(e, Hero):
-                continue
-            if e.getTeam() == entity.getTeam():
-                creeps.append(e)
+        for enemy_tower_entitiy in self.get_enemies(entity):
+            if isinstance(enemy_tower_entitiy, Tower):
+                enemy_towers.append(enemy_tower_entitiy)
+
+        return enemy_towers
+
+    def get_allied_creeps(self, entity: BaseNPC) -> list[BaseNPC]:
+        creeps: list[BaseNPC] = []
+
+        for allied_creep_entity in self.get_allies(entity):
+            if not isinstance(allied_creep_entity, Building)\
+            and not isinstance(allied_creep_entity, Hero):
+                creeps.append(allied_creep_entity)
 
         return creeps

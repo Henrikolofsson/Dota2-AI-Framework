@@ -33,9 +33,3 @@ class Position():
     @z.setter
     def z(self, z: float) -> None:
         self._z = z
-
-
-
-new_position = Position()
-
-new_position.x = 0
