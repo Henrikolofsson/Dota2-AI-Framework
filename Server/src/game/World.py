@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import math
 from typing import Any, cast
-from src.game.post_data_interfaces.IEntity import IEntity
 from src.game.post_data_interfaces.IHero import IHero
 from src.game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 from src.game.BaseEntity import BaseEntity
