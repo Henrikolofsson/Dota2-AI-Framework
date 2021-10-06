@@ -1,10 +1,12 @@
 import random
 import os
 import datetime
+
+from src.base_bot import BaseBot
 from src.game.Building import Building
 
 
-class BotExample:
+class BotExample(BaseBot):
     def __init__(self, world):
         self.party = [
             "npc_dota_hero_brewmaster",
