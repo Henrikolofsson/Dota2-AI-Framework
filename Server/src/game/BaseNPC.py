@@ -6,7 +6,7 @@ class BaseNPC(BaseEntity):
     def __init__(self, data):
         super().__init__(data)
 
-    def getAttackRange(self):
+    def getAttackRange(self) -> float:
         return self.data["attackRange"]
 
     def getAttackTarget(self):

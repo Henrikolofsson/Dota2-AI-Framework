@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 import math
+from typing import Any
+from Server.src.game.BaseEntity import BaseEntity
+from Server.src.game.Position import Position
 
 from src.game.BaseNPC import BaseNPC
 from src.game.Tower import Tower
@@ -10,13 +13,13 @@ from src.game.Tree import Tree
 
 
 class World:
-    def __init__(self):
-        self.entities = {}
-        self.gameticks = 0
-        self.console_command = None
 
-    def _update(self, world):
-        self.gameticks = self.gameticks + 1
+    entities: Any = {}
+    game_ticks: int = 0
+    player_heroes: list[PlayerHero] = []
+
+    def update(self, world: Any) -> None:
+        self.game_ticks = self.game_ticks + 1
         new_entities = {}
         for eid, data in world.items():
             entity = None
@@ -34,9 +37,11 @@ class World:
                     new_entities[eid] = edata
         self.entities = new_entities
 
-    def _create_entity_from_data(self, data):
+    def _create_entity_from_data(self, data: Any) -> BaseEntity:
         if data["type"] == "Hero" and data["team"] == 2:
-            return PlayerHero(data)
+            player_hero: PlayerHero = PlayerHero(data)
+            self.player_heroes.append(player_hero)
+            return player_hero
         elif data["type"] == "Hero":
             return Hero(data)
         elif data["type"] == "Tower":
@@ -47,76 +52,69 @@ class World:
             return BaseNPC(data)
         elif data["type"] == "Tree":
             return Tree(data)
-        print(data)
+
         raise Exception(
-            "Error, the following entity did not match our entities:\n{}".
-            format(data))
+            "Error, the following entity did not match our entities:\n{}".format(data)
+        )
 
-    def _get_player_heroes(self):
-        heroes = []
-        for entity in self.entities.values():
-            if isinstance(entity, PlayerHero):
-                heroes.append(entity)
-        return heroes
+    def get_player_heroes(self) -> list[PlayerHero]:
+        return self.player_heroes
 
-    def find_entity_by_name(self, name):
+    def find_entity_by_name(self, name: str) -> BaseEntity:
         for entity in self.entities.values():
             if entity.getName() == name:
                 return entity
 
-    def get_distance_pos(self, pos1, pos2):
-        x1, y1, z1 = pos1
-        x2, y2, z2 = pos2
+        raise Exception("No entity with name: {0}".format(name))
+
+    def get_distance_pos(self, pos1: Position, pos2: Position) -> float:
+        x1 = pos1.x
+        y1 = pos1.y
+        x2 = pos2.x
+        y2 = pos2.y
         return math.sqrt(((x2 - x1)**2) + ((y2 - y1)**2))
 
-    def get_distance_units(self, entity1, entity2):
-        x1, y1, z1 = entity1.getOrigin()
-        x2, y2, z2 = entity2.getOrigin()
-        return math.sqrt(((x2 - x1)**2) + ((y2 - y1)**2))
+    def get_distance_units(self, entity1: BaseNPC, entity2: BaseNPC) -> float:
+        return self.get_distance_pos(
+            entity1.getOrigin(),
+            entity2.getOrigin()
+        )
 
-    def get_id(self, entity):
-        for id, ent in self.entities.items():
-            if entity == ent:
-                return int(id)
+    def get_id(self, entity: BaseEntity) -> int:
+        return entity.get_id()
 
-    def get_enemies_in_attack_range(self, entity):
-        enemies = []
-        for ent in self.entities.values():
-            if ent.getTeam() == entity.getTeam():
-                continue
-            if self.get_distance_units(entity, ent) > entity.getAttackRange():
-                continue
-            if ent.isAlive():
-                enemies.append(ent)
+    def get_enemies_in_attack_range(self, entity: BaseNPC) -> list[BaseNPC]:
+        return self.get_enemies_in_range(
+            entity,
+            range = entity.getAttackRange()
+        )
 
-        return enemies
-
-    def get_enemies_in_range(self, entity, range):
-        enemies = []
-        for ent in self.entities.values():
-            if isinstance(ent, Tree):
-                continue
-            if ent.getTeam() == entity.getTeam():
-                continue
-            if self.get_distance_units(entity, ent) > range:
-                continue
-            if ent.isAlive():
-                enemies.append(ent)
+    def get_enemies_in_range(self, entity: BaseNPC, range: float) -> list[BaseNPC]:
+        enemies: list[BaseNPC] = []
+        for enemy_entities in self.entities.values():
+            if enemy_entities.getTeam() != entity.getTeam()\
+            and self.get_distance_units(entity, enemy_entities) <= range\
+            and enemy_entities.isAlive():
+                enemies.append(enemy_entities)
 
         return enemies
 
     def get_allies_in_range(self, entity, range):
         allies = []
-        for ent in self.entities.values():
-            if isinstance(ent, Tree):
+        for allied_entities in self.entities.values():
+            if isinstance(allied_entities, Tree):
                 continue
-            if isinstance(ent, Building):
+            if isinstance(allied_entities, Building):
                 continue
-            if self.get_distance_units(entity, ent) > range:
+            if self.get_distance_units(entity, allied_entities) > range:
                 continue
-            if ent.getTeam() == entity.getTeam() and ent.isAlive():
-                allies.append(ent)
+            if allied_entities.getTeam() == entity.getTeam() and allied_entities.isAlive():
+                allies.append(allied_entities)
         return allies
+
+    def get_allies(self, entity: BaseNPC) -> list[BaseNPC]:
+        entity
+        for 
 
     def set_console_command(self, command):
         self.console_command = command

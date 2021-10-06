@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from typing import Any
 from src.game.Hero import Hero
 
 
@@ -19,7 +20,7 @@ class PlayerHero(Hero):
         self.command = None
         self.commands = []
 
-    def get_command(self):
+    def get_command(self) -> dict[str, Any]:
         return self.command
 
     def get_items(self):

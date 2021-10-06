@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 
+from Server.src.game.Position import Position
+
+
 class BaseEntity:
     def __init__(self, data):
         self.data = data
@@ -17,7 +20,7 @@ class BaseEntity:
     def getName(self):
         return self.data["name"]
 
-    def getOrigin(self):
+    def getOrigin(self) -> Position:
         return self.data["origin"]
 
     def getTeam(self):
@@ -25,3 +28,6 @@ class BaseEntity:
 
     def getForwardVector(self):
         return self.data["forwardVector"]
+
+    def get_id(self) -> int:
+        raise NotImplemented
