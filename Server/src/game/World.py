@@ -78,89 +78,104 @@ class World:
         )
 
     def get_player_heroes(self) -> list[PlayerHero]:
+        '''Returns all bot-controlled heroes.'''
         return self.player_heroes
 
-    def find_entity_by_name(self, name: str) -> BaseEntity:
+    def get_entity_by_name(self, name: str) -> BaseEntity:
+        '''Returns first entity with specified name.'''
         for entity in self.entities.values():
-            if entity.getName() == name:
+            if entity.get_name() == name:
                 return entity
 
         raise Exception("No entity with name: {0}".format(name))
 
-    def get_distance_position(self, pos1: Position, pos2: Position) -> float:
-        x1 = pos1.x
-        y1 = pos1.y
-        x2 = pos2.x
-        y2 = pos2.y
-        return math.sqrt(((x2 - x1)**2) + ((y2 - y1)**2))
+    def get_distance_between_positions(self, position1: Position, position2: Position) -> float:
+        '''Returns the distance between position1 and position2.'''
+        return math.sqrt(((position2.x - position1.x)**2) + ((position2.y - position1.y)**2))
 
-    def get_distance_units(self, entity1: Unit, entity2: Unit) -> float:
-        return self.get_distance_position(
-            entity1.get_origin(),
-            entity2.get_origin()
+    def get_distance_between_units(self, unit1: Unit, unit2: Unit) -> float:
+        '''Returns the distance between position of unit1 and position of unit2.'''
+        return self.get_distance_between_positions(
+            unit1.get_origin(),
+            unit2.get_origin()
         )
 
-    def get_enemies_in_attack_range(self, entity: Unit) -> list[Unit]:
-        return self.get_enemies_in_range(
-            entity,
-            range = entity.get_attack_range()
+    def get_enemies_in_attack_range_of(self, unit: Unit) -> list[Unit]:
+        '''Returns all enemies in attack range of specified unit.'''
+        return self.get_enemies_in_range_of(
+            unit,
+            range = unit.get_attack_range()
         )
 
-    def get_enemies_in_range(self, entity: Unit, range: float) -> list[Unit]:
+    def get_enemies_in_range_of(self, unit: Unit, range: float) -> list[Unit]:
+        '''Returns all enemy units in specified range of given unit.'''
         enemies: list[Unit] = []
 
-        for enemy_entity in self.get_enemies(entity):
-            if self.get_distance_units(entity, enemy_entity) <= range\
+        for enemy_entity in self.get_enemies_of(unit):
+            if self.get_distance_between_units(unit, enemy_entity) <= range\
             and enemy_entity.is_alive():
                 enemies.append(enemy_entity)
 
         return enemies
 
-    def get_allies_in_range(self, entity: Unit, range: float) -> list[Unit]:
+    def get_allies_in_range_of(self, unit: Unit, range: float) -> list[Unit]:
+        '''Returns all allied units in specified range of given unit.'''
         allies: list[Unit] = []
 
-        for allied_entity in self.get_allies(entity):
-            if self.get_distance_units(entity, allied_entity) <= range\
-            and allied_entity.is_alive():
-                allies.append(allied_entity)
+        for allied_unit in self.get_allies_of(unit):
+            if self.get_distance_between_units(unit, allied_unit) <= range\
+            and allied_unit.is_alive():
+                allies.append(allied_unit)
 
         return allies
 
-    def get_allies(self, to_get_allies_of: Unit) -> list[Unit]:
+    def get_allies_of(self, to_get_allies_of: Unit) -> list[Unit]:
+        '''Returns all allies of given unit.'''
         allies: list[Unit] = []
 
-        for unit in self.entities.values():
-            if isinstance(unit, Unit)\
-            and unit.get_team() == to_get_allies_of.get_team():
+        for unit in self.get_units():
+            if unit.get_team() == to_get_allies_of.get_team():
                 allies.append(unit)
 
         return allies
 
-    def get_enemies(self, to_get_enemies_of: Unit) -> list[Unit]:
+    def get_enemies_of(self, to_get_enemies_of: Unit) -> list[Unit]:
+        '''Returns all enemies of given unit.'''
         enemies: list[Unit] = []
         
-        for unit in self.entities.values():
-            if isinstance(unit, Unit)\
-            and unit.get_team() == to_get_enemies_of.get_team():
+        for unit in self.get_units():
+            if unit.get_team() == to_get_enemies_of.get_team():
                 enemies.append(unit)
 
         return enemies
 
-    def get_enemy_towers(self, entity: Unit) -> list[Tower]:
+    def get_units(self) -> list[Unit]:
+        '''Returns all units.'''
+        units: list[Unit] = []
+        
+        for entity in self.entities.values():
+            if isinstance(entity, Unit):
+                units.append(entity)
+
+        return units
+
+    def get_enemy_towers_of(self, unit: Unit) -> list[Tower]:
+        '''Returns all enemy towers of given unit.'''
         enemy_towers: list[Tower] = []
 
-        for enemy_tower_entitiy in self.get_enemies(entity):
-            if isinstance(enemy_tower_entitiy, Tower):
-                enemy_towers.append(enemy_tower_entitiy)
+        for enemy_unit in self.get_enemies_of(unit):
+            if isinstance(enemy_unit, Tower):
+                enemy_towers.append(enemy_unit)
 
         return enemy_towers
 
-    def get_allied_creeps(self, entity: Unit) -> list[Unit]:
-        creeps: list[Unit] = []
+    def get_allied_creeps_of(self, unit: Unit) -> list[Unit]:
+        '''Returns all allied creeps of given unit.'''
+        allied_creeps: list[Unit] = []
 
-        for allied_creep_entity in self.get_allies(entity):
-            if not isinstance(allied_creep_entity, Building)\
-            and not isinstance(allied_creep_entity, Hero):
-                creeps.append(allied_creep_entity)
+        for allied_unit in self.get_allies_of(unit):
+            if not isinstance(allied_unit, Building)\
+            and not isinstance(allied_unit, Hero):
+                allied_creeps.append(allied_unit)
 
-        return creeps
+        return allied_creeps
