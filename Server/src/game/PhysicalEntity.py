@@ -11,8 +11,4 @@ class PhysicalEntity(BaseEntity):
 
     def update(self, data: IEntity):
         physical_entity_data: IPhysicalEntity = cast(IPhysicalEntity, data)
-        self._origin = Position(
-            physical_entity_data["origin"]["x"],
-            physical_entity_data["origin"]["y"],
-            physical_entity_data["origin"]["z"]
-        )
+        self._origin = Position(*physical_entity_data["origin"])

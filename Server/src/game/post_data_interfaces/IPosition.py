@@ -1,6 +1,6 @@
-from typing import TypedDict
+from typing import NamedTuple
 
-class IPosition(TypedDict):
+class IPosition(NamedTuple):
     x: float
     y: float
     z: float
