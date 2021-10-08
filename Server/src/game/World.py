@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import math
-from typing import Any, cast
+from typing import Union, cast
+from src.game.PhysicalEntity import PhysicalEntity
 from src.game.post_data_interfaces.IHero import IHero
 from src.game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 from src.game.BaseEntity import BaseEntity
@@ -16,76 +17,81 @@ from src.game.Tree import Tree
 
 class World:
 
-    entities: Any = {}
-    game_ticks: int = 0
-    player_heroes: list[PlayerHero] = []
+    _entities: list[PhysicalEntity] = []
+    _game_ticks: int = 0
+    _player_heroes: list[PlayerHero] = []
 
     def update(self, world: dict[str, IPhysicalEntity]) -> None:
-        self.game_ticks += 1
-        new_entities = {}
-        for eid, data in world.items():
-            entity = None
-            if eid in self.entities:
-                entity = self.entities[eid]
-                entity.setData(data)
+        self._game_ticks += 1
+        self._update_entities(world)
+
+    def _update_entities(self, new_entities: dict[str, IPhysicalEntity]) -> None:
+        for entity_id, entity_data in new_entities.items():
+            self._update_if_exists_else_add_new_entity(entity_id, entity_data)
+
+        for entity in self._entities:
+            if entity.get_id() not in new_entities.keys():
+                self._set_dead_if_player_hero_else_remove_entity(entity)
+
+    def _update_if_exists_else_add_new_entity(self, entity_id: str, entity_data: IPhysicalEntity) -> None:
+        entity: Union[BaseEntity, None] = self.get_entity_by_id(entity_id)
+        if entity is None:
+            self._add_new_entity(entity_id, entity_data)
+        else:
+            entity.update(entity_data)
+
+    def _set_dead_if_player_hero_else_remove_entity(self, entity: PhysicalEntity) -> None:
+        if isinstance(entity, PlayerHero):
+            entity.set_alive(False)
+        else:
+            self._entities.remove(entity)
+
+    def _add_new_entity(self, entity_id: str, entity_data: IPhysicalEntity) -> None:
+        new_entity: PhysicalEntity
+
+        if entity_data["type"] == "Hero":
+            new_hero: IHero = cast(IHero, entity_data)
+            if new_hero["team"] == 2: # ugly nested if, need better semantics: type = "Hero" & type = "PlayerHero"
+                new_entity = PlayerHero(entity_id)
             else:
-                entity = self._create_entity_from_data(eid, data)
-            new_entities[eid] = entity
+                new_entity = Hero(entity_id)
+        
+        elif entity_data["type"] == "Tower":
+            new_entity = Tower(entity_id)
+        
+        elif entity_data["type"] == "Building":
+            new_entity = Building(entity_id)
 
-        for eid, edata in self.entities.items():
-            if edata.data["type"] == "Hero" and edata.data["team"] == 2:
-                if eid not in new_entities:
-                    edata.data["alive"] = False
-                    new_entities[eid] = edata
-        self.entities = new_entities
+        elif entity_data["type"] == "BaseNPC":
+            new_entity = Unit(entity_id)
 
-    def _create_entity_from_data(self, entity_id: str, data: IPhysicalEntity) -> BaseEntity:
-        if data["type"] == "Hero":
-            hero_data: IHero = cast(IHero, data)
+        elif entity_data["type"] == "Tree":
+            new_entity = Tree(entity_id)
 
-            if hero_data["team"] == 2:
-                player_hero: PlayerHero = PlayerHero(entity_id)
-                player_hero.update(data)
-                self.player_heroes.append(player_hero)
-                return player_hero
-            else:
-                hero = Hero(entity_id)
-                hero.update(data)
-                return hero
+        else:
+            raise Exception(
+                "Error, the following entity did not match our entities:\n{}".format(entity_data)
+            )
 
-        elif data["type"] == "Tower":
-            tower = Tower(entity_id)
-            tower.update(data)
-            return tower
+        new_entity.update(entity_data)
+        self._entities.append(new_entity)
 
-        elif data["type"] == "Building":
-            building = Building(entity_id)
-            building.update(data)
-            return building
+    def get_entity_by_id(self, entity_id: str) -> Union[BaseEntity, None]:
+        for entity in self._entities:
+            if entity.get_id() == entity_id:
+                return entity
 
-        elif data["type"] == "BaseNPC":
-            unit = Unit(entity_id)
-            unit.update(data)
-            return unit
-
-        elif data["type"] == "Tree":
-            tree = Tree(entity_id)
-            tree.update(data)
-            return tree
-
-        raise Exception(
-            "Error, the following entity did not match our entities:\n{}".format(data)
-        )
+        return None
 
     def get_player_heroes(self) -> list[PlayerHero]:
         '''Returns all bot-controlled heroes.'''
-        return self.player_heroes
+        return self._player_heroes
 
-    def get_entity_by_name(self, name: str) -> BaseEntity:
+    def get_unit_by_name(self, name: str) -> PhysicalEntity:
         '''Returns first entity with specified name.'''
-        for entity in self.entities.values():
-            if entity.get_name() == name:
-                return entity
+        for unit in self.get_units():
+            if unit.get_name() == name:
+                return unit
 
         raise Exception("No entity with name: {0}".format(name))
 
@@ -153,7 +159,7 @@ class World:
         '''Returns all units.'''
         units: list[Unit] = []
         
-        for entity in self.entities.values():
+        for entity in self._entities:
             if isinstance(entity, Unit):
                 units.append(entity)
 
