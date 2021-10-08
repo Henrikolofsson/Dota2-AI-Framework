@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from typing import cast
+from typing import cast, Union
 from game.post_data_interfaces.IEntity import IEntity
 from game.PhysicalEntity import PhysicalEntity
 from game.Position import Position
@@ -8,7 +8,7 @@ from game.post_data_interfaces.IUnit import IUnit
 class Unit(PhysicalEntity):
 
     _attack_range: float
-    _attack_target: int
+    _attack_target: Union[int, None]
     _is_attacking: bool
     _level: int
     _mana: int
@@ -30,7 +30,7 @@ class Unit(PhysicalEntity):
         unit_data: IUnit = cast(IUnit, data)
         self._name = unit_data["name"]
         self._attack_range = unit_data["attackRange"]
-        self._attack_target = unit_data["attackTarget"]
+        self._attack_target = unit_data["attackTarget"] if "attackTarget" in unit_data else None
         self._is_attacking = unit_data["isAttacking"]
         self._level = unit_data["level"]
         self._mana = unit_data["mana"]
@@ -45,7 +45,7 @@ class Unit(PhysicalEntity):
     def get_attack_range(self) -> float:
         return self._attack_range
 
-    def get_attack_target(self) -> int:
+    def get_attack_target(self) -> Union[int, None]:
         return self._attack_target
 
     def is_attacking(self) -> bool:
