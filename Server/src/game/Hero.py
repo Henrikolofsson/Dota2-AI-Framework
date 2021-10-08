@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from typing import cast
+from game.enums.entity_type import EntityType
 from game.post_data_interfaces.IEntity import IEntity
 from game.post_data_interfaces.IHero import IHero
 from game.Unit import Unit
@@ -34,7 +35,7 @@ class Hero(Unit):
 
         ability_id = 0
         for abilityData in data["abilities"].values():
-            ability = Ability("ability_" + str(ability_id))
+            ability = Ability(str(ability_id))
             ability.update(abilityData)
             self._abilities.append(ability)
             ability_id += 1
@@ -60,5 +61,5 @@ class Hero(Unit):
     def get_xp(self) -> int:
         return self._xp
 
-    def get_type(self) -> str:
-        return "Hero"
+    def get_type(self) -> EntityType:
+        return EntityType.HERO

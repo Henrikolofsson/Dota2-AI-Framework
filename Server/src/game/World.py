@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-import math
+from math import sqrt
 from typing import Union, cast
-from game.PhysicalEntity import PhysicalEntity
+
 from game.post_data_interfaces.IHero import IHero
 from game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
-from game.BaseEntity import BaseEntity
-from game.Position import Position
 
+from game.BaseEntity import BaseEntity
+from game.PhysicalEntity import PhysicalEntity
+from game.Position import Position
 from game.Unit import Unit
 from game.Tower import Tower
 from game.Building import Building
@@ -97,7 +98,7 @@ class World:
 
     def get_distance_between_positions(self, position1: Position, position2: Position) -> float:
         '''Returns the distance between position1 and position2.'''
-        return math.sqrt(((position2.x - position1.x)**2) + ((position2.y - position1.y)**2))
+        return sqrt(((position2.x - position1.x)**2) + ((position2.y - position1.y)**2))
 
     def get_distance_between_units(self, unit1: Unit, unit2: Unit) -> float:
         '''Returns the distance between position of unit1 and position of unit2.'''

@@ -9,8 +9,8 @@ class IAbility(IEntity):
     behavior: int
     abilityType: int
     maxLevel: int
-    cooldownTimeRemaining: int
-    cooldownTime: int
+    cooldownTimeRemaining: float
+    cooldownTime: float
     targetType: int
     abilityIndex: int
     type: str

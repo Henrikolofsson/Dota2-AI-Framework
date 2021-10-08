@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from typing import cast, Union
+from game.enums.entity_type import EntityType
 from game.post_data_interfaces.IEntity import IEntity
 from game.PhysicalEntity import PhysicalEntity
 from game.Position import Position
@@ -96,8 +97,8 @@ class Unit(PhysicalEntity):
     def get_forward_vector(self) -> Position:
         return self._forward_vector
 
-    def get_type(self) -> str:
-        return "Unit"
+    def get_type(self) -> EntityType:
+        return EntityType.UNIT
 
     def set_alive(self, is_alive: bool) -> None:
         self._alive = is_alive

@@ -3,6 +3,7 @@
 
 from abc import ABC, abstractmethod
 
+from game.enums.entity_type import EntityType
 from game.post_data_interfaces.IEntity import IEntity
 
 
@@ -13,12 +14,12 @@ class BaseEntity(ABC):
     def __init__(self, entity_id: str):
         self._entity_id = entity_id
 
-    @abstractmethod
-    def get_type(self) -> str:
-        pass
-
     def get_id(self) -> str:
         return self._entity_id
+
+    @abstractmethod
+    def get_type(self) -> EntityType:
+        pass
 
     @abstractmethod
     def update(self, data: IEntity):

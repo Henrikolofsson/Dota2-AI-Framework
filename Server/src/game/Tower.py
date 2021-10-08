@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
+from game.enums.entity_type import EntityType
 from game.Building import Building
 
 
 class Tower(Building):
-    pass
+    
+    def get_type(self) -> EntityType:
+        return EntityType.TOWER
