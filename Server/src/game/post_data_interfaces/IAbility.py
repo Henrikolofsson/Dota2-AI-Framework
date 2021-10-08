@@ -1,4 +1,4 @@
-from src.game.post_data_interfaces.IEntity import IEntity
+from game.post_data_interfaces.IEntity import IEntity
 
 class IAbility(IEntity):
     targetFlags: int

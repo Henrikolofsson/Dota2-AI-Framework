@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 from typing import cast
-from src.game.post_data_interfaces.IEntity import IEntity
-from src.game.PhysicalEntity import PhysicalEntity
-from src.game.Position import Position
-from src.game.post_data_interfaces.IUnit import IUnit
+from game.post_data_interfaces.IEntity import IEntity
+from game.PhysicalEntity import PhysicalEntity
+from game.Position import Position
+from game.post_data_interfaces.IUnit import IUnit
 
 class Unit(PhysicalEntity):
 

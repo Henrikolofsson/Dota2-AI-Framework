@@ -35,47 +35,45 @@ final_save_path = ""
 difficulty = "easy"
 
 
-def getCompetitionBot(folder_selection: str) -> str:
-    switcher = {
-        "0": "",
-        "1": teamuji_folder,
-        "2": sebastian_folder,
-        "3": teamnebot_folder,
-    }
+# def getCompetitionBot(folder_selection: str) -> str:
+#     switcher = {
+#         "0": "",
+#         "1": teamuji_folder,
+#         "2": sebastian_folder,
+#         "3": teamnebot_folder,
+#     }
 
-    choice: Union[str, None] = switcher.get(folder_selection)
+#     choice: Union[str, None] = switcher.get(folder_selection)
 
-    if choice is None:
-        return ""
-    return choice
+#     if choice is None:
+#         return ""
+#     return choice
 
 
-if len(sys.argv) > 2 and sys.argv[1] == "--bot":
-    bot_name = sys.argv[2]
+# if len(sys.argv) > 2 and sys.argv[1] == "--bot":
+#     bot_name = sys.argv[2]
 
-if len(sys.argv) > 4 and sys.argv[3] == "--folder":
-    selected_folder = getCompetitionBot(sys.argv[4])
-    bot_name = sys.argv[2]
+# if len(sys.argv) > 4 and sys.argv[3] == "--folder":
+#     selected_folder = getCompetitionBot(sys.argv[4])
+#     bot_name = sys.argv[2]
 
-if len(sys.argv) > 6 and sys.argv[5] == "--dif":
-    difficulty = str(sys.argv[6])
+# if len(sys.argv) > 6 and sys.argv[5] == "--dif":
+#     difficulty = str(sys.argv[6])
 
-exec("from src.bots.{1}{0} import {0}".format(bot_name, selected_folder))
+exec("from bots.{1}{0} import {0}".format(bot_name, selected_folder))
 exec("FRAMEWORK = BotFramework({0})".format(bot_name))
 
 
-while path.exists("data/" + bot_name + "/" + difficulty + "/" + str(attempt_nmb)):
-    attempt_nmb = attempt_nmb + 1
+# while path.exists("data/" + bot_name + "/" + difficulty + "/" + str(attempt_nmb)):
+#     attempt_nmb = attempt_nmb + 1
 
-print(attempt_nmb)
-print(difficulty)
-final_save_path = "data/" + bot_name + "/" + difficulty + "/" + str(attempt_nmb)
-print(final_save_path)
-os.makedirs(final_save_path)
+# print(attempt_nmb)
+# print(difficulty)
+# final_save_path = "data/" + bot_name + "/" + difficulty + "/" + str(attempt_nmb)
+# print(final_save_path)
+# os.makedirs(final_save_path)
 
 settings_filename = '../settings.json'
-
-print(os.getcwd())
 
 def open_bot_class(directory: str, name: str) -> Any:
     # It's intuitive to write bot path using slashes but import_module expects dots.

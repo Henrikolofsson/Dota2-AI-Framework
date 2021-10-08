@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.game.Hero import Hero
+from game.Hero import Hero
 
 
 class BaseBot(ABC):

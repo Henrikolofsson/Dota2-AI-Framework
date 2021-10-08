@@ -1,8 +1,8 @@
 from typing import cast
-from src.game.BaseEntity import BaseEntity
-from src.game.Position import Position
-from src.game.post_data_interfaces.IEntity import IEntity
-from src.game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
+from game.BaseEntity import BaseEntity
+from game.Position import Position
+from game.post_data_interfaces.IEntity import IEntity
+from game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 
 
 class PhysicalEntity(BaseEntity):

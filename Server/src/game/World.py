@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 import math
 from typing import Union, cast
-from src.game.PhysicalEntity import PhysicalEntity
-from src.game.post_data_interfaces.IHero import IHero
-from src.game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
-from src.game.BaseEntity import BaseEntity
-from src.game.Position import Position
+from game.PhysicalEntity import PhysicalEntity
+from game.post_data_interfaces.IHero import IHero
+from game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
+from game.BaseEntity import BaseEntity
+from game.Position import Position
 
-from src.game.Unit import Unit
-from src.game.Tower import Tower
-from src.game.Building import Building
-from src.game.Hero import Hero
-from src.game.PlayerHero import PlayerHero
-from src.game.Tree import Tree
+from game.Unit import Unit
+from game.Tower import Tower
+from game.Building import Building
+from game.Hero import Hero
+from game.PlayerHero import PlayerHero
+from game.Tree import Tree
 
 
 class World:

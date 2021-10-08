@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from src.game.PhysicalEntity import PhysicalEntity
+from game.PhysicalEntity import PhysicalEntity
 
 
 class Tree(PhysicalEntity):

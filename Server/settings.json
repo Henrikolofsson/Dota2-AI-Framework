@@ -1,5 +1,5 @@
 {
-  "base_dir_bots": "src/bots/",
+  "base_dir_bots": "bots/",
   "radiant_bot_name": "BotExample",
   "dire_bot_name": "BotExample",
   "difficulty": "easy"

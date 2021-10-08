@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from src.game.post_data_interfaces.IAbility import IAbility
-from src.game.post_data_interfaces.IEntity import IEntity
-from src.game.BaseEntity import BaseEntity
+from game.post_data_interfaces.IAbility import IAbility
+from game.post_data_interfaces.IEntity import IEntity
+from game.BaseEntity import BaseEntity
 
 
 class Ability(BaseEntity):

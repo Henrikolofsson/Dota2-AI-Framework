@@ -1,7 +1,7 @@
 from typing import Any, Union
-from src.game.post_data_interfaces.IAbility import IAbility
-from src.game.post_data_interfaces.IItem import IItem
-from src.game.post_data_interfaces.IUnit import IUnit
+from game.post_data_interfaces.IAbility import IAbility
+from game.post_data_interfaces.IItem import IItem
+from game.post_data_interfaces.IUnit import IUnit
 
 class IHero(IUnit):
     denies: int

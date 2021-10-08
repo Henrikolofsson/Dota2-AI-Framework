@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from typing import Any
-from src.game.post_data_interfaces.IEntity import IEntity
-from src.game.Hero import Hero
+from game.post_data_interfaces.IEntity import IEntity
+from game.Hero import Hero
 
 
 class PlayerHero(Hero):

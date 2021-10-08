@@ -2,8 +2,8 @@ import random
 import os
 import datetime
 
-from src.base_bot import BaseBot
-from src.game.Building import Building
+from base_bot import BaseBot
+from game.Building import Building
 
 
 class BotExample(BaseBot):

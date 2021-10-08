@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from src.game.Unit import Unit
+from game.Unit import Unit
 
 
 class Building(Unit):

@@ -3,7 +3,7 @@
 
 from abc import ABC, abstractmethod
 
-from src.game.post_data_interfaces.IEntity import IEntity
+from game.post_data_interfaces.IEntity import IEntity
 
 
 class BaseEntity(ABC):

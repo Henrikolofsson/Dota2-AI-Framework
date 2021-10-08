@@ -1,5 +1,5 @@
-from src.game.post_data_interfaces.IPosition import IPosition
-from src.game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
+from game.post_data_interfaces.IPosition import IPosition
+from game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 
 
 class IUnit(IPhysicalEntity):

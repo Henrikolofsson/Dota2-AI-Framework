@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from typing import Any
-from src.game.post_data_interfaces.IRoot import IRoot
-from src.game.World import World
+from game.post_data_interfaces.IRoot import IRoot
+from game.World import World
 
 class BotFramework:
     

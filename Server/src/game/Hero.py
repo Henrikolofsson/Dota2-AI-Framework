@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 from typing import cast
-from src.game.post_data_interfaces.IEntity import IEntity
-from src.game.post_data_interfaces.IHero import IHero
-from src.game.Unit import Unit
-from src.game.Ability import Ability
+from game.post_data_interfaces.IEntity import IEntity
+from game.post_data_interfaces.IHero import IHero
+from game.Unit import Unit
+from game.Ability import Ability
 
 
 class Hero(Unit):
