@@ -98,3 +98,6 @@ class Unit(PhysicalEntity):
 
     def get_type(self) -> str:
         return "Unit"
+
+    def set_alive(self, is_alive: bool) -> None:
+        self._alive = is_alive
