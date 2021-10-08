@@ -6,6 +6,7 @@ import sys
 from os import path
 from typing import Union, Any
 
+from BotFramework import BotFramework
 from webserver import setup_web_server
 
 # To run from CMD: python framework.py --bot BOTNAME --folder FOLDER_NUMBER --dif DIFFICULTY_NAME
@@ -22,7 +23,6 @@ from webserver import setup_web_server
 # 2
 # 3
 
-from src.BotFramework import BotFramework
 
 FRAMEWORK: BotFramework
 bot_name = "BotExample"
@@ -73,8 +73,9 @@ final_save_path = "data/" + bot_name + "/" + difficulty + "/" + str(attempt_nmb)
 print(final_save_path)
 os.makedirs(final_save_path)
 
-settings_filename = 'settings.json'
+settings_filename = '../settings.json'
 
+print(os.getcwd())
 
 def open_bot_class(directory: str, name: str) -> Any:
     # It's intuitive to write bot path using slashes but import_module expects dots.
@@ -99,7 +100,7 @@ try:
 
         radiant_bot = open_bot_class(base_dir, radiant_bot_name)
         dire_bot = open_bot_class(base_dir, dire_bot_name)
-except FileNotFoundError:
+except FileNotFoundError as fe:
     exit_with_error(f"Couldn't open {settings_filename}.")
 except json.decoder.JSONDecodeError:
     exit_with_error(f"Malformed JSON file: {settings_filename}")

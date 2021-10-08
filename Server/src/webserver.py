@@ -1,6 +1,6 @@
 import json
 
-from library.bottle.bottle import request, response, Bottle
+from bottle import request, response, Bottle
 
 
 def setup_web_server(framework) -> Bottle:
@@ -43,7 +43,7 @@ def setup_web_server(framework) -> Bottle:
         raw_json = request.json
         parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
 
-        with open("gamedata.txt", "w+") as f:
+        with open("../gamedata.txt", "w+") as f:
             f.write(str(parsed_json))
 
         framework.update(parsed_json)
