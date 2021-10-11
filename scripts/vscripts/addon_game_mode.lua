@@ -14,5 +14,8 @@ require "main_controller"
 -- Addon entry point.
 function Activate()
     GameRules.Main_controller = Main_controller()
-    GameRules.Main_controller:Run()
+    Timers:CreateTimer({
+        endTime = 1.0,
+        callback = GameRules.Main_controller.Run
+    })
 end
