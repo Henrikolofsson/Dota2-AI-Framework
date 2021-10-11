@@ -36,7 +36,7 @@ if __name__ == '__main__':
         radiant_bot_class_name = settings['radiant_bot_class_name']
         dire_bot_filename = settings['dire_bot_filename']
         dire_bot_class_name = settings['dire_bot_class_name']
-        difficulty = settings['difficulty']
+        difficulty = settings['native_bots_difficulty']
 
         radiant_bot = load_class(base_dir, radiant_bot_filename, radiant_bot_class_name)
         dire_bot = load_class(base_dir, dire_bot_filename, dire_bot_class_name)
