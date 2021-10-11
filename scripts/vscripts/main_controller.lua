@@ -1,4 +1,5 @@
 -- imports
+local Settings_setup = require "init.settings_setup"
 local Event_controller = require "listeners.event_controller"
 local Match_setup_controller = require "init.match_setup.match_setup_controller"
 local Hero_setup_controller = require "init.hero_setup.hero_setup_controller"
@@ -35,7 +36,8 @@ function Main_controller.On_pre_game_state()
     end
 end
 
-function Main_controller:Run()
+function Main_controller.Run()
+    Settings_setup:Get_and_set_settings()
     Event_controller:Initialize_listeners()
     Match_setup_controller:Initialize_match_setup()
     Event_controller:Add_on_hero_selection_game_state_listener(Main_controller.On_hero_selection_game_state)
