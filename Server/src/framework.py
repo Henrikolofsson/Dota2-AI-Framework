@@ -42,7 +42,7 @@ if __name__ == '__main__':
         dire_bot = load_class(base_dir, dire_bot_filename, dire_bot_class_name)
 
         framework = BotFramework(radiant_bot)
-        webserver = setup_web_server(framework)
+        webserver = setup_web_server(settings_filename, framework)
         webserver.run(host="localhost", port=8080, debug=False, quiet=False)
     except FileNotFoundError as fe:
         exit_with_error(f"Couldn't open {settings_filename}.")
