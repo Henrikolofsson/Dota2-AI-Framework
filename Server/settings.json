@@ -1,4 +1,6 @@
 {
+  "should_have_pre_game_delay": false,
+  "should_dire_be_native_bots": false,
   "base_dir_bots": "bots/",
   "radiant_bot_filename": "BotExample.py",
   "radiant_bot_class_name": "BotExample",
