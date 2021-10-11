@@ -3,12 +3,27 @@ import json
 from bottle import request, response, Bottle
 
 
-def setup_web_server(framework) -> Bottle:
+def setup_web_server(settings_filename, framework) -> Bottle:
     app = Bottle()
 
     @app.get("/api/party")
     def party():
         return json.dumps(framework.get_party())
+
+    @app.get("/api/enemy_party")
+    def party():
+        return json.dumps([
+            "npc_dota_hero_bane",
+            "npc_dota_hero_batrider",
+            "npc_dota_hero_dazzle",
+            "npc_dota_hero_wisp",
+            "npc_dota_hero_lich",
+        ])
+
+    @app.get("/api/settings")
+    def settings():
+        with open(settings_filename) as f:
+            return f.read()
 
     # @post("/api/chat")
     # def chat():
@@ -50,4 +65,5 @@ def setup_web_server(framework) -> Bottle:
         framework.generate_bot_commands()
         commands = framework.receive_bot_commands()
         return commands
+    
     return app
