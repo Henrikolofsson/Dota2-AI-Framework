@@ -60,7 +60,7 @@ class BotExample(BaseBot):
             self.buy_ring_of_regen(hero)
             return
 
-        if hero.getAbilityPoints() > 0:
+        if hero.get_ability_points() > 0:
             hero.level_up(random.randint(0, 4))
             return
 
