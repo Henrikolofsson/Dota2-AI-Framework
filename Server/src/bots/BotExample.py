@@ -1,11 +1,11 @@
 import random
 import os
 import datetime
-from game.Position import Position
-from game.Ability import Ability
+from game.position import Position
+from game.ability import Ability
 from game.enums.ability_behavior import AbilityBehavior
-from game.PlayerHero import PlayerHero
-from game.World import World
+from game.player_hero import PlayerHero
+from game.world import World
 
 from base_bot import BaseBot
 from game.building import Building

@@ -1,3 +1,4 @@
+from typing import cast
 from game.base_entity import BaseEntity
 from game.enums.entity_type import EntityType
 from game.post_data_interfaces.IEntity import IEntity
@@ -11,11 +12,11 @@ class Item(BaseEntity):
     _slot: int
 
     def update(self, data: IEntity):
-        return super().update(data)
+        super().update(data)
         item_data: IItem = cast(IItem, data)
         self._charges = item_data["charges"]
         self._name = item_data["name"]
-        self._cast_range = item_data["cast_range"]
+        self._cast_range = item_data["castRange"]
         self._slot = item_data["slot"]
 
     def get_charges(self) -> int:
@@ -29,3 +30,6 @@ class Item(BaseEntity):
 
     def get_slot(self) -> int:
         return self._slot
+
+    def get_type(self) -> EntityType:
+        return EntityType.ITEM
