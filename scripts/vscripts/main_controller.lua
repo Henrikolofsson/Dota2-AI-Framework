@@ -36,10 +36,17 @@ function Main_controller.On_pre_game_state()
     end
 end
 
-function Main_controller.Run()
-    Settings_setup:Get_and_set_settings()
+function Main_controller.Run_after_settings()
     Event_controller:Initialize_listeners()
     Match_setup_controller:Initialize_match_setup()
     Event_controller:Add_on_hero_selection_game_state_listener(Main_controller.On_hero_selection_game_state)
-    Event_controller:Add_on_pre_game_state_listener(Main_controller.On_pre_game_state)
+    Event_controller:Add_on_pre_game_state_listener(Main_controller.On_pre_game_state)    
+end
+
+function Main_controller.Run()
+    Settings_setup:Get_and_set_settings()
+    Timers:CreateTimer({
+        endTime = 1.0,
+        callback = Main_controller.Run_after_settings
+    })
 end

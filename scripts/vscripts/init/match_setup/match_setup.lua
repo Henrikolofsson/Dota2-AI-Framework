@@ -17,7 +17,11 @@ function Match_setup:Remove_all_game_rule_starting_delays()
 end
 
 function Match_setup:Grant_global_vision()
-    SendToServerConsole("dota_all_vision 1")
+    if Settings.GRANT_GLOBAL_VISION then
+        SendToServerConsole("dota_all_vision 1")
+    else
+        SendToServerConsole("dota_all_vision 0")
+    end
 end
 
 function Match_setup:Auto_launch_custom_game()

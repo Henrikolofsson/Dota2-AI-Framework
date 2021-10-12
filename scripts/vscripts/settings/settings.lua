@@ -5,4 +5,6 @@ Settings = {
     SHOULD_DIRE_BE_NATIVE_BOTS = nil,
     ---@type string
     NATIVE_BOTS_DIFFICULTY = nil,
+    ---@type boolean
+    GRANT_GLOBAL_VISION = nil
 }
