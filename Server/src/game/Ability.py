@@ -8,18 +8,18 @@ from game.BaseEntity import BaseEntity
 
 
 class Ability(BaseEntity):
-    _targetFlags: int
-    _targetTeam: int
-    _abilityDamageType: int
-    _toggleState: bool
-    _abilityDamage: int
+    _target_flags: int
+    _target_team: int
+    _ability_damage_type: int
+    _toggle_state: bool
+    _ability_damage: int
     _behavior: int
-    _abilityType: int
-    _maxLevel: int
-    _cooldownTimeRemaining: float
-    _cooldownTime: float
-    _targetType: int
-    _abilityIndex: int
+    _ability_type: int
+    _max_level: int
+    _cooldown_time_remaining: float
+    _cooldown_time: float
+    _target_type: int
+    _ability_index: int
     _type: str
     _name: str
     _level: int
@@ -28,58 +28,58 @@ class Ability(BaseEntity):
     def update(self, data: IEntity):
         super().update(data)
         ability_data: IAbility = cast(IAbility, data)
-        self._targetFlags = ability_data["targetFlags"]
-        self._targetTeam = ability_data["targetTeam"]
-        self._abilityDamageType = ability_data["abilityDamageType"]
-        self._toggleState = ability_data["toggleState"]
-        self._abilityDamage = ability_data["abilityDamage"]
+        self._target_flags = ability_data["targetFlags"]
+        self._target_team = ability_data["targetTeam"]
+        self._ability_damage_type = ability_data["abilityDamageType"]
+        self._toggle_state = ability_data["toggleState"]
+        self._ability_damage = ability_data["abilityDamage"]
         self._behavior = ability_data["behavior"]
-        self._abilityType = ability_data["abilityType"]
-        self._maxLevel = ability_data["maxLevel"]
-        self._cooldownTimeRemaining = ability_data["cooldownTimeRemaining"]
-        self._cooldownTime = ability_data["cooldownTime"]
-        self._abilityIndex = ability_data["abilityIndex"]
+        self._ability_type = ability_data["abilityType"]
+        self._max_level = ability_data["maxLevel"]
+        self._cooldown_time_remaining = ability_data["cooldownTimeRemaining"]
+        self._cooldown_time = ability_data["cooldownTime"]
+        self._ability_index = ability_data["abilityIndex"]
         self._type = ability_data["type"]
         self._name = ability_data["name"]
 
-    def getAbilityDamage(self) -> int:
-        return self.data["abilityDamage"]
+    def get_ability_damage(self) -> int:
+        return self._ability_damage
 
-    def getAbilityDamageType(self) -> int:
-        return self.data["abilityDamageType"]
+    def get_ability_damage_type(self) -> int:
+        return self._ability_damage_type
 
-    def getAbilityIndex(self) -> int:
-        return self.data["abilityIndex"]
+    def get_ability_index(self) -> int:
+        return self._ability_index
 
-    def getAbilityType(self) -> int:
-        return self.data["abilityType"]
+    def get_ability_type(self) -> int:
+        return self._ability_type
 
-    def getBehavior(self) -> int:
-        return self.data["behavior"]
+    def get_behavior(self) -> int:
+        return self._behavior
 
-    def getCooldownTime(self) -> float:
-        return self.data["cooldownTime"]
+    def get_cooldown_time(self) -> float:
+        return self._cooldown_time
 
-    def getCooldownTimeRemaining(self) -> float:
-        return self.data["cooldownTimeRemaining"]
+    def get_cooldown_time_remaining(self) -> float:
+        return self._cooldown_time_remaining
 
-    def getLevel(self) -> int:
-        return self.data["level"]
+    def get_level(self) -> int:
+        return self._level
 
-    def getMaxLevel(self) -> int:
-        return self.data["maxLevel"]
+    def get_max_level(self) -> int:
+        return self._max_level
 
-    def getTargetFlags(self) -> int:
-        return self.data["targetFlags"]
+    def get_target_flags(self) -> int:
+        return self._target_flags
 
-    def getTargetTeam(self) -> int:
-        return self.data["targetTeam"]
+    def get_target_team(self) -> int:
+        return self._target_team
 
-    def getTargetType(self) -> int:
-        return self.data["targetType"]
+    def get_target_type(self) -> int:
+        return self._target_type
 
-    def getToggleState(self) -> bool:
-        return self.data["toggleState"]
+    def get_toggle_state(self) -> bool:
+        return self._toggle_state
 
     def get_type(self) -> EntityType:
         return EntityType.ABILITY
