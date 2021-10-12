@@ -7,5 +7,5 @@
   "native_bots_difficulty": "easy",
   "should_have_pre_game_delay": false,
   "should_dire_be_native_bots": false,
-  "grant_global_vision": true
+  "grant_global_vision": false
 }
