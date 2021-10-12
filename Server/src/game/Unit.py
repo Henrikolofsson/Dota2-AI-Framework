@@ -88,9 +88,6 @@ class Unit(PhysicalEntity):
     def get_name(self) -> str:
         return self._name
 
-    def get_origin(self) -> Position:
-        return self._origin
-
     def get_team(self) -> int:
         return self._team
 

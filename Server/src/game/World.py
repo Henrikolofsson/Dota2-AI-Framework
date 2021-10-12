@@ -22,6 +22,9 @@ class World:
     _game_ticks: int = 0
     _player_heroes: list[PlayerHero] = []
 
+    def get_game_ticks(self) -> int:
+        return self._game_ticks
+
     def update(self, world: dict[str, IPhysicalEntity]) -> None:
         self._game_ticks += 1
         self._update_entities(world)
@@ -103,8 +106,8 @@ class World:
     def get_distance_between_units(self, unit1: Unit, unit2: Unit) -> float:
         '''Returns the distance between position of unit1 and position of unit2.'''
         return self.get_distance_between_positions(
-            unit1.get_origin(),
-            unit2.get_origin()
+            unit1.get_position(),
+            unit2.get_position()
         )
 
     def get_enemies_in_attack_range_of(self, unit: Unit) -> list[Unit]:
