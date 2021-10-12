@@ -83,3 +83,4 @@ class Ability(BaseEntity):
 
     def get_type(self) -> EntityType:
         return EntityType.ABILITY
+        
