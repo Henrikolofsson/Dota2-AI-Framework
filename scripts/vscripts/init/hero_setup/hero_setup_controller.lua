@@ -13,7 +13,6 @@ local ONE_SECOND_DELAY = 1.0
 -- Hero_setup_controller
 local Hero_setup_controller = {}
 Hero_setup_controller.radiant_heroes = nil
--- List for future dire team
 Hero_setup_controller.dire_heroes = nil
 
 ---@return table

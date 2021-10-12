@@ -41,6 +41,8 @@ function Hero_selector:Player_has_not_selected_hero(player_id)
     return not PlayerResource:GetSelectedHeroEntity(player_id)
 end
 
+---@param team integer
+---@return table
 function Hero_selector:Get_table_to_append_to(team)
     if team == DOTA_TEAM_GOODGUYS then
         return Hero_selector.radiant_heroes
@@ -92,7 +94,9 @@ end
 ---@param from_player_id integer
 ---@param to_player_id integer
 function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_player_id)
+    ---@type integer
     for player_id = from_player_id, to_player_id do
+        ---@type integer
         local hero_name_index = player_id + 1
         if player_id > 4 then
             hero_name_index = player_id - 4

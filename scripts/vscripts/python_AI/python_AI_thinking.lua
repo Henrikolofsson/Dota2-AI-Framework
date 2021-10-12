@@ -1,7 +1,10 @@
+-- Python_AI_thinking
 local Python_AI_thinking = {}
 
 
 
+---@param hero table
+---@return number
 function Python_AI_thinking:OnThink(hero)
     -- pseudo
     -- local team_of_hero = hero:GetTeam()
