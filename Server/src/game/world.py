@@ -57,6 +57,7 @@ class World:
             new_hero: IHero = cast(IHero, entity_data)
             if new_hero["team"] == 2: # ugly nested if, need better semantics: type = "Hero" & type = "PlayerHero"
                 new_entity = PlayerHero(entity_id)
+                self._player_heroes.append(new_entity)
             else:
                 new_entity = Hero(entity_id)
         
