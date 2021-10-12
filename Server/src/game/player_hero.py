@@ -35,7 +35,7 @@ class PlayerHero(Hero):
 
     def attack(self, target):
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "ATTACK",
                 "target": target
             }
@@ -43,7 +43,7 @@ class PlayerHero(Hero):
 
     def move(self, x, y, z):
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "MOVE",
                 "x": x,
                 "y": y,
@@ -54,7 +54,7 @@ class PlayerHero(Hero):
     def cast(self, ability, target=-1, position=[-1, -1, -1]):
         x, y, z = position
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST",
                 "ability": ability,
                 "target": target,
@@ -65,15 +65,15 @@ class PlayerHero(Hero):
         }
 
     def buy(self, item):
-        self.command = {self.getName(): {"command": "BUY", "item": item}}
+        self.command = {self.get_name(): {"command": "BUY", "item": item}}
 
     def sell(self, slot):
-        self.command = {self.getName(): {"command": "SELL", "slot": slot}}
+        self.command = {self.get_name(): {"command": "SELL", "slot": slot}}
 
     def use_item(self, slot, target=-1, position=[-1, -1, -1]):
         x, y, z = position
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "USE_ITEM",
                 "slot": slot,
                 "target": target,
@@ -85,18 +85,18 @@ class PlayerHero(Hero):
 
     def level_up(self, abilityIndex):
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "LEVELUP",
                 "abilityIndex": abilityIndex
             }
         }
 
     def noop(self):
-        self.command = {self.getName(): {"command": "NOOP"}}
+        self.command = {self.get_name(): {"command": "NOOP"}}
 
     def cast_toggle(self, abilityIndex):
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST_ABILITY_TOGGLE",
                 "ability": abilityIndex,
             }
@@ -104,7 +104,7 @@ class PlayerHero(Hero):
 
     def cast_no_target(self, abilityIndex):
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST_ABILITY_NO_TARGET",
                 "ability": abilityIndex,
             }
@@ -113,7 +113,7 @@ class PlayerHero(Hero):
     def cast_target_point(self, abilityIndex, position):
         x, y, z = position
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST_ABILITY_NO_TARGET",
                 "ability": abilityIndex,
                 "x": x,
@@ -125,7 +125,7 @@ class PlayerHero(Hero):
     def cast_target_area(self, abilityIndex, position):
         x, y, z = position
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_AREA",
                 "ability": abilityIndex,
                 "x": x,
@@ -136,7 +136,7 @@ class PlayerHero(Hero):
 
     def cast_target_unit(self, abilityIndex, target):
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT",
                 "ability": abilityIndex,
                 "target": target
@@ -146,7 +146,7 @@ class PlayerHero(Hero):
     def cast_vector_targeting(self, abilityIndex, position):
         x, y, z = position
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST_ABILITY_VECTOR_TARGETING",
                 "ability": abilityIndex,
                 "x": x,
@@ -157,7 +157,7 @@ class PlayerHero(Hero):
 
     def cast_target_unit_aoe(self, abilityIndex, target):
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT_AOE",
                 "ability": abilityIndex,
                 "target": target
@@ -170,7 +170,7 @@ class PlayerHero(Hero):
                                      position=[-1, -1, -1]):
         x, y, z = position
         self.command = {
-            self.getName(): {
+            self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_COMBO_TARGET_POINT_UNIT",
                 "ability": abilityIndex,
                 "target": target,
