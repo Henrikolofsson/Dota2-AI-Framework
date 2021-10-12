@@ -33,3 +33,7 @@ class Position():
     @z.setter
     def z(self, z: float) -> None:
         self._z = z
+
+
+    def to_list(self) -> list[float]:
+        return [self.x, self.y, self.z]
