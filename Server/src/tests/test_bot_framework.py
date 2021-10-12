@@ -25,3 +25,5 @@ def test_generate_bot_commands_runtime():
     bot_framework = BotFramework(bot_cls)
     bot_framework.update(data)
     bot_framework.generate_bot_commands()
+    bot_framework.generate_bot_commands()
+    bot_framework.receive_bot_commands()
