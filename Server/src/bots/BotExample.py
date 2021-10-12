@@ -1,12 +1,20 @@
 import random
 import os
 import datetime
+from game.Position import Position
+from game.Ability import Ability
+from game.enums.ability_behavior import AbilityBehavior
+from game.PlayerHero import PlayerHero
+from game.World import World
 
 from base_bot import BaseBot
 from game.Building import Building
 
 
 class BotExample(BaseBot):
+
+    world: World
+
     def __init__(self, world):
         self.party = [
             "npc_dota_hero_brewmaster",
@@ -29,26 +37,26 @@ class BotExample(BaseBot):
         print("init")
 
     def initialize(self, heroes):
-        self.top_fallback_point = self.world.find_entity_by_name(
-            "dota_goodguys_tower1_top").getOrigin()
-        self.mid_fallback_point = self.world.find_entity_by_name(
-            "dota_goodguys_tower1_mid").getOrigin()
-        self.bot_fallback_point = self.world.find_entity_by_name(
-            "dota_goodguys_tower1_bot").getOrigin()
+        self.top_fallback_point = self.world.get_unit_by_name(
+            "dota_goodguys_tower1_top").get_position().to_list()
+        self.mid_fallback_point = self.world.get_unit_by_name(
+            "dota_goodguys_tower1_mid").get_position().to_list()
+        self.bot_fallback_point = self.world.get_unit_by_name(
+            "dota_goodguys_tower1_bot").get_position().to_list()
 
         print("initialize")
 
-    def actions(self, hero):
+    def actions(self, hero: PlayerHero):
 
-        print("actions!" + hero.getName())
-        if not hero.isAlive():
+        print("actions!" + hero.get_name())
+        if not hero.is_alive():
             return
 
-        if self.world.gameticks < 5:
+        if self.world.get_game_ticks() < 5:
             hero.move(-6826, -7261, 256)
             return
 
-        if self.world.gameticks == 5:
+        if self.world.get_game_ticks() == 5:
             self.buy_ring_of_regen(hero)
             return
 
@@ -66,13 +74,13 @@ class BotExample(BaseBot):
 
     def decide_lane(self):
         last_reset = (datetime.datetime.now() - self.reset_lane_timer).seconds
-        heroes = self.world._get_player_heroes()
+        heroes = self.world.get_player_heroes()
         lane = None
         lane_deaths = -1
         for hero in heroes:
-            if hero.getDeaths() > lane_deaths:
-                lane_deaths = hero.getDeaths()
-                lane = self.hero_position[hero.getName()]
+            if hero.get_deaths() > lane_deaths:
+                lane_deaths = hero.get_deaths()
+                lane = self.hero_position[hero.get_name()]
 
         if last_reset > 300 and self.hero_position != self.hero_position_original:
             print("Resetting hero lanes")
@@ -83,80 +91,80 @@ class BotExample(BaseBot):
             for hero in self.hero_position:
                 self.hero_position[hero] = lane
 
-    def buy_healing_salve(self, hero):
-        if hero.getGold() > 110:
+    def buy_healing_salve(self, hero: PlayerHero):
+        if hero.get_gold() > 110:
             pass
 
-    def buy_ring_of_regen(self, hero):
+    def buy_ring_of_regen(self, hero: PlayerHero):
         hero.buy("item_ring_of_regen")
 
-    def attack_anything_if_in_range(self, hero):
-        enemies = self.world.get_enemies_in_attack_range(hero)
+    def attack_anything_if_in_range(self, hero: PlayerHero):
+        enemies = self.world.get_enemies_in_attack_range_of(hero)
         if enemies:
             target = random.choice(enemies)
-            hero.attack(self.world.get_id(target))
+            hero.attack(target.get_id())
             return True
         return False
 
-    def attack_building_if_in_range(self, hero):
+    def attack_building_if_in_range(self, hero: PlayerHero):
         if bool(random.getrandbits(1)):
             self.use_ability_on_enemy(hero)
             if hero.command:
                 return True
-        enemies = self.world.get_enemies_in_range(hero, 700)
+        enemies = self.world.get_enemies_in_range_of(hero, 700)
         enemies = [e for e in enemies if isinstance(e, Building)]
         if enemies:
             target = enemies[0]
-            hero.attack(self.world.get_id(target))
+            hero.attack(target.get_id())
             return True
         return False
 
-    def attack_unit_if_in_range(self, hero):
+    def attack_unit_if_in_range(self, hero: PlayerHero):
         if bool(random.getrandbits(1)):
             self.use_ability_on_enemy(hero)
             if hero.command:
                 return True
 
-        enemies = self.world.get_enemies_in_range(hero, 500)
+        enemies = self.world.get_enemies_in_range_of(hero, 500)
         enemies = [e for e in enemies if not isinstance(e, Building)]
         if enemies:
             target = random.choice(enemies)
-            hero.attack(self.world.get_id(target))
+            hero.attack(target.get_id())
             return True
         return False
 
-    def use_ability_on_enemy(self, hero):
-        abilities = []
+    def use_ability_on_enemy(self, hero: PlayerHero):
+        abilities: list[Ability] = []
 
-        for ability in hero.getAbilities().values():
-            if ability.getLevel() < 1:
+        for ability in hero.get_abilities():
+            if ability.get_level() < 1:
                 continue
-            if ability.getAbilityDamageType(
-            ) == ability.DOTA_ABILITY_BEHAVIOR_POINT:
+            if ability.get_ability_damage_type(
+            ) == AbilityBehavior.POINT:
                 continue
-            if ability.getCooldownTimeRemaining() > 0:
+            if ability.get_cooldown_time_remaining() > 0:
                 continue
             abilities.append(ability)
 
         if not abilities:
-            print("No abilities for" + hero.getName())
+            print("No abilities for" + hero.get_name())
             return
 
-        enemies = self.world.get_enemies_in_range(hero, 500)
+        enemies = self.world.get_enemies_in_range_of(hero, 500)
         if not enemies:
             return
 
         ability = random.choice(abilities)
         enemy = random.choice(enemies)
 
-        if (ability.getBehavior()
-                & ability.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) > 0:
-            hero.cast(ability.getAbilityIndex(),
-                      target=self.world.get_id(enemy))
+        if (ability.get_behavior()
+                & AbilityBehavior.UNIT_TARGET) > 0:
+            hero.cast(ability.get_ability_index(),
+                      target=enemy.get_id())
         else:
-            hero.cast(ability.getAbilityIndex(), position=enemy.getOrigin())
+            hero.cast(ability.get_ability_index(), position=enemy.get_position().to_list())
 
-    def push_lane(self, hero, fallback_position):
+    def push_lane(self, hero: PlayerHero, fallback_position):
         hero.fallback_position = fallback_position
 
         if not hasattr(hero, "in_lane"):
@@ -170,13 +178,13 @@ class BotExample(BaseBot):
 
         if not hero.in_lane:
             hero.move(*hero.fallback_position)
-            if self.world.get_distance_pos(hero.getOrigin(),
-                                           hero.fallback_position) < 300:
+            if self.world.get_distance_between_positions(hero.get_position(),
+                                           Position(*hero.fallback_position)) < 300:
                 hero.in_lane = True
             return
 
         for creep in hero.follow_creeps:
-            if self.world.get_id(creep) and creep.isAlive():
+            if creep.get_id() and creep.is_alive():
                 continue
             hero.follow_creeps.remove(creep)
 
@@ -196,22 +204,22 @@ class BotExample(BaseBot):
             else:
                 hero.move(*hero.fallback_position)
 
-    def flee_if_tower_aggro(self, hero, safepoint):
-        if hero.getHasTowerAggro():
+    def flee_if_tower_aggro(self, hero: PlayerHero, safepoint):
+        if hero.get_has_tower_aggro():
             hero.move(*safepoint)
             return True
         return False
 
-    def close_friendly_creeps(self, hero):
-        creeps = self.world.get_friendly_creeps(hero)
+    def close_friendly_creeps(self, hero: PlayerHero):
+        creeps = self.world.get_allied_creeps_of(hero)
         close_creeps = []
         for c in creeps:
-            if self.world.get_distance_units(c, hero) < 1000:
+            if self.world.get_distance_between_units(c, hero) < 1000:
                 close_creeps.append(c)
         return close_creeps
 
-    def get_hero_fallback_point(self, hero):
-        hero_name = hero.getName()
+    def get_hero_fallback_point(self, hero: PlayerHero):
+        hero_name = hero.get_name()
         fallback_point = None
         if self.hero_position[hero_name] == "TOP":
             fallback_point = self.top_fallback_point
