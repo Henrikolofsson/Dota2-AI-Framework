@@ -17,6 +17,13 @@
         "CreateHTTPRequestScriptVM",
         "DOTA_TEAM_BADGUYS",
         "Entities",
-        "DeepPrintTable"
+        "DeepPrintTable",
+        "FindUnitsInRadius",
+        "FIND_UNITS_EVERYWHERE",
+        "DOTA_UNIT_TARGET_TEAM_BOTH",
+        "DOTA_UNIT_TARGET_ALL",
+        "DOTA_UNIT_TARGET_FLAG_FOW_VISIBLE",
+        "FIND_ANY_ORDER",
+        "DOTA_UNIT_TARGET_FLAG_INVULNERABLE"
     ]
 }
