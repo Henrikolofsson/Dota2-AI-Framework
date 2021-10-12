@@ -13,3 +13,15 @@ def test_update_game_state_runtime():
     bot_cls = getattr(module, 'BotExample')
     bot_framework = BotFramework(bot_cls)
     bot_framework.update(data)
+
+
+def test_generate_bot_commands_runtime():
+    """Tests if bot commands can be generated without runtime errors."""
+    with open('tests/game_data.json') as f:
+        data = json.loads(f.read())
+
+    module = import_module('bots.BotExample')
+    bot_cls = getattr(module, 'BotExample')
+    bot_framework = BotFramework(bot_cls)
+    bot_framework.update(data)
+    bot_framework.generate_bot_commands()
