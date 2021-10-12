@@ -130,4 +130,4 @@ dmypy.json
 gamedata.txt
 
 # PyCharm
-.idea/*
+.idea/
