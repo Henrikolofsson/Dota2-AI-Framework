@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from game.enums.entity_type import EntityType
-from game.PhysicalEntity import PhysicalEntity
+from game.physical_entity import PhysicalEntity
 
 
 class Tree(PhysicalEntity):

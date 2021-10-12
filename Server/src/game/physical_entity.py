@@ -1,8 +1,8 @@
 from typing import cast
 from abc import ABC, abstractmethod
 from game.enums.entity_type import EntityType
-from game.BaseEntity import BaseEntity
-from game.Position import Position
+from game.base_entity import BaseEntity
+from game.position import Position
 from game.post_data_interfaces.IEntity import IEntity
 from game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 

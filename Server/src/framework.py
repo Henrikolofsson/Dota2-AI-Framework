@@ -4,11 +4,12 @@ import sys
 
 from typing import Any
 
-from BotFramework import BotFramework
+from bot_framework import BotFramework
 from webserver import setup_web_server
+from pathlib import Path
 
-
-settings_filename = '../settings.json'
+settings_directory = Path(__file__).parent.parent
+settings_filename = settings_directory / 'settings.json'
 
 def load_class(path: str, filename: str, class_name: str) -> Any:
     """Loads a class, 'class_name' from 'path/filename'. The function
@@ -27,6 +28,7 @@ def exit_with_error(message: str) -> None:
 
 
 if __name__ == '__main__':
+  
     try:
         with open(settings_filename) as f:
             settings = json.loads(f.read())

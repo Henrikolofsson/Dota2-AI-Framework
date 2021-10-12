@@ -4,7 +4,7 @@ from typing import cast
 from game.enums.entity_type import EntityType
 from game.post_data_interfaces.IAbility import IAbility
 from game.post_data_interfaces.IEntity import IEntity
-from game.BaseEntity import BaseEntity
+from game.base_entity import BaseEntity
 
 
 class Ability(BaseEntity):

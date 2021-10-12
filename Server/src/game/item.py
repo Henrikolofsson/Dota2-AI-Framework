@@ -1,4 +1,4 @@
-from game.BaseEntity import BaseEntity
+from game.base_entity import BaseEntity
 from game.enums.entity_type import EntityType
 from game.post_data_interfaces.IEntity import IEntity
 from game.post_data_interfaces.IItem import IItem

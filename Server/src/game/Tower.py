@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from game.enums.entity_type import EntityType
-from game.Building import Building
+from game.building import Building
 
 
 class Tower(Building):

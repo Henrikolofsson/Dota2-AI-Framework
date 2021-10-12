@@ -3,7 +3,7 @@ import os
 import datetime
 
 from base_bot import BaseBot
-from game.Building import Building
+from game.building import Building
 
 
 class BotExample(BaseBot):

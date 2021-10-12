@@ -2,8 +2,8 @@
 from typing import cast, Union
 from game.enums.entity_type import EntityType
 from game.post_data_interfaces.IEntity import IEntity
-from game.PhysicalEntity import PhysicalEntity
-from game.Position import Position
+from game.physical_entity import PhysicalEntity
+from game.position import Position
 from game.post_data_interfaces.IUnit import IUnit
 
 class Unit(PhysicalEntity):

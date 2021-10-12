@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from game.enums.entity_type import EntityType
-from game.Unit import Unit
+from game.unit import Unit
 
 
 class Building(Unit):

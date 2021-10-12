@@ -3,8 +3,8 @@ from typing import cast
 from game.enums.entity_type import EntityType
 from game.post_data_interfaces.IEntity import IEntity
 from game.post_data_interfaces.IHero import IHero
-from game.Unit import Unit
-from game.Ability import Ability
+from game.unit import Unit
+from game.ability import Ability
 
 
 class Hero(Unit):

@@ -1,7 +1,7 @@
 import json
 
 from importlib import import_module
-from src.BotFramework import BotFramework
+from src.bot_framework import BotFramework
 
 
 def test_update_game_state_runtime():

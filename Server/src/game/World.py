@@ -5,15 +5,15 @@ from typing import Union, cast
 from game.post_data_interfaces.IHero import IHero
 from game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 
-from game.BaseEntity import BaseEntity
-from game.PhysicalEntity import PhysicalEntity
-from game.Position import Position
-from game.Unit import Unit
-from game.Tower import Tower
-from game.Building import Building
-from game.Hero import Hero
-from game.PlayerHero import PlayerHero
-from game.Tree import Tree
+from game.base_entity import BaseEntity
+from game.physical_entity import PhysicalEntity
+from game.position import Position
+from game.unit import Unit
+from game.tower import Tower
+from game.building import Building
+from game.hero import Hero
+from game.player_hero import PlayerHero
+from game.tree import Tree
 
 
 class World:
