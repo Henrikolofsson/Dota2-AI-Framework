@@ -37,4 +37,10 @@ function Utilities:Insert_range(original_table, table_to_insert)
     end
 end
 
+---@param any any
+---@return boolean
+function Utilities:To_bool(any)
+    return not not any
+end
+
 return Utilities

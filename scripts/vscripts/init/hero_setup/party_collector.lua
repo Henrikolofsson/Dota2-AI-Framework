@@ -12,7 +12,7 @@ function Party_collector:Send_request(request, response_callback)
     request:Send(
         ---@param picked_hero_names_data table
         function(picked_hero_names_data)
-            local picked_hero_names = Party_collector:Decode_hero_names_response(picked_hero_names_data)
+            local picked_hero_names = self:Decode_hero_names_response(picked_hero_names_data)
             response_callback(picked_hero_names)
         end
     )
@@ -22,14 +22,14 @@ end
 function Party_collector:Request_radiant_party(response_callback)
     ---@type table
     local request = CreateHTTPRequestScriptVM("GET", "http://localhost:8080/api/party")
-    Party_collector:Send_request(request, response_callback)
+    self:Send_request(request, response_callback)
 end
 
 ---@param response_callback function
 function Party_collector:Request_dire_party(response_callback)
     ---@type table
     local request = CreateHTTPRequestScriptVM("GET", "http://localhost:8080/api/enemy_party")
-    Party_collector:Send_request(request, response_callback)
+    self:Send_request(request, response_callback)
 end
 
 return Party_collector

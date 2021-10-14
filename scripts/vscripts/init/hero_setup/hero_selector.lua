@@ -6,7 +6,7 @@ local Utilities = require "utilities.utilities"
 -- constants
 local FULL_TEAM_COUNT = 5
 local PLAYER_ADMIN_ID = 0
-local ONE_SECOND_DELAY = 1.0
+local ONE_SECOND_DELAY = 1.
 
 
 
@@ -18,9 +18,9 @@ Hero_selector.dire_heroes = {}
 ---@return boolean
 function Hero_selector:All_players_have_chosen_hero()
     if Settings.SHOULD_DIRE_BE_NATIVE_BOTS then
-        return Utilities:Get_table_length(Hero_selector.radiant_heroes) == FULL_TEAM_COUNT
+        return Utilities:Get_table_length(self.radiant_heroes) == FULL_TEAM_COUNT
     end
-    return Utilities:Get_table_length(Hero_selector.radiant_heroes) == FULL_TEAM_COUNT and Utilities:Get_table_length(Hero_selector.dire_heroes) == FULL_TEAM_COUNT
+    return Utilities:Get_table_length(self.radiant_heroes) == FULL_TEAM_COUNT and Utilities:Get_table_length(self.dire_heroes) == FULL_TEAM_COUNT
 end
 
 ---@param player_id integer
@@ -45,9 +45,9 @@ end
 ---@return table
 function Hero_selector:Get_table_to_append_to(team)
     if team == DOTA_TEAM_GOODGUYS then
-        return Hero_selector.radiant_heroes
+        return self.radiant_heroes
     end
-    return Hero_selector.dire_heroes
+    return self.dire_heroes
 end
 
 ---@param player_id integer
@@ -55,11 +55,11 @@ end
 function Hero_selector:Append_hero_to_team_table(player_id, team)
     Timers:CreateTimer(
         function()
-            if Hero_selector:Player_has_not_selected_hero(player_id) then
+            if self:Player_has_not_selected_hero(player_id) then
                 return ONE_SECOND_DELAY
             end
 
-            local table_to_append_to = Hero_selector:Get_table_to_append_to(team)
+            local table_to_append_to = self:Get_table_to_append_to(team)
 
             table.insert(
                 table_to_append_to,
@@ -84,8 +84,8 @@ end
 
 ---@param player_id integer
 function Hero_selector:Clear_player_slot_if_fake_client(player_id)
-    if Hero_selector:Is_not_admin(player_id) then
-        Hero_selector:Kick_player(player_id)
+    if self:Is_not_admin(player_id) then
+        self:Kick_player(player_id)
     end
 end
 
@@ -96,16 +96,15 @@ end
 function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_player_id)
     ---@type integer
     for player_id = from_player_id, to_player_id do
-        ---@type integer
         local hero_name_index = player_id + 1
         if player_id > 4 then
             hero_name_index = player_id - 4
         end
 
-        Hero_selector:Put_player_on_team(player_id, team)
-        Hero_selector:Select_hero_for_player(player_id, picked_hero_names[hero_name_index])
-        Hero_selector:Append_hero_to_team_table(player_id, team)
-        Hero_selector:Clear_player_slot_if_fake_client(player_id)
+        self:Put_player_on_team(player_id, team)
+        self:Select_hero_for_player(player_id, picked_hero_names[hero_name_index])
+        self:Append_hero_to_team_table(player_id, team)
+        self:Clear_player_slot_if_fake_client(player_id)
     end
 end
 
