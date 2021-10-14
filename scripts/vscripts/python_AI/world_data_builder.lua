@@ -41,7 +41,7 @@ function World_data_builder:Insert_base_unit_data(unit_data, unit_entity)
 end
 
 ---@param hero_entity table
----@return table
+---@return table items
 function World_data_builder:Get_items_data(hero_entity)
     local items = {}
     for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_6, 1 do
@@ -79,7 +79,7 @@ function World_data_builder:Get_hero_ability_count(hero_entity)
 end
 
 ---@param hero_entity table
----@return table
+---@return table abilities
 function World_data_builder:Get_hero_abilities(hero_entity)
     local abilities = {}
     local ability_count = self:Get_hero_ability_count(hero_entity)
@@ -129,7 +129,7 @@ function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
 end
 
 ---@param unit_entity table
----@return table
+---@return table unit_data
 function World_data_builder:Get_unit_data(unit_entity)
     local unit_data = {}
     self:Insert_base_unit_data(unit_data, unit_entity)
@@ -151,7 +151,7 @@ function World_data_builder:Get_unit_data(unit_entity)
 end
 
 ---@param tree_entity table
----@return table
+---@return table tree_data
 function World_data_builder:Get_tree_data(tree_entity)
     local tree_data = {}
     tree_data.origin = Utilities:Vector_to_array(tree_entity:GetOrigin())
@@ -169,12 +169,12 @@ function World_data_builder:Insert_trees()
     end
 end
 
----@param args table
----@return table
-function World_data_builder:Get_all_units(args)
+---@param flags table should_get_invulnerable: ```boolean```
+---@return table all_units
+function World_data_builder:Get_all_units(flags)
     local invulnerable_flag = 0
 
-    if args.should_get_invulnerable then
+    if flags.should_get_invulnerable then
         invulnerable_flag = DOTA_UNIT_TARGET_FLAG_INVULNERABLE
     end
 
@@ -202,7 +202,7 @@ function World_data_builder:Insert_all_units()
 end
 
 ---@param hero_entity table
----@return table
+---@return table entities
 function World_data_builder:Get_all_entities(hero_entity)
     self.requesting_hero = hero_entity
     self.requesting_team = hero_entity:GetTeam()
