@@ -49,6 +49,7 @@ if __name__ == '__main__':
         dire_bot_framework = BotFramework(dire_bot, DIRE_TEAM)
         webserver = setup_web_server(settings_filename, radiant_bot_framework, dire_bot_framework)
         webserver.run(server='waitress', host="localhost", port=8080, debug=False, quiet=False)
+        webserver.close()
     except FileNotFoundError as fe:
         exit_with_error(f"Couldn't open {settings_filename}.")
     except json.decoder.JSONDecodeError:

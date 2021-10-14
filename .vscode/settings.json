@@ -24,6 +24,8 @@
         "DOTA_UNIT_TARGET_ALL",
         "DOTA_UNIT_TARGET_FLAG_FOW_VISIBLE",
         "FIND_ANY_ORDER",
-        "DOTA_UNIT_TARGET_FLAG_INVULNERABLE"
+        "DOTA_UNIT_TARGET_FLAG_INVULNERABLE",
+        "DOTA_ITEM_SLOT_6",
+        "IsLocationVisible"
     ]
 }

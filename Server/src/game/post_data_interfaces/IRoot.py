@@ -1,7 +1,5 @@
 from typing import TypedDict
-from game.post_data_interfaces.IHero import IHero
-from game.post_data_interfaces.IWorld import IWorld
+from game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 
 class IRoot(TypedDict):
-    world: IWorld
-    heroes: list[IHero]
+    entities: dict[str, IPhysicalEntity]

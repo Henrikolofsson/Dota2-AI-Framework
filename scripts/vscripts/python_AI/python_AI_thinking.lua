@@ -1,76 +1,57 @@
+-- imports
+local World_data_builder = require "python_AI.world_data_builder"
+local Update_handler = require "python_AI.update_handler"
+
+
+
 -- Python_AI_thinking
 local Python_AI_thinking = {}
 
 local printed = false
 
----@param hero table
+---@param commands table
+function Python_AI_thinking.On_update(heroes, commands)
+    if not commands then
+        return
+    end
+    for _index, hero in ipairs(heroes) do
+        for _index, command in ipairs(commands) do
+            for strhero, cmd in pairs(command) do
+                if hero:GetName() == strhero then
+                    -- print("Commands for " .. strhero)
+                    -- DeepPrintTable(cmd)
+                end
+            end
+        end
+    end
+end
+
+---@param heroes table
 ---@return number
-function Python_AI_thinking:OnThink(hero)
-    -- pseudo
-    -- local team_of_hero = hero:GetTeam()
-    -- local allEntities = {}
-    -- loopa igenom alla entiteter
-        -- if entity == hero
-        --     continue
-        -- if entity:GetClassName() == "building" or entity:GetClassName() == "unit" or entity:GetClassName() == "hero" or entity:GetClassName() == "tree"
-        --     if entity:IsVisible(team_of_hero)
-        --         allEntities.push(entity)
-        -- end
-    -- anropa python api: "/update" med allEntities
+function Python_AI_thinking:On_think(heroes)
+    local all_entities = World_data_builder:Get_all_entities(heroes[1])
 
-    if not printed and hero:GetTeam() == DOTA_TEAM_BADGUYS then
+    if not printed and heroes[1]:GetTeam() == DOTA_TEAM_GOODGUYS then
         printed = true
-        -- local towers = Entities:FindAllByClassname("npc_dota_tower")
-        -- for _index, tower in ipairs(towers) do
-        --     if tower:GetName()
-        -- end
         Timers:CreateTimer({
-            endTime = 40.0,
+            endTime = 5.0,
             callback = function()
-                local all_units_vulnerable = FindUnitsInRadius(
-                    hero:GetTeamNumber(),
-                    hero:GetOrigin(),
-                    nil,
-                    FIND_UNITS_EVERYWHERE,
-                    DOTA_UNIT_TARGET_TEAM_BOTH,
-                    DOTA_UNIT_TARGET_ALL,
-                    DOTA_UNIT_TARGET_FLAG_FOW_VISIBLE,
-                    FIND_ANY_ORDER,
-                    true
-                )
-
-                local all_units_invulnerable = FindUnitsInRadius(
-                    hero:GetTeamNumber(),
-                    hero:GetOrigin(),
-                    nil,
-                    FIND_UNITS_EVERYWHERE,
-                    DOTA_UNIT_TARGET_TEAM_BOTH,
-                    DOTA_UNIT_TARGET_ALL,
-                    DOTA_UNIT_TARGET_FLAG_INVULNERABLE +
-                    DOTA_UNIT_TARGET_FLAG_FOW_VISIBLE,
-                    FIND_ANY_ORDER,
-                    true
-                )
-
-                -- local visible_units = {}
-                -- for _index, unit in ipairs(all_units) do
-                --     if hero:CanEntityBeSeenByMyTeam(unit) then
-                --         table.insert(visible_units, unit)
-                --     end
-                -- end
-
-                print("Can be seen by" .. hero:GetName() .. ":")
-                for _index, visible_unit in ipairs(all_units_vulnerable) do
-                    print("--- " .. visible_unit:GetName())
+                local tree_count = 0
+                print("Can be seen by" .. heroes[1]:GetName() .. ":")
+                for entindex, entity in pairs(all_entities) do
+                    if entity.type == "Tree" then
+                        tree_count = tree_count + 1
+                    else
+                        print("type:")
+                        print("--- " .. entity.type)
+                    end
                 end
-                for _index, visible_unit in ipairs(all_units_invulnerable) do
-                    print("--- " .. visible_unit:GetName())
-                end
+                print("number of trees: " .. tostring(tree_count))
             end
         })
     end
 
-    return 0.33
+    Update_handler:Update(all_entities, heroes, Python_AI_thinking.On_update)
 end
 
 

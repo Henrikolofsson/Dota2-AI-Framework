@@ -23,4 +23,18 @@ function Utilities:Get_table_length(table_to_count)
     return count
 end
 
+---@param vector table
+---@return table
+function Utilities:Vector_to_array(vector)
+    return {vector.x, vector.y, vector.z}
+end
+
+---@param original_table table
+---@param table_to_insert table
+function Utilities:Insert_range(original_table, table_to_insert)
+    for _index, value in ipairs(table_to_insert) do
+        table.insert(original_table, value)
+    end
+end
+
 return Utilities

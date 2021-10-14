@@ -31,9 +31,9 @@ class World:
     def get_game_ticks(self) -> int:
         return self._game_ticks
 
-    def update(self, world: dict[str, IPhysicalEntity]) -> None:
+    def update(self, entities: dict[str, IPhysicalEntity]) -> None:
         self._game_ticks += 1
-        self._update_entities(world)
+        self._update_entities(entities)
 
     def _update_entities(self, new_entities: dict[str, IPhysicalEntity]) -> None:
         for entity_id, entity_data in new_entities.items():

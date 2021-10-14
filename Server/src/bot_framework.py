@@ -18,7 +18,7 @@ class BotFramework:
         return self.agent.party
 
     def update(self, data: IRoot) -> None:
-        self.world.update(data["world"]["entities"])
+        self.world.update(data["entities"])
 
     def generate_bot_commands(self) -> None:
         if self.initialized:
