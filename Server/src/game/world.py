@@ -18,9 +18,14 @@ from game.tree import Tree
 
 class World:
 
-    _entities: list[PhysicalEntity] = []
-    _game_ticks: int = 0
-    _player_heroes: list[PlayerHero] = []
+    _game_ticks: int
+    _entities: list[PhysicalEntity]
+    _player_heroes: list[PlayerHero]
+
+    def __init__(self) -> None:
+        self._game_ticks = 0
+        self._entities = []
+        self._player_heroes = []
 
     def get_game_ticks(self) -> int:
         return self._game_ticks
