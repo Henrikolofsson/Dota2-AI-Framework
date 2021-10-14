@@ -1,9 +1,9 @@
 {
   "base_dir_bots": "bots/",
-  "radiant_bot_filename": "BotExample.py",
-  "radiant_bot_class_name": "BotExample",
-  "dire_bot_filename": "BotExample.py",
-  "dire_bot_class_name": "BotExample",
+  "radiant_bot_filename": "BotExampleRadiant.py",
+  "radiant_bot_class_name": "BotExampleRadiant",
+  "dire_bot_filename": "BotExampleDire.py",
+  "dire_bot_class_name": "BotExampleDire",
   "native_bots_difficulty": "easy",
   "should_have_pre_game_delay": false,
   "should_dire_be_native_bots": false,

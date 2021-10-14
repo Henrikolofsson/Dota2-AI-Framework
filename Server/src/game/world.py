@@ -22,7 +22,8 @@ class World:
     _entities: list[PhysicalEntity]
     _player_heroes: list[PlayerHero]
 
-    def __init__(self) -> None:
+    def __init__(self, team: int) -> None:
+        self._team = team
         self._game_ticks = 0
         self._entities = []
         self._player_heroes = []
@@ -60,7 +61,7 @@ class World:
 
         if entity_data["type"] == "Hero":
             new_hero: IHero = cast(IHero, entity_data)
-            if new_hero["team"] == 2: # ugly nested if, need better semantics: type = "Hero" & type = "PlayerHero"
+            if new_hero["team"] == self._team: # ugly nested if, need better semantics: type = "Hero" & type = "PlayerHero"
                 new_entity = PlayerHero(entity_id)
                 self._player_heroes.append(new_entity)
             else:

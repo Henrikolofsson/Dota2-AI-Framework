@@ -8,6 +8,8 @@ from bot_framework import BotFramework
 from webserver import setup_web_server
 from pathlib import Path
 
+RADIANT_TEAM = 2
+DIRE_TEAM = 3
 settings_directory = Path(__file__).parent.parent
 settings_filename = settings_directory / 'settings.json'
 
@@ -43,8 +45,8 @@ if __name__ == '__main__':
         radiant_bot = load_class(base_dir, radiant_bot_filename, radiant_bot_class_name)
         dire_bot = load_class(base_dir, dire_bot_filename, dire_bot_class_name)
 
-        radiant_bot_framework = BotFramework(radiant_bot)
-        dire_bot_framework = BotFramework(dire_bot)
+        radiant_bot_framework = BotFramework(radiant_bot, RADIANT_TEAM)
+        dire_bot_framework = BotFramework(dire_bot, DIRE_TEAM)
         webserver = setup_web_server(settings_filename, radiant_bot_framework, dire_bot_framework)
         webserver.run(host="localhost", port=8080, debug=False, quiet=False)
     except FileNotFoundError as fe:

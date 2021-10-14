@@ -9,8 +9,8 @@ class BotFramework:
     agent: Any
     initialized: bool
 
-    def __init__(self, BotClass: type) -> None:
-        self.world = World()
+    def __init__(self, BotClass: type, team: int) -> None:
+        self.world = World(team)
         self.agent = BotClass(self.world)
         self.initialized = False
 

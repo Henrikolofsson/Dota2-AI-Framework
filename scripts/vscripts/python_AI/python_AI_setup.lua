@@ -21,7 +21,7 @@ function Python_AI_setup:Set_context_think_for_hero(hero)
 end
 
 ---@param heroes table
-function Python_AI_setup:Set_context_think_for_heroes(heroes)
+function Python_AI_setup:Set_context_think_for_heroes(heroes, route)
     Timers:CreateTimer(
         function()
 
@@ -29,13 +29,19 @@ function Python_AI_setup:Set_context_think_for_heroes(heroes)
 
             local body = package.loaded["game/dkjson"].encode({["world"] = world})
         
-            local request = CreateHTTPRequestScriptVM("POST", "http://localhost:8080/api/update")
+            local request = CreateHTTPRequestScriptVM("POST", "http://localhost:8080/api/" .. route)
             request:SetHTTPRequestHeaderValue("Accept", "application/json")
             request:SetHTTPRequestHeaderValue("X-Jersey-Tracing-Threshold", "VERBOSE")
             request:SetHTTPRequestRawPostBody("application/json", body)
             request:Send(
                 function(result)
-                    
+                    local actions = package.loaded["game/dkjson"].decode(result["Body"])
+                    if actions then
+                        for strhero, cmd in pairs(actions) do
+                            print("Commands for " .. strhero)
+                            DeepPrintTable(cmd)
+                        end
+                    end
                 end
             )
 
@@ -47,8 +53,8 @@ end
 ---@param radiant_heroes table
 ---@param dire_heroes table
 function Python_AI_setup:Initialize_bot_thinking(radiant_heroes, dire_heroes)
-    Python_AI_setup:Set_context_think_for_heroes(radiant_heroes)
-    Python_AI_setup:Set_context_think_for_heroes(dire_heroes)
+    Python_AI_setup:Set_context_think_for_heroes(radiant_heroes, "radiant_update")
+    Python_AI_setup:Set_context_think_for_heroes(dire_heroes, "dire_update")
 end
 
 

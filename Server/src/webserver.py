@@ -13,13 +13,7 @@ def setup_web_server(settings_filename, radiant_bot_framework, dire_bot_framewor
 
     @app.get("/api/enemy_party")
     def party():
-        return json.dumps([
-            "npc_dota_hero_bane",
-            "npc_dota_hero_batrider",
-            "npc_dota_hero_dazzle",
-            "npc_dota_hero_wisp",
-            "npc_dota_hero_lich",
-        ])
+        return json.dumps(dire_bot_framework.get_party())
 
     @app.get("/api/settings")
     def settings():
@@ -59,6 +53,6 @@ def update_game_state(bot_framework):
     bot_framework.update(parsed_json)
     bot_framework.generate_bot_commands()
     commands = bot_framework.receive_bot_commands()
-    return commands
+    return json.dumps(commands)
 
 
