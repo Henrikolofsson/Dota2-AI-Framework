@@ -70,6 +70,7 @@ end
 
 function Hero_setup_controller:Acquire_selected_heroes()
     Timers:CreateTimer(
+        ---@return number
         function()
             if not Hero_selector:All_players_have_chosen_hero() then
                 return ONE_SECOND_DELAY

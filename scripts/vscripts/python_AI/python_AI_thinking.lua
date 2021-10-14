@@ -9,6 +9,7 @@ local Python_AI_thinking = {}
 
 local printed = false
 
+---@param heroes table
 ---@param commands table
 function Python_AI_thinking.On_update(heroes, commands)
     if not commands then
@@ -31,6 +32,12 @@ end
 function Python_AI_thinking:On_think(heroes)
     local all_entities = World_data_builder:Get_all_entities(heroes[1])
 
+    if heroes[1]:GetTeam() == DOTA_TEAM_GOODGUYS then
+        print(
+            heroes[1]:GetName() .. " has tower aggro: " .. tostring(all_entities[heroes[1]:entindex()].hasTowerAggro)
+        )
+    end
+
     if not printed and heroes[1]:GetTeam() == DOTA_TEAM_GOODGUYS then
         printed = true
         Timers:CreateTimer({
@@ -52,7 +59,7 @@ function Python_AI_thinking:On_think(heroes)
         })
     end
 
-    Update_handler:Update(all_entities, heroes, Python_AI_thinking.On_update)
+    Update_handler:Update(all_entities, heroes, self.On_update)
 end
 
 

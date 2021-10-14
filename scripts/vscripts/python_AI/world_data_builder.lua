@@ -5,11 +5,8 @@ local Utilities = require "utilities.utilities"
 
 -- World_data_builder
 local World_data_builder = {}
----@type table
 World_data_builder.entities = nil
----@type table
 World_data_builder.all_units = nil
----@type table
 World_data_builder.requesting_hero = nil
 ---@type integer
 World_data_builder.requesting_team = nil
@@ -65,8 +62,9 @@ end
 function World_data_builder:Has_tower_aggro(hero_entity)
     for _index, unit in ipairs(self.all_units) do
         if unit:IsTower() then
-            local aggrohandle = unit:GetAggroTarget()
-            if aggrohandle ~= nil and aggrohandle == hero_entity then
+            ---@type table
+            local aggro_target = unit:GetAggroTarget()
+            if aggro_target == hero_entity then
                 return true
             end
         end
@@ -171,12 +169,12 @@ function World_data_builder:Insert_trees()
     end
 end
 
----@param should_get_invulnerable boolean
+---@param args table
 ---@return table
-function World_data_builder:Get_all_units(should_get_invulnerable)
+function World_data_builder:Get_all_units(args)
     local invulnerable_flag = 0
 
-    if should_get_invulnerable then
+    if args.should_get_invulnerable then
         invulnerable_flag = DOTA_UNIT_TARGET_FLAG_INVULNERABLE
     end
 
@@ -195,8 +193,8 @@ function World_data_builder:Get_all_units(should_get_invulnerable)
 end
 
 function World_data_builder:Insert_all_units()
-    self.all_units = self:Get_all_units(false)
-    Utilities:Insert_range(self.all_units, self:Get_all_units(true))
+    self.all_units = self:Get_all_units( { should_get_invulnerable = false } )
+    Utilities:Insert_range(self.all_units, self:Get_all_units( { should_get_invulnerable = true } ))
 
     for _index, unit in ipairs(self.all_units) do
         self.entities[unit:entindex()] = self:Get_unit_data(unit)
