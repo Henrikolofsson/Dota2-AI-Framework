@@ -37,6 +37,21 @@ function Utilities:Insert_range(original_table, table_to_insert)
     end
 end
 
+--- Concat 2 one-dimensional tables.
+---@param list_a table
+---@param list_b table
+---@return table new_list new one-dimensional table with all values from both lists.
+function Utilities:Concat_lists(list_a, list_b)
+    local new_list = {}
+    for _index, value in ipairs(list_a) do
+        table.insert(new_list, value)
+    end
+    for _index, value in ipairs(list_b) do
+        table.insert(new_list, value)
+    end
+    return new_list
+end
+
 ---@param any any
 ---@return boolean
 function Utilities:To_bool(any)
