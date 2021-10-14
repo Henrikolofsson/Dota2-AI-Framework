@@ -5,6 +5,15 @@ local Utilities = require "utilities.utilities"
 
 -- World_data_builder
 local World_data_builder = {}
+---@type table
+World_data_builder.entities = nil
+---@type table
+World_data_builder.all_units = nil
+---@type table
+World_data_builder.requesting_hero = nil
+---@type integer
+World_data_builder.requesting_team = nil
+
 
 ---@param unit_data table
 ---@param unit_entity table
@@ -52,10 +61,9 @@ function World_data_builder:Get_items_data(hero_entity)
 end
 
 ---@param hero_entity table
----@param all_units table
 ---@return boolean
-function World_data_builder:Has_tower_aggro(hero_entity, all_units)
-    for _index, unit in ipairs(all_units) do
+function World_data_builder:Has_tower_aggro(hero_entity)
+    for _index, unit in ipairs(self.all_units) do
         if unit:IsTower() then
             local aggrohandle = unit:GetAggroTarget()
             if aggrohandle ~= nil and aggrohandle == hero_entity then
@@ -76,7 +84,7 @@ end
 ---@return table
 function World_data_builder:Get_hero_abilities(hero_entity)
     local abilities = {}
-    local ability_count = World_data_builder:Get_hero_ability_count(hero_entity)
+    local ability_count = self:Get_hero_ability_count(hero_entity)
 
     for index = 0, ability_count, 1 do
         local ability_entity = hero_entity:GetAbilityByIndex(index)
@@ -106,13 +114,11 @@ end
 
 ---@param hero_data table
 ---@param hero_entity table
----@param requesting_team integer
----@param all_units table
-function World_data_builder:Insert_base_hero_data(hero_data, hero_entity, requesting_team, all_units)
+function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.type = "Hero"
-    hero_data.hasTowerAggro = World_data_builder:Has_tower_aggro(hero_entity, all_units)
+    hero_data.hasTowerAggro = self:Has_tower_aggro(hero_entity)
     hero_data.deaths = hero_entity:GetDeaths()
-    hero_data.items = World_data_builder:Get_items_data(hero_entity)
+    hero_data.items = self:Get_items_data(hero_entity)
 
     -- should not be seen by enemy team BEGIN
     hero_data.denies = hero_entity:GetDenies()
@@ -120,20 +126,18 @@ function World_data_builder:Insert_base_hero_data(hero_data, hero_entity, reques
     hero_data.gold = hero_entity:GetGold()
     hero_data.abilityPoints = hero_entity:GetAbilityPoints()
 
-    hero_data.abilities = World_data_builder:Get_hero_abilities(hero_entity)
+    hero_data.abilities = self:Get_hero_abilities(hero_entity)
     -- should not be seen by enemy team END
 end
 
 ---@param unit_entity table
----@param requesting_team integer
----@param all_units table
 ---@return table
-function World_data_builder:Get_unit_data(unit_entity, requesting_team, all_units)
+function World_data_builder:Get_unit_data(unit_entity)
     local unit_data = {}
-    World_data_builder:Insert_base_unit_data(unit_data, unit_entity)
+    self:Insert_base_unit_data(unit_data, unit_entity)
 
     if unit_entity:IsHero() then
-        World_data_builder:Insert_base_hero_data(unit_data, unit_entity, requesting_team, all_units)
+        self:Insert_base_hero_data(unit_data, unit_entity)
 
     elseif unit_entity:IsBuilding() then
         if unit_entity:IsTower() then
@@ -157,20 +161,19 @@ function World_data_builder:Get_tree_data(tree_entity)
     return tree_data
 end
 
-function World_data_builder:Insert_trees(entities, hero)
+function World_data_builder:Insert_trees()
     local tree_entity = Entities:FindByClassname(nil, "ent_dota_tree")
     while tree_entity ~= nil do
-        if IsLocationVisible(hero:GetTeam(), tree_entity:GetOrigin()) and tree_entity:IsStanding() then
-            entities[tree_entity:entindex()] = World_data_builder:Get_tree_data(tree_entity)
+        if IsLocationVisible(self.requesting_hero:GetTeam(), tree_entity:GetOrigin()) and tree_entity:IsStanding() then
+            self.entities[tree_entity:entindex()] = self:Get_tree_data(tree_entity)
         end
         tree_entity = Entities:FindByClassname(tree_entity, "ent_dota_tree")
     end
 end
 
----@param hero table
 ---@param should_get_invulnerable boolean
 ---@return table
-function World_data_builder:Get_all_units(hero, should_get_invulnerable)
+function World_data_builder:Get_all_units(should_get_invulnerable)
     local invulnerable_flag = 0
 
     if should_get_invulnerable then
@@ -178,8 +181,8 @@ function World_data_builder:Get_all_units(hero, should_get_invulnerable)
     end
 
     return FindUnitsInRadius(
-        hero:GetTeamNumber(),
-        hero:GetOrigin(),
+        self.requesting_hero:GetTeamNumber(),
+        self.requesting_hero:GetOrigin(),
         nil,
         FIND_UNITS_EVERYWHERE,
         DOTA_UNIT_TARGET_TEAM_BOTH,
@@ -191,26 +194,27 @@ function World_data_builder:Get_all_units(hero, should_get_invulnerable)
     )
 end
 
-function World_data_builder:Insert_all_units(entities, hero)
-    local all_units = World_data_builder:Get_all_units(hero, false)
-    Utilities:Insert_range(all_units, World_data_builder:Get_all_units(hero, true))
-    local requesting_team = hero:GetTeam()
+function World_data_builder:Insert_all_units()
+    self.all_units = self:Get_all_units(false)
+    Utilities:Insert_range(self.all_units, self:Get_all_units(true))
 
-    for _index, unit in ipairs(all_units) do
-        entities[unit:entindex()] = World_data_builder:Get_unit_data(unit, requesting_team, all_units)
+    for _index, unit in ipairs(self.all_units) do
+        self.entities[unit:entindex()] = self:Get_unit_data(unit)
     end
 end
 
----@param hero table
+---@param hero_entity table
 ---@return table
-function World_data_builder:Get_all_entities(hero)
-    local entities = {}
+function World_data_builder:Get_all_entities(hero_entity)
+    self.requesting_hero = hero_entity
+    self.requesting_team = hero_entity:GetTeam()
+    self.entities = {}
+    self.all_units = {}
 
-    World_data_builder:Insert_trees(entities, hero)
+    self:Insert_trees()
+    self:Insert_all_units()
 
-    World_data_builder:Insert_all_units(entities, hero)
-
-    return entities
+    return self.entities
 end
 
 return World_data_builder

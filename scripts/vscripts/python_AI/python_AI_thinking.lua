@@ -37,13 +37,14 @@ function Python_AI_thinking:On_think(heroes)
             endTime = 5.0,
             callback = function()
                 local tree_count = 0
-                print("Can be seen by" .. heroes[1]:GetName() .. ":")
-                for entindex, entity in pairs(all_entities) do
+                print("Can be seen by " .. heroes[1]:GetName() .. ":")
+                for entity_index, entity in pairs(all_entities) do
                     if entity.type == "Tree" then
                         tree_count = tree_count + 1
                     else
                         print("type:")
                         print("--- " .. entity.type)
+                        print("------ " .. entity.name)
                     end
                 end
                 print("number of trees: " .. tostring(tree_count))
