@@ -28,8 +28,9 @@ function Update_handler:Update(entities, heroes, on_update_callback)
 
     ---@type table
     local request = CreateHTTPRequestScriptVM("POST", "http://localhost:8080/api/" .. route)
+    -- request:SetHTTPRequestNetworkActivityTimeout(1) -- unclear
+    -- request:SetHTTPRequestAbsoluteTimeoutMS(1000) -- unclear
     request:SetHTTPRequestHeaderValue("Accept", "application/json")
-    request:SetHTTPRequestHeaderValue("X-Jersey-Tracing-Threshold", "VERBOSE")
     request:SetHTTPRequestRawPostBody("application/json", body)
     request:Send(
         ---@param result table
