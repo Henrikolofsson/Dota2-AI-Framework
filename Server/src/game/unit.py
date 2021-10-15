@@ -42,6 +42,10 @@ class Unit(PhysicalEntity):
         self._disarmed = unit_data["disarmed"]
         self._dominated = unit_data["dominated"]
         self._rooted = unit_data["rooted"]
+        self._health = unit_data["health"]
+        self._max_health = unit_data["maxHealth"]
+        self._team = unit_data["team"]
+        self._forward_vector = Position(*unit_data["forwardVector"])
 
     def get_attack_range(self) -> float:
         return self._attack_range

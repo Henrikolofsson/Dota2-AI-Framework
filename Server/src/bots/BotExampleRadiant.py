@@ -158,7 +158,7 @@ class BotExampleRadiant(BaseBot):
         enemy = random.choice(enemies)
 
         if (ability.get_behavior()
-                & AbilityBehavior.UNIT_TARGET) > 0:
+                & AbilityBehavior.UNIT_TARGET.value) > 0:
             hero.cast(ability.get_ability_index(),
                       target=enemy.get_id())
         else:

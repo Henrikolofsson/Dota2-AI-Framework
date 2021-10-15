@@ -41,6 +41,7 @@ class Ability(BaseEntity):
         self._ability_index = ability_data["abilityIndex"]
         self._type = ability_data["type"]
         self._name = ability_data["name"]
+        self._level = ability_data["level"]
 
     def get_ability_damage(self) -> int:
         return self._ability_damage

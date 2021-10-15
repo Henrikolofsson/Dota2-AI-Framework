@@ -1,6 +1,7 @@
 -- imports
 local World_data_builder = require "python_AI.world_data_builder"
 local Update_handler = require "python_AI.update_handler"
+local Command_controller = require "python_AI.commands.command_controller"
 
 
 
@@ -19,8 +20,10 @@ function Python_AI_thinking.On_update(heroes, commands)
         for _index, command in ipairs(commands) do
             for strhero, cmd in pairs(command) do
                 if hero:GetName() == strhero then
-                    -- print("Commands for " .. strhero)
-                    -- DeepPrintTable(cmd)
+                    if cmd.target ~= nil then
+                        cmd.target = tonumber(cmd.target)
+                    end
+                    Command_controller:ParseHeroCommand(hero, cmd)
                 end
             end
         end
