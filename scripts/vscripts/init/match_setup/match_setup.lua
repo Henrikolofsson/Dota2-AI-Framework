@@ -12,13 +12,13 @@ function Match_setup:Remove_all_game_rule_starting_delays()
     GameRules:SetShowcaseTime(1.)
     GameRules:SetStrategyTime(1.)
     GameRules:SetCustomGameSetupTimeout(1.)
-    if Settings.SHOULD_HAVE_PRE_GAME_DELAY then
+    if Settings.should_have_pre_game_delay then
         GameRules:SetPreGameTime(90.)
     end
 end
 
 function Match_setup:Grant_global_vision()
-    if Settings.GRANT_GLOBAL_VISION then
+    if Settings.grant_global_vision then
         SendToServerConsole("dota_all_vision 1")
     else
         SendToServerConsole("dota_all_vision 0")
