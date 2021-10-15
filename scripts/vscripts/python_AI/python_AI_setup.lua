@@ -11,11 +11,14 @@ local Python_AI_setup = {}
 ---@param heroes table
 function Python_AI_setup:Set_context_think_for_heroes(heroes)
     Timers:CreateTimer(
-        ---@return number
-        function()
-            Python_AI_thinking:On_think(heroes)
-            return 0.33
-        end
+        "UpdateForTeam" .. tostring(heroes[1]:GetTeam()),
+        {
+            ---@return number
+            callback = function()
+                Python_AI_thinking:On_think(heroes)
+                return 0.33
+            end
+        }
     )
 end
 

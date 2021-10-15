@@ -4,7 +4,7 @@ local Native_bot_setup = {}
 function Native_bot_setup:Create_bots(picked_hero_names)
     local lanes = {"mid", "top", "bot", "top", "bot"}
     for i = 1, 5 do
-        Tutorial:AddBot(picked_hero_names[i], lanes[i], Settings.NATIVE_BOTS_DIFFICULTY, false)
+        Tutorial:AddBot(picked_hero_names[i], lanes[i], Settings.native_bots_difficulty, false)
     end
 end
 

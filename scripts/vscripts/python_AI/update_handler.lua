@@ -35,6 +35,11 @@ function Update_handler:Update(entities, heroes, on_update_callback)
     request:Send(
         ---@param result table
         function(result)
+            if result["StatusCode"] == 406 then
+                print("Request update was Not Acceptable! Addon restart needed.")
+                Timers:RemoveTimer("UpdateForTeam" .. tostring(heroes[1]:GetTeam()))
+                return
+            end
             ---@type table
             local commands = package.loaded["game/dkjson"].decode(result["Body"])
             on_update_callback(heroes, commands)

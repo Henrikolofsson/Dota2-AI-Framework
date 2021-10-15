@@ -1,10 +1,14 @@
 Settings = {
     ---@type boolean
-    SHOULD_HAVE_PRE_GAME_DELAY = nil,
+    should_have_pre_game_delay = nil,
     ---@type boolean
-    SHOULD_DIRE_BE_NATIVE_BOTS = nil,
+    should_dire_be_native_bots = nil,
     ---@type string
-    NATIVE_BOTS_DIFFICULTY = nil,
+    native_bots_difficulty = nil,
     ---@type boolean
-    GRANT_GLOBAL_VISION = nil
+    grant_global_vision = nil,
+    ---@type table
+    radiant_party_names = nil,
+    ---@type table
+    dire_party_names = nil
 }

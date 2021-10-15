@@ -24,14 +24,21 @@ function Main_controller.Initialize_bot_thinking()
     )
 end
 
-function Main_controller.On_hero_selection_game_state()
-    Match_setup_controller:Populate_game()
+function Main_controller.Select_heroes_after_populate_game()
     Hero_setup_controller:Select_heroes()
     Timers:CreateTimer(Main_controller.Initialize_bot_thinking)
 end
 
+function Main_controller.On_hero_selection_game_state()
+    Match_setup_controller:Populate_game()
+    Timers:CreateTimer({
+        endTime = 1.0,
+        callback = Main_controller.Select_heroes_after_populate_game
+    })
+end
+
 function Main_controller.On_pre_game_state()
-    if not Settings.SHOULD_HAVE_PRE_GAME_DELAY then
+    if not Settings.should_have_pre_game_delay then
         Match_setup_controller:Force_game_start()
     end
 end
@@ -40,7 +47,7 @@ function Main_controller.Run_after_settings()
     Event_controller:Initialize_listeners()
     Match_setup_controller:Initialize_match_setup()
     Event_controller:Add_on_hero_selection_game_state_listener(Main_controller.On_hero_selection_game_state)
-    Event_controller:Add_on_pre_game_state_listener(Main_controller.On_pre_game_state)    
+    Event_controller:Add_on_pre_game_state_listener(Main_controller.On_pre_game_state)
 end
 
 function Main_controller.Run()

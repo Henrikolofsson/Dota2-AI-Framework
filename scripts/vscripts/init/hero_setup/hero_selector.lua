@@ -17,7 +17,7 @@ Hero_selector.dire_heroes = {}
 
 ---@return boolean
 function Hero_selector:All_players_have_chosen_hero()
-    if Settings.SHOULD_DIRE_BE_NATIVE_BOTS then
+    if Settings.should_dire_be_native_bots then
         return Utilities:Get_table_length(self.radiant_heroes) == FULL_TEAM_COUNT
     end
     return Utilities:Get_table_length(self.radiant_heroes) == FULL_TEAM_COUNT and Utilities:Get_table_length(self.dire_heroes) == FULL_TEAM_COUNT
@@ -32,6 +32,7 @@ end
 ---@param player_id integer
 ---@param hero_name string
 function Hero_selector:Select_hero_for_player(player_id, hero_name)
+    print("hero_name" .. tostring(hero_name))
     PlayerResource:GetPlayer(player_id):SetSelectedHero(hero_name)
 end
 
@@ -94,6 +95,7 @@ end
 ---@param from_player_id integer
 ---@param to_player_id integer
 function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_player_id)
+    DeepPrintTable(picked_hero_names)
     ---@type integer
     for player_id = from_player_id, to_player_id do
         local hero_name_index = player_id + 1
