@@ -231,10 +231,10 @@ class BotExampleDire(BaseBot):
 
     def get_closes_creep_group(self, hero):
         creep_group = []
-        friendly_creeps = self.world.get_friendly_creeps(hero)
+        friendly_creeps = self.world.get_allied_creeps_of(hero)
         creeps_by_distance = {}
         for creep in friendly_creeps:
-            distance = self.world.get_distance_units(hero, creep)
+            distance = self.world.get_distance_between_units(hero, creep)
             creeps_by_distance[distance] = creep
 
         if not creeps_by_distance:
@@ -249,7 +249,7 @@ class BotExampleDire(BaseBot):
         for creep in friendly_creeps:
             if creep == closest_creep:
                 continue
-            distance = self.world.get_distance_units(closest_creep, creep)
+            distance = self.world.get_distance_between_units(closest_creep, creep)
             creeps_by_distance[distance] = creep
 
         creep_group.append(closest_creep)
