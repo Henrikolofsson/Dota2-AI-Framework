@@ -5,6 +5,21 @@ from bottle import request, response, Bottle
 
 
 class ServerState(Enum):
+    """"
+    When a new Dota game starts, settings should be loaded from the /api/settings route before
+    game state updates are processed. The server therefore starts in the SETTINGS state
+    and only moves to the UPDATE state once the settings have been sent. In the UPDATE state the
+    server is allowed to update the game state and run the bot AI.
+
+    HTTP requests from Dota have very long timeouts and are buffered within the game even when this
+    server is turned off (the API supposedly supports lowering these timeouts but experimentation
+    has shown these to have no effect).
+
+    Restarting the server on the same port and starting a new Dota game can lead to game updates
+    from the previous game being received by the server before the settings are requested for the
+    new game. By using this state machine, we avoid having to fully restart Dota between matches
+    to flush old updates.
+    """
     SETTINGS = auto()
     UPDATE = auto()
 
