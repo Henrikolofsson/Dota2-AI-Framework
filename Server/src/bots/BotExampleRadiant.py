@@ -15,7 +15,7 @@ class BotExampleRadiant(BaseBot):
 
     world: World
 
-    def __init__(self, world):
+    def __init__(self, world, team: int):
         self.party = [
             "npc_dota_hero_brewmaster",
             "npc_dota_hero_doom_bringer",
