@@ -26,6 +26,7 @@
         "FIND_ANY_ORDER",
         "DOTA_UNIT_TARGET_FLAG_INVULNERABLE",
         "DOTA_ITEM_SLOT_6",
-        "IsLocationVisible"
+        "IsLocationVisible",
+        "Vector"
     ]
 }

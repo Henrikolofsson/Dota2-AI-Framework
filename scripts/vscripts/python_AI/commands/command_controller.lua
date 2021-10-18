@@ -789,7 +789,7 @@ function Command_controller:Sell(eHero, result)
         if eItem then
             --TODO GetCost does not return the value altered, i.e. halved
             EmitSoundOn("General.Sell", eHero)
-            eHero:ModifyGold(eItem:GetCost(), true, DOTA_ModifyGold_SellItem)
+            eHero:ModifyGold(eItem:GetCost(), true, DOTA_ModifyGold_SellItem) -- Claims sell-operation gives reliable gold. (Second param = true)
             eHero:RemoveItem(eItem)
         else
             Warning("No item in slot " .. slot)
@@ -945,6 +945,11 @@ function Command_controller:UseAbility(eHero, eAbility)
     local manaCost = eAbility:GetManaCost(level)
     local player = eHero:GetPlayerOwnerID()
     local behavior = eAbility:GetBehavior()
+
+    if level == 0 then
+        Warning("Bot tried to use ability without level")
+        return
+    end
 
     if eHero:GetMana() < manaCost then
         Warning("Bot tried to use ability without mana")
