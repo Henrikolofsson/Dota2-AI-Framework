@@ -1,7 +1,7 @@
 import json
 
 from bot_framework import BotFramework
-from framework_util import exit_with_error, load_class
+from framework_util import exit_with_error, load_class, BotClassError
 from webserver import setup_web_server
 from pathlib import Path
 
@@ -36,5 +36,5 @@ if __name__ == '__main__':
         exit_with_error(f"Malformed JSON file: {settings_filename}")
     except KeyError as key_error:
         exit_with_error(f"Couldn't open required key from {settings_filename}: {key_error}")
-    except ModuleNotFoundError as module_error:
-        exit_with_error(f"Couldn't find the module with the bot class: {module_error}")
+    except BotClassError as bot_error:
+        exit_with_error(f"Couldn't import the bot class: {bot_error}")

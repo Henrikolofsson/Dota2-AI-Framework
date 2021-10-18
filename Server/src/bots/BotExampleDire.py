@@ -15,7 +15,7 @@ class BotExampleDire(BaseBot):
 
     world: World
 
-    def __init__(self, world):
+    def __init__(self, world, team: int):
         self.party = [
             "npc_dota_hero_bane",
             "npc_dota_hero_batrider",

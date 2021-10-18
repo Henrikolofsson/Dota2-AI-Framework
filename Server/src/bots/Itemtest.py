@@ -21,8 +21,8 @@ party = {
 }
 
 
-class SimpleBot(BaseBot):
-    """This bot moves all heroes to the center of the map."""
+class Itemtest(BaseBot):
+    """This bot buys and uses items."""
     heroes: list[PlayerHero]
     world: World
 
@@ -35,4 +35,12 @@ class SimpleBot(BaseBot):
         self.heroes = heroes
 
     def actions(self, hero: PlayerHero) -> None:
-        hero.move(0, 0, 0)
+        
+        def buy_tangoandbranches(self, hero: PlayerHero):
+            hero.buy("item_tango")
+            hero.buy("item_branches")
+            hero.buy("item_branches")
+            hero.buy("item_branches")
+            hero.buy("item_branches")
+            hero.buy("item_branches")
+            hero.buy("item_tango")
