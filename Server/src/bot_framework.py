@@ -11,7 +11,7 @@ class BotFramework:
 
     def __init__(self, BotClass: type, team: int) -> None:
         self.world = World(team)
-        self.agent = BotClass(self.world)
+        self.agent = BotClass(self.world, team)
         self.initialized = False
 
     def get_party(self) -> list[str]:
