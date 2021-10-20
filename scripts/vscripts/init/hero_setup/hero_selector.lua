@@ -26,7 +26,9 @@ end
 ---@param player_id integer
 ---@param team integer
 function Hero_selector:Put_player_on_team(player_id, team)
-    PlayerResource:SetCustomTeamAssignment(player_id, team)
+    if self:Is_not_admin(player_id) then
+        PlayerResource:SetCustomTeamAssignment(player_id, team)
+    end
 end
 
 ---@param player_id integer

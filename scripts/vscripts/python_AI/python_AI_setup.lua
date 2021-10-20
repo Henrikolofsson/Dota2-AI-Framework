@@ -27,6 +27,8 @@ end
 function Python_AI_setup:Initialize_bot_thinking(radiant_heroes, dire_heroes)
     self:Set_context_think_for_heroes(radiant_heroes)
     self:Set_context_think_for_heroes(dire_heroes)
+
+    PlayerResource:SetCustomTeamAssignment(0, 1)
 end
 
 

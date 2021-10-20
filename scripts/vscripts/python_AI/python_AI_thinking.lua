@@ -8,7 +8,7 @@ local Command_controller = require "python_AI.commands.command_controller"
 -- Python_AI_thinking
 local Python_AI_thinking = {}
 
-local printed = false
+local printcount = 0
 
 ---@param heroes table
 ---@param commands table
@@ -35,14 +35,14 @@ end
 function Python_AI_thinking:On_think(heroes)
     local all_entities = World_data_builder:Get_all_entities(heroes[1])
 
-    if heroes[1]:GetTeam() == DOTA_TEAM_GOODGUYS then
-        print(
-            heroes[1]:GetName() .. " has tower aggro: " .. tostring(all_entities[heroes[1]:entindex()].hasTowerAggro)
-        )
-    end
+    -- if heroes[1]:GetTeam() == DOTA_TEAM_GOODGUYS then
+    --     print(
+    --         heroes[1]:GetName() .. " has tower aggro: " .. tostring(all_entities[heroes[1]:entindex()].hasTowerAggro)
+    --     )
+    -- end
 
-    if not printed and heroes[1]:GetTeam() == DOTA_TEAM_GOODGUYS then
-        printed = true
+    printcount = printcount + 1
+    if printcount == 60 and heroes[1]:GetTeam() == DOTA_TEAM_GOODGUYS then
         Timers:CreateTimer({
             endTime = 5.0,
             callback = function()
