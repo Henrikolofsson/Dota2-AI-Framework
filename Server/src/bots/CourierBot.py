@@ -39,6 +39,4 @@ class CourierBot(BaseBot):
         # see how it behaves if the command is not continuously issued.
         if self.world.get_game_ticks() == 30:
             print(f'moved courier to {hero}')
-            # hero.move_courier_to_hero()
-            pass
-        
+            hero.move_courier_to_hero()

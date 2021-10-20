@@ -180,5 +180,12 @@ class PlayerHero(Hero):
             }
         }
 
+    def move_courier_to_hero(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "MOVE_COURIER_TO_HERO"
+            }
+        }
+
     def get_type(self) -> EntityType:
         return EntityType.PLAYER_HERO
