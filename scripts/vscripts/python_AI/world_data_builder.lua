@@ -143,6 +143,8 @@ function World_data_builder:Get_unit_data(unit_entity)
         else
             unit_data.type = "Building"
         end
+    elseif unit_entity:IsCourier() then
+        unit_data.type = "Courier"
     else
         unit_data.type = "BaseNPC"
     end

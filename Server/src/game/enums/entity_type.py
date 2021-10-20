@@ -11,3 +11,4 @@ class EntityType(Enum):
     TOWER = 6
     TREE = 7
     UNIT = 8
+    COURIER = 9

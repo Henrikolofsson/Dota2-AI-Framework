@@ -14,6 +14,7 @@ from game.building import Building
 from game.hero import Hero
 from game.player_hero import PlayerHero
 from game.tree import Tree
+from game.courier import Courier
 
 
 class World:
@@ -66,19 +67,16 @@ class World:
                 self._player_heroes.append(new_entity)
             else:
                 new_entity = Hero(entity_id)
-        
         elif entity_data["type"] == "Tower":
             new_entity = Tower(entity_id)
-        
         elif entity_data["type"] == "Building":
             new_entity = Building(entity_id)
-
         elif entity_data["type"] == "BaseNPC":
             new_entity = Unit(entity_id)
-
         elif entity_data["type"] == "Tree":
             new_entity = Tree(entity_id)
-
+        elif entity_data["type"] == "Courier":
+            new_entity = Courier(entity_id)
         else:
             raise Exception(
                 "Error, the following entity did not match our entities:\n{}".format(entity_data)
