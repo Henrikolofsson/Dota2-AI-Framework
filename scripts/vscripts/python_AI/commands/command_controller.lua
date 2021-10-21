@@ -79,7 +79,7 @@ function Command_controller:Unit_can_buy_item(unit_entity, item_name)
 end
 
 function Command_controller:Get_courier_of_hero(hero_entity)
-    return GetPreferredCourierForPlayer(hero_entity:GetPlayerID())
+    return PlayerResource:GetPreferredCourierForPlayer(hero_entity:GetPlayerID())
 end
 
 function Command_controller:Buy(hero_entity, result)
