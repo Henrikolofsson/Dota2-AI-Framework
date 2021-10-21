@@ -41,6 +41,11 @@
         "DOTA_ABILITY_BEHAVIOR_NO_TARGET",
         "CalcDistanceBetweenEntityOBB",
         "MinimapEvent",
-        "DOTA_MINIMAP_EVENT_HINT_LOCATION"
+        "DOTA_MINIMAP_EVENT_HINT_LOCATION",
+        "DOTA_SHOP_HOME",
+        "DOTA_SHOP_SECRET",
+        "GetPreferredCourierForPlayer",
+        "DOTA_STASH_SLOT_1",
+        "DOTA_STASH_SLOT_6"
     ]
 }

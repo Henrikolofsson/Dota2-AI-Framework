@@ -23,7 +23,7 @@ function Python_AI_thinking.On_update(heroes, commands)
                     if cmd.target ~= nil then
                         cmd.target = tonumber(cmd.target)
                     end
-                    Command_controller:ParseHeroCommand(hero, cmd)
+                    Command_controller:Parse_hero_command(hero, cmd)
                 end
             end
         end

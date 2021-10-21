@@ -1,4 +1,4 @@
-local Item_handler = require "python_AI.commands.item_handlers.item_handler"
+local item_shop_availability = require "python_AI.commands.item_handlers.item_shop_availability"
 local Utilities = require "utilities.utilities"
 
 local Command_controller = {}
@@ -8,7 +8,7 @@ function Command_controller:Hero_has_active_ability(hero_entity)
 end
 
 -- Main entry function --
-function Command_controller:ParseHeroCommand(hero_entity, result)
+function Command_controller:Parse_hero_command(hero_entity, result)
     local command = result.command
 
     --TODO deal with abilities that the hero can interrupt
@@ -47,7 +47,6 @@ end
 
 -- Buying items --
 function Command_controller:Buy(hero_entity, result)
-    print("attempt buy")
     local item_name = result.item
     local item_cost = GetItemCost(item_name)
 
@@ -67,31 +66,73 @@ function Command_controller:Buy(hero_entity, result)
     --TODO item availability is missing
 
     if target_slot < 0 then
-        print("attempt buy: no slot")
         Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but has no space left")
         --TODO buy into stash
         return
     end
 
-    local closest_shop_entity = Entities:FindByClassnameWithin(nil, "trigger_shop", hero_entity:GetOrigin(), 0.01)
-    if closest_shop_entity then
-        local shop_type = Item_handler:Get_shop_type(closest_shop_entity)
+    if hero_entity:IsInRangeOfShop(item_shop_availability[item_name], true) then
+        local item_entity = CreateItem(item_name, hero_entity, hero_entity)
+        EmitSoundOn("General.Buy", hero_entity)
+        hero_entity:AddItem(item_entity)
+        hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
+    else
+        if item_shop_availability[item_name] == DOTA_SHOP_SECRET then
+            local courier_entity = GetPreferredCourierForPlayer(hero_entity:GetPlayerID())
+            if courier_entity:IsInRangeOfShop(DOTA_SHOP_SECRET, true) then
+                target_slot = -1
+                
+                for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_6, 1 do
+                    if not courier_entity:GetItemInSlot(i) then
+                        target_slot = i
+                        break
+                    end
+                end
 
-        if Item_handler:Is_available_in_shop(item_name, shop_type) then
+                if target_slot < 0 then
+                    Warning("Courier of " .. hero_entity:GetName() .. " tried to buy " .. item_name .. " but has no space left")
+                    return
+                end
+
+                local item_entity = CreateItem(item_name, courier_entity, courier_entity)
+                EmitSoundOn("General.Buy", courier_entity)
+                courier_entity:AddItem(item_entity)
+                hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
+            end
+        else
+            target_slot = -1
+
+            for i = DOTA_STASH_SLOT_1, DOTA_STASH_SLOT_6, 1 do
+                if not hero_entity:GetItemInSlot(i) then
+                    target_slot = i
+                    break
+                end
+            end
+
+            if target_slot < 0 then
+                Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but has no space left in stash")
+                return
+            end
+
+            local stash_slot = target_slot
+
+            target_slot = -1
+
+            for i = DOTA_ITEM_SLOT_1, DOTA_STASH_SLOT_6, 1 do
+                if not hero_entity:GetItemInSlot(i) then
+                    target_slot = i
+                    break
+                end
+            end
+
             local item_entity = CreateItem(item_name, hero_entity, hero_entity)
             EmitSoundOn("General.Buy", hero_entity)
             hero_entity:AddItem(item_entity)
             hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
-        else
-            --TODO ping actually the right shop
-            Item_handler:Ping_nearest_shop(hero_entity)
-            Warning("Shop is of type " .. shop_type)
-            return
+
+            hero_entity:SwapItems(stash_slot, target_slot)
         end
-    else
-        print("attempt buy: no shop")
-        Item_handler:Ping_nearest_shop(hero_entity)
-        return
+        Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but was not in range!")
     end
 
     -- Say(nil, hero_entity:GetName() .. " bought " .. itemName, false)
@@ -111,7 +152,6 @@ function Command_controller:Sell(hero_entity, result)
             Warning("No item in slot " .. slot)
         end
     else
-        Item_handler:Ping_nearest_shop(hero_entity)
         Warning("Bot tried to sell item outside shop")
     end
 end
