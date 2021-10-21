@@ -45,133 +45,130 @@ function Command_controller:Hero_can_afford_item(hero_entity, item_name)
     return GetItemCost(item_name) <= hero_entity:GetGold()
 end
 
--- Buying items --
+function Command_controller:Unit_has_free_item_slot(unit_entity)
+    local item_in_slot
+    for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
+        item_in_slot = unit_entity:GetItemInSlot(i)
+        if not item_in_slot then
+            return true
+        end
+    end
+    return false
+end
+
+function Command_controller:Unit_can_stack_item_of_name(unit_entity, item_name)
+    local item_in_slot
+    for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
+        item_in_slot = unit_entity:GetItemInSlot(i)
+        if (item_in_slot) and item_in_slot:IsStackable() and item_in_slot:GetName() == item_name then -- should check special cases where item has max-stack!
+            return true
+        end
+    end
+    return false
+end
+
+function Command_controller:Buy_item_for_unit(unit_entity, hero_entity, name_of_item_to_buy)
+    EmitSoundOn("General.Buy", unit_entity)
+    unit_entity:AddItem(CreateItem(name_of_item_to_buy, unit_entity, unit_entity))
+    hero_entity:SpendGold(GetItemCost(name_of_item_to_buy), DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?    
+end
+
+function Command_controller:Unit_can_buy_item(unit_entity, item_name)
+    return unit_entity:IsInRangeOfShop(item_shop_availability[item_name], true)
+    and (self:Unit_has_free_item_slot(unit_entity) or self:Unit_can_stack_item_of_name(unit_entity, item_name))
+end
+
+function Command_controller:Get_courier_of_hero(hero_entity)
+    return GetPreferredCourierForPlayer(hero_entity:GetPlayerID())
+end
+
 function Command_controller:Buy(hero_entity, result)
     local item_name = result.item
-    local item_cost = GetItemCost(item_name)
 
     if not self:Hero_can_afford_item(hero_entity, item_name) then
         Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but couldn't afford it")
         return
     end
 
+    if self:Unit_can_buy_item(hero_entity, item_name) then
+        self:Buy_item_for_unit(hero_entity, hero_entity, item_name)
+    else
+        local courier_entity = self:Get_courier_of_hero(hero_entity)
+        if self:Unit_can_buy_item(courier_entity, item_name) then
+            self:Buy_item_for_unit(courier_entity, hero_entity, item_name)
+        else
+            Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but neither hero nor courier was not in range!")
+        end
+    end
+end
+
+-- Currently having problems with this function. Might wait with implementation of stash.
+function Command_controller:Buy_into_stash(hero_entity, item_name, item_cost) -- unused
     local target_slot = -1
-    for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_6, 1 do
+
+    for i = DOTA_STASH_SLOT_1, DOTA_STASH_SLOT_6, 1 do
         if not hero_entity:GetItemInSlot(i) then
             target_slot = i
             break
         end
     end
 
-    --TODO item availability is missing
-
     if target_slot < 0 then
-        Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but has no space left")
-        --TODO buy into stash
+        Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but has no space left in stash")
         return
     end
 
-    if hero_entity:IsInRangeOfShop(item_shop_availability[item_name], true) then
-        local item_entity = CreateItem(item_name, hero_entity, hero_entity)
-        EmitSoundOn("General.Buy", hero_entity)
-        hero_entity:AddItem(item_entity)
-        hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
-    else
-        if item_shop_availability[item_name] == DOTA_SHOP_SECRET then
-            local courier_entity = GetPreferredCourierForPlayer(hero_entity:GetPlayerID())
-            if courier_entity:IsInRangeOfShop(DOTA_SHOP_SECRET, true) then
-                target_slot = -1
+    target_slot = -1
 
-                for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_6, 1 do
-                    if not courier_entity:GetItemInSlot(i) then
-                        target_slot = i
-                        break
-                    end
-                end
-
-                if target_slot < 0 then
-                    Warning("Courier of " .. hero_entity:GetName() .. " tried to buy " .. item_name .. " but has no space left")
-                    return
-                end
-
-                local item_entity = CreateItem(item_name, courier_entity, courier_entity)
-                EmitSoundOn("General.Buy", courier_entity)
-                courier_entity:AddItem(item_entity)
-                hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
-            end
-        else
-            target_slot = -1
-
-            for i = DOTA_STASH_SLOT_1, DOTA_STASH_SLOT_6, 1 do
-                if not hero_entity:GetItemInSlot(i) then
-                    target_slot = i
-                    break
-                end
-            end
-
-            if target_slot < 0 then
-                Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but has no space left in stash")
-                return
-            end
-
-            target_slot = -1
-
-            for i = DOTA_ITEM_SLOT_1, DOTA_STASH_SLOT_6, 1 do
-                if not hero_entity:GetItemInSlot(i) then
-                    target_slot = i
-                    break
-                end
-            end
-
-
-
-
-            local item_entity = CreateItem(item_name, hero_entity, hero_entity)
-            EmitSoundOn("General.Buy", hero_entity)
-            hero_entity:AddItem(item_entity)
-            hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
-
-            -- ugly fix BEGIN
-
-            -- -- Remove items
-            -- local removed_items = {}
-            -- for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
-            --     local item_to_remove = hero_entity:GetItemInSlot(i)
-            --     if item_to_remove then
-            --         table.insert(removed_items, hero_entity:TakeItem(item_to_remove))
-            --     end
-            -- end
-            -- -- add dummy-items
-            -- local dummy_items = {}
-            -- local dummy_item_entity = CreateItem("item_branches", hero_entity, hero_entity)
-            -- for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
-            --     hero_entity:AddItem(dummy_item_entity)
-            --     table.insert(dummy_items, dummy_item_entity)
-            -- end
-
-            -- local item_entity = CreateItem(item_name, hero_entity, hero_entity)
-            -- EmitSoundOn("General.Buy", hero_entity)
-            -- hero_entity:AddItem(item_entity)
-            -- hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
-
-            -- -- remove dummy-items
-            -- for _index, dummy_item in ipairs(dummy_items) do
-            --     hero_entity:RemoveItem(dummy_item)
-            -- end
-
-            -- -- add back items
-            -- for _index, removed_item in ipairs(removed_items) do
-            --     hero_entity:AddItem(removed_item)
-            -- end
-
-            -- ugly fix END
-
-            return
+    for i = DOTA_ITEM_SLOT_1, DOTA_STASH_SLOT_6, 1 do
+        if not hero_entity:GetItemInSlot(i) then
+            target_slot = i
+            break
         end
-        Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but was not in range!")
     end
 
-    -- Say(nil, hero_entity:GetName() .. " bought " .. itemName, false)
+
+
+
+    local item_entity = CreateItem(item_name, hero_entity, hero_entity)
+    EmitSoundOn("General.Buy", hero_entity)
+    hero_entity:AddItem(item_entity)
+    hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
+
+    -- ugly fix BEGIN
+
+    -- -- Remove items
+    -- local removed_items = {}
+    -- for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
+    --     local item_to_remove = hero_entity:GetItemInSlot(i)
+    --     if item_to_remove then
+    --         table.insert(removed_items, hero_entity:TakeItem(item_to_remove))
+    --     end
+    -- end
+    -- -- add dummy-items
+    -- local dummy_items = {}
+    -- local dummy_item_entity = CreateItem("item_branches", hero_entity, hero_entity)
+    -- for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
+    --     hero_entity:AddItem(dummy_item_entity)
+    --     table.insert(dummy_items, dummy_item_entity)
+    -- end
+
+    -- local item_entity = CreateItem(item_name, hero_entity, hero_entity)
+    -- EmitSoundOn("General.Buy", hero_entity)
+    -- hero_entity:AddItem(item_entity)
+    -- hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
+
+    -- -- remove dummy-items
+    -- for _index, dummy_item in ipairs(dummy_items) do
+    --     hero_entity:RemoveItem(dummy_item)
+    -- end
+
+    -- -- add back items
+    -- for _index, removed_item in ipairs(removed_items) do
+    --     hero_entity:AddItem(removed_item)
+    -- end
+
+    -- ugly fix END
 end
 
 function Command_controller:Sell(hero_entity, result)
