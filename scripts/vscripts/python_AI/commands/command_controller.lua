@@ -81,7 +81,7 @@ function Command_controller:Buy(hero_entity, result)
             local courier_entity = GetPreferredCourierForPlayer(hero_entity:GetPlayerID())
             if courier_entity:IsInRangeOfShop(DOTA_SHOP_SECRET, true) then
                 target_slot = -1
-                
+
                 for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_6, 1 do
                     if not courier_entity:GetItemInSlot(i) then
                         target_slot = i
@@ -114,8 +114,6 @@ function Command_controller:Buy(hero_entity, result)
                 return
             end
 
-            local stash_slot = target_slot
-
             target_slot = -1
 
             for i = DOTA_ITEM_SLOT_1, DOTA_STASH_SLOT_6, 1 do
@@ -125,12 +123,50 @@ function Command_controller:Buy(hero_entity, result)
                 end
             end
 
+
+
+
             local item_entity = CreateItem(item_name, hero_entity, hero_entity)
             EmitSoundOn("General.Buy", hero_entity)
             hero_entity:AddItem(item_entity)
             hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
 
-            hero_entity:SwapItems(stash_slot, target_slot)
+            -- ugly fix BEGIN
+
+            -- -- Remove items
+            -- local removed_items = {}
+            -- for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
+            --     local item_to_remove = hero_entity:GetItemInSlot(i)
+            --     if item_to_remove then
+            --         table.insert(removed_items, hero_entity:TakeItem(item_to_remove))
+            --     end
+            -- end
+            -- -- add dummy-items
+            -- local dummy_items = {}
+            -- local dummy_item_entity = CreateItem("item_branches", hero_entity, hero_entity)
+            -- for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
+            --     hero_entity:AddItem(dummy_item_entity)
+            --     table.insert(dummy_items, dummy_item_entity)
+            -- end
+
+            -- local item_entity = CreateItem(item_name, hero_entity, hero_entity)
+            -- EmitSoundOn("General.Buy", hero_entity)
+            -- hero_entity:AddItem(item_entity)
+            -- hero_entity:SpendGold(item_cost, DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
+
+            -- -- remove dummy-items
+            -- for _index, dummy_item in ipairs(dummy_items) do
+            --     hero_entity:RemoveItem(dummy_item)
+            -- end
+
+            -- -- add back items
+            -- for _index, removed_item in ipairs(removed_items) do
+            --     hero_entity:AddItem(removed_item)
+            -- end
+
+            -- ugly fix END
+
+            return
         end
         Warning(hero_entity:GetName() .. " tried to buy " .. item_name .. " but was not in range!")
     end

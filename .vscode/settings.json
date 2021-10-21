@@ -46,6 +46,7 @@
         "DOTA_SHOP_SECRET",
         "GetPreferredCourierForPlayer",
         "DOTA_STASH_SLOT_1",
-        "DOTA_STASH_SLOT_6"
+        "DOTA_STASH_SLOT_6",
+        "DOTA_ITEM_SLOT_9"
     ]
 }
