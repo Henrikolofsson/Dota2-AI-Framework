@@ -25,7 +25,27 @@
         "DOTA_UNIT_TARGET_FLAG_FOW_VISIBLE",
         "FIND_ANY_ORDER",
         "DOTA_UNIT_TARGET_FLAG_INVULNERABLE",
+        "DOTA_ITEM_SLOT_1",
         "DOTA_ITEM_SLOT_6",
-        "IsLocationVisible"
+        "IsLocationVisible",
+        "Vector",
+        "Warning",
+        "GetItemCost",
+        "CreateItem",
+        "EmitSoundOn",
+        "DOTA_ModifyGold_PurchaseItem",
+        "DOTA_ModifyGold_SellItem",
+        "EntIndexToHScript",
+        "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET",
+        "DOTA_ABILITY_BEHAVIOR_POINT",
+        "DOTA_ABILITY_BEHAVIOR_NO_TARGET",
+        "CalcDistanceBetweenEntityOBB",
+        "MinimapEvent",
+        "DOTA_MINIMAP_EVENT_HINT_LOCATION",
+        "DOTA_SHOP_HOME",
+        "DOTA_SHOP_SECRET",
+        "GetPreferredCourierForPlayer",
+        "DOTA_STASH_SLOT_1",
+        "DOTA_STASH_SLOT_6"
     ]
 }
