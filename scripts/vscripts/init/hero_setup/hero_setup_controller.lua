@@ -36,8 +36,8 @@ function Hero_setup_controller:Create_player_0()
 
     table.insert(Hero_selector.radiant_heroes, hero)
 
-    hero:SetOrigin(Vector(-7200, -6500, 384))
-    courier:SetOrigin(Vector(-7300, -6600, 384))
+    hero:SetOrigin(Vector(-7150, -6150, 384))
+    courier:SetOrigin(Vector(-7250, -6250, 384))
 
     SendToServerConsole("kickid 11")
 end
