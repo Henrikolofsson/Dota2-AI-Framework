@@ -85,13 +85,6 @@ function Hero_selector:Kick_player(player_id)
     SendToServerConsole("kickid " .. tostring(player_id + 1))
 end
 
----@param player_id integer
-function Hero_selector:Clear_player_slot_if_fake_client(player_id)
-    if self:Is_not_admin(player_id) then
-        self:Kick_player(player_id)
-    end
-end
-
 ---@param picked_hero_names table
 ---@param team integer
 ---@param from_player_id integer
@@ -108,7 +101,7 @@ function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_p
         self:Put_player_on_team(player_id, team)
         self:Select_hero_for_player(player_id, picked_hero_names[hero_name_index])
         self:Append_hero_to_team_table(player_id, team)
-        self:Clear_player_slot_if_fake_client(player_id)
+        self:Kick_player(player_id)
     end
 end
 
