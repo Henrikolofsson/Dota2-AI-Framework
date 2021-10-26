@@ -46,7 +46,7 @@ class TestBot2(BaseBot):
             if self._hero_name_equals_any(hero.get_name(), [
                 "npc_dota_hero_brewmaster",
                 "npc_dota_hero_doom_bringer",
-                "npc_dota_hero_axe"
+                "npc_dota_hero_axe",
                 "npc_dota_hero_bane",
                 "npc_dota_hero_batrider",
             ]):
