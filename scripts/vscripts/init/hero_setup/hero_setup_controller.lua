@@ -30,8 +30,22 @@ function Hero_setup_controller:All_players_have_chosen_hero()
     return Utilities:To_bool(self.radiant_heroes)
 end
 
+function Hero_setup_controller:Create_player_0()
+    local hero = GameRules:AddBotPlayerWithEntityScript(Settings.radiant_party_names[1], "Fake Player 0", DOTA_TEAM_GOODGUYS, "", true)
+    local courier = PlayerResource:GetPreferredCourierForPlayer(hero:GetPlayerID())
+
+    table.insert(Hero_selector.radiant_heroes, hero)
+
+    hero:SetOrigin(Vector(-7200, -6500, 384))
+    courier:SetOrigin(Vector(-7300, -6600, 384))
+
+    SendToServerConsole("kickid 11")
+end
+
 function Hero_setup_controller:Select_radiant_heroes()
-    local FROM_PLAYER_ID, TO_PLAYER_ID = 0, 4
+    local FROM_PLAYER_ID, TO_PLAYER_ID = 1, 4
+
+    self:Create_player_0()
 
     Hero_selector:Pick_heroes(
         Settings.radiant_party_names,
