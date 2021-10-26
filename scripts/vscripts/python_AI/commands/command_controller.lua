@@ -177,9 +177,8 @@ function Command_controller:Sell(hero_entity, result)
     if hero_entity:CanSellItems() then
         local item_entity = hero_entity:GetItemInSlot(slot)
         if item_entity then
-            --TODO GetCost does not return the value altered, i.e. halved
             EmitSoundOn("General.Sell", hero_entity)
-            hero_entity:ModifyGold(item_entity:GetCost(), true, DOTA_ModifyGold_SellItem) -- Claims sell-operation gives reliable gold. (Second param = true)
+            hero_entity:ModifyGold(Utilities:Round_whole(item_entity:GetCost() / 2), true, DOTA_ModifyGold_SellItem) -- Claims sell-operation gives reliable gold. (Second param = true)
             hero_entity:RemoveItem(item_entity)
         else
             Warning("No item in slot " .. slot)
