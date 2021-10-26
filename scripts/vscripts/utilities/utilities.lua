@@ -70,4 +70,10 @@ function Utilities:Bitwise_AND(a, b)
     return c
 end
 
+---@param to_round number
+---@return integer
+function Utilities:Round_whole(to_round)
+    return math.floor(to_round + 0.5)
+end
+
 return Utilities
