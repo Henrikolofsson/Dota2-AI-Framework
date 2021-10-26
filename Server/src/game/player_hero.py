@@ -180,10 +180,24 @@ class PlayerHero(Hero):
             }
         }
 
-    def move_courier_to_hero(self) -> None:
+    def courier_move_to_hero(self) -> None:
         self.command = {
             self.get_name(): {
-                "command": "MOVE_COURIER_TO_HERO"
+                "command": "COURIER_MOVE_TO_HERO"
+            }
+        }
+
+    def courier_hold(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_HOLD"
+            }
+        }
+
+    def courier_retrieve(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_RETRIEVE"
             }
         }
 
