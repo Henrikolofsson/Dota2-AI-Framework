@@ -29,14 +29,24 @@ class CourierBot(BaseBot):
     def __init__(self, world: World, team):
         self.world = world
         self.party = party[team]
-        print(self.party)
+        print('Loaded CourierBot')
 
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self.heroes = heroes
 
     def actions(self, hero: PlayerHero) -> None:
-        # Only issue move command to courier on this specific game tick to
-        # see how it behaves if the command is not continuously issued.
-        if self.world.get_game_ticks() == 30:
-            print(f'moved courier to {hero}')
-            hero.move_courier_to_hero()
+        if self.world.get_game_ticks() == 30 and hero.get_name() == "npc_dota_hero_bane":
+            print(f'issued move_to_hero for hero: {hero}')
+            hero.courier_move_to_hero()
+
+        if self.world.get_game_ticks() == 60 and hero.get_name() == "npc_dota_hero_bane":
+            print(f'issued retrieve for hero: {hero}')
+            hero.courier_retrieve()
+
+        if self.world.get_game_ticks() == 100 and hero.get_name() == "npc_dota_hero_bane":
+            print(f'issued move_to_hero for hero: {hero}')
+            hero.courier_move_to_hero()
+
+        if self.world.get_game_ticks() == 150 and hero.get_name() == "npc_dota_hero_bane":
+            print(f'issued retrieve for hero: {hero}')
+            hero.courier_retrieve()
