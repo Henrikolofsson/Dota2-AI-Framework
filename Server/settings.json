@@ -1,9 +1,9 @@
 {
   "base_dir_bots": "bots/",
-  "radiant_bot_filename": "SimpleBot.py",
-  "radiant_bot_class_name": "SimpleBot",
-  "dire_bot_filename": "SimpleBot.py",
-  "dire_bot_class_name": "SimpleBot",
+  "radiant_bot_filename": "CourierBot.py",
+  "radiant_bot_class_name": "CourierBot",
+  "dire_bot_filename": "CourierBot.py",
+  "dire_bot_class_name": "CourierBot",
   "native_bots_difficulty": "easy",
   "should_have_pre_game_delay": false,
   "should_dire_be_native_bots": false,
