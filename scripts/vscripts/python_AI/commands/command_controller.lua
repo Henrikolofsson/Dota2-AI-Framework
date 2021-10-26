@@ -37,7 +37,7 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "CAST_ABILITY_TARGET_COMBO_TARGET_POINT_UNIT" then self:Cast_ability_combo_target_point_unit(hero_entity, result)
     elseif command == "COURIER_RETRIEVE"                            then Courier_commands:Retrieve(hero_entity)
     elseif command == "COURIER_MOVE_TO_HERO"                        then Courier_commands:Move_to_hero(hero_entity)
-    elseif command == "COURIER_HOLD"                                then Courier_commands:Hold(hero_entity)
+    elseif command == "COURIER_STOP"                                then Courier_commands:Stop(hero_entity)
     else
         self.Error = true
         Warning(hero_entity:GetName() .. " sent invalid command " .. command)

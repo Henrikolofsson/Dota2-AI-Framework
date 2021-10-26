@@ -25,18 +25,15 @@ function Courier_commands:Move_to_hero(hero_entity)
     courier_entity:MoveToNPC(hero_entity)
 end
 
-function Courier_commands:Hold(hero_entity)
+function Courier_commands:Stop(hero_entity)
     --[[
         Stops the courier at its current position. Because COURIER_MOVE_TO_HERO never
         stops the courier from following the hero, a stop command is necessary if the
         AI changes its mind and wants to leave the courier at its current position.
-
-        todo: currently has the unintended side effect of putting the courier in a
-        permanent hold position where it doesn't move when told to retrieve items.
     ]]
     local player_id = hero_entity:GetPlayerOwnerID()
     local courier = PlayerResource:GetPreferredCourierForPlayer(player_id)
-    courier:Hold()
+    courier:Stop()
 end
 
 function Courier_commands:Move_to_base(courier)

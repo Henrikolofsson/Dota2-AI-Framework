@@ -187,10 +187,10 @@ class PlayerHero(Hero):
             }
         }
 
-    def courier_hold(self) -> None:
+    def courier_stop(self) -> None:
         self.command = {
             self.get_name(): {
-                "command": "COURIER_HOLD"
+                "command": "COURIER_STOP"
             }
         }
 
