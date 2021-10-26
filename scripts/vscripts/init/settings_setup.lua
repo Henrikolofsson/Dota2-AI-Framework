@@ -13,11 +13,9 @@ function Settings_setup:Get_and_set_settings()
                 return
             end
             local settings_data = package.loaded["game/dkjson"].decode(settings_json["Body"])
-            DeepPrintTable(settings_data)
             for key, value in pairs(settings_data) do
                 Settings[key] = value
             end
-            DeepPrintTable(Settings)
         end
     )
 end
