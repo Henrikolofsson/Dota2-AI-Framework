@@ -21,12 +21,13 @@ class BotFramework:
         self.world.update(data["entities"])
 
     def generate_bot_commands(self) -> None:
-        if self.initialized:
-            for hero in self.world.get_player_heroes():
-                self.agent.actions(hero)
-        else:
+        if not self.initialized:
             self.agent.initialize(self.world.get_player_heroes())
             self.initialized = True
+
+        for hero in self.world.get_player_heroes():
+            self.agent.actions(hero)
+
 
     def receive_bot_commands(self) -> list[dict[str, Any]]:
         commands: list[dict[str, Any]] = []
