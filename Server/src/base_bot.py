@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
-from game.hero import Hero
+from game.player_hero import PlayerHero
 
 
 class BaseBot(ABC):
     @abstractmethod
-    def initialize(self, heroes: list[Hero]) -> None:
+    def initialize(self, heroes: list[PlayerHero]) -> None:
         pass
 
     @abstractmethod
-    def actions(self, hero: Hero) -> None:
+    def actions(self, hero: PlayerHero) -> None:
         pass
 
 
