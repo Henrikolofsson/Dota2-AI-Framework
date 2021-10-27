@@ -48,7 +48,9 @@ function Main_controller:Put_admin_on_spectator_team()
 end
 
 function Main_controller.Run_after_settings()
-    Main_controller:Put_admin_on_spectator_team()
+    if Settings.spectator_mode then
+        Main_controller:Put_admin_on_spectator_team()
+    end
     Event_controller:Initialize_listeners()
     Match_setup_controller:Initialize_match_setup()
     Event_controller:Add_on_hero_selection_game_state_listener(Main_controller.On_hero_selection_game_state)
