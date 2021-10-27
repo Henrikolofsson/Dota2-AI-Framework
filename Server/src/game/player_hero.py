@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 
-from typing import Any
+from typing import Any, cast
+from game.post_data_interfaces.IHero import IHero
+from game.post_data_interfaces.IEntity import IEntity
+from game.item import Item
 from game.enums.entity_type import EntityType
 from game.hero import Hero
 
 
 class PlayerHero(Hero):
+
+    _items: list[Item]
+
     def __init__(self, entity_id: str):
         super().__init__(entity_id)
         self.commands = [
@@ -21,11 +27,28 @@ class PlayerHero(Hero):
         self.command = None
         self.commands = []
 
+    def update(self, data: IEntity):
+        super().update(data)
+        player_hero_data: IHero = cast(IHero, data)
+        self._set_items(player_hero_data)
+
+    def _set_items(self, player_hero_data: IHero) -> None:
+        self._items = []
+
+        item_id = 0
+        for item_data in player_hero_data["items"].values():
+            if isinstance(item_data, list):
+                continue
+            item = Item(str(item_id))
+            item.update(item_data)
+            self._items.append(item)
+            item_id += 1
+
     def get_command(self) -> dict[str, Any]:
         return self.command
 
-    def get_items(self):
-        return self.data['items']
+    def get_items(self) -> list[Item]:
+        return self._items
 
     def clear_and_archive_command(self):
         if self.command:
