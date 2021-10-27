@@ -43,15 +43,18 @@ function Hero_setup_controller:Create_player_0()
 end
 
 function Hero_setup_controller:Select_radiant_heroes()
-    local FROM_PLAYER_ID, TO_PLAYER_ID = 1, 4
+    local from_player_id, to_player_id = 0, 4
 
-    self:Create_player_0()
+    if Settings.spectator_mode then
+        from_player_id = 1
+        self:Create_player_0()
+    end
 
     Hero_selector:Pick_heroes(
         Settings.radiant_party_names,
         DOTA_TEAM_GOODGUYS,
-        FROM_PLAYER_ID,
-        TO_PLAYER_ID
+        from_player_id,
+        to_player_id
     )
 end
 
@@ -61,13 +64,13 @@ function Hero_setup_controller:Select_dire_heroes()
         return
     end
 
-    local FROM_PLAYER_ID, TO_PLAYER_ID = 5, 9
+    local from_player_id, to_player_id = 5, 9
 
     Hero_selector:Pick_heroes(
         Settings.dire_party_names,
         DOTA_TEAM_BADGUYS,
-        FROM_PLAYER_ID,
-        TO_PLAYER_ID
+        from_player_id,
+        to_player_id
     )
 end
 

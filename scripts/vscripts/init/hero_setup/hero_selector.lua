@@ -26,7 +26,7 @@ end
 ---@param player_id integer
 ---@param team integer
 function Hero_selector:Put_player_on_team(player_id, team)
-    if self:Is_not_admin(player_id) then
+    if not self:Is_admin(player_id) then
         PlayerResource:SetCustomTeamAssignment(player_id, team)
     end
 end
@@ -74,14 +74,17 @@ end
 
 ---@param player_id integer
 ---@return boolean
-function Hero_selector:Is_not_admin(player_id)
-    return player_id ~= PLAYER_ADMIN_ID
+function Hero_selector:Is_admin(player_id)
+    return player_id == PLAYER_ADMIN_ID
 end
 
 ---@param player_id integer
 function Hero_selector:Kick_player(player_id)
     -- Player ids are 1-10 in Server Console, making it necessary
     -- to increase player_id by 1 before sending the kick command.
+    if not Settings.spectator_mode and self:Is_admin(player_id) then
+        return
+    end
     SendToServerConsole("kickid " .. tostring(player_id + 1))
 end
 

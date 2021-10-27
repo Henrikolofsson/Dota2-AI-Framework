@@ -10,5 +10,7 @@ Settings = {
     ---@type table
     radiant_party_names = nil,
     ---@type table
-    dire_party_names = nil
+    dire_party_names = nil,
+    ---@type boolean
+    spectator_mode = nil
 }
