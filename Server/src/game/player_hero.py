@@ -50,12 +50,12 @@ class PlayerHero(Hero):
     def get_items(self) -> list[Item]:
         return self._items
 
-    def clear_and_archive_command(self):
+    def clear_and_archive_command(self) -> None:
         if self.command:
             self.commands.append(self.command)
             self.command = None
 
-    def attack(self, target):
+    def attack(self, target) -> None:
         self.command = {
             self.get_name(): {
                 "command": "ATTACK",
@@ -63,7 +63,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def move(self, x, y, z):
+    def move(self, x: float, y: float, z: float) -> None:
         self.command = {
             self.get_name(): {
                 "command": "MOVE",
@@ -73,7 +73,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast(self, ability, target=-1, position=[-1, -1, -1]):
+    def cast(self, ability, target=-1, position=[-1, -1, -1]) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -86,13 +86,13 @@ class PlayerHero(Hero):
             }
         }
 
-    def buy(self, item):
+    def buy(self, item: str) -> None:
         self.command = {self.get_name(): {"command": "BUY", "item": item}}
 
-    def sell(self, slot):
+    def sell(self, slot: int) -> None:
         self.command = {self.get_name(): {"command": "SELL", "slot": slot}}
 
-    def use_item(self, slot, target=-1, position=[-1, -1, -1]):
+    def use_item(self, slot, target=-1, position=[-1, -1, -1]) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -105,7 +105,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def level_up(self, abilityIndex):
+    def level_up(self, abilityIndex) -> None:
         self.command = {
             self.get_name(): {
                 "command": "LEVELUP",
@@ -113,10 +113,10 @@ class PlayerHero(Hero):
             }
         }
 
-    def noop(self):
+    def noop(self) -> None:
         self.command = {self.get_name(): {"command": "NOOP"}}
 
-    def cast_toggle(self, abilityIndex):
+    def cast_toggle(self, abilityIndex) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TOGGLE",
@@ -124,7 +124,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_no_target(self, abilityIndex):
+    def cast_no_target(self, abilityIndex) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_NO_TARGET",
@@ -132,7 +132,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_point(self, abilityIndex, position):
+    def cast_target_point(self, abilityIndex, position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -144,7 +144,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_area(self, abilityIndex, position):
+    def cast_target_area(self, abilityIndex, position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -156,7 +156,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_unit(self, abilityIndex, target):
+    def cast_target_unit(self, abilityIndex, target) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT",
@@ -165,7 +165,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_vector_targeting(self, abilityIndex, position):
+    def cast_vector_targeting(self, abilityIndex, position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -177,7 +177,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_unit_aoe(self, abilityIndex, target):
+    def cast_target_unit_aoe(self, abilityIndex, target) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT_AOE",
@@ -189,7 +189,7 @@ class PlayerHero(Hero):
     def cast_combo_target_point_unit(self,
                                      abilityIndex,
                                      target=-1,
-                                     position=[-1, -1, -1]):
+                                     position=[-1, -1, -1]) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
