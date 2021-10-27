@@ -2,7 +2,8 @@ from typing import cast
 
 from game.unit import Unit
 from game.enums.entity_type import EntityType
-from game.post_data_interfaces import ICourier, IEntity
+from game.post_data_interfaces.ICourier import ICourier
+from game.post_data_interfaces.IEntity import IEntity
 
 
 class Courier(Unit):

@@ -2,7 +2,6 @@
 
 from typing import Any
 from game.enums.entity_type import EntityType
-from game.post_data_interfaces.IEntity import IEntity
 from game.hero import Hero
 
 
