@@ -105,7 +105,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def level_up(self, abilityIndex) -> None:
+    def level_up(self, abilityIndex: int) -> None:
         self.command = {
             self.get_name(): {
                 "command": "LEVELUP",
