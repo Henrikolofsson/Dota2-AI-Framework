@@ -20,7 +20,7 @@ party = {
     ],
 }
 
-class TestBotPlayer0GainsAbilityPoint(BaseBot):
+class TestBotSpendFirstAbilityPoint(BaseBot):
     '''
     Tests:
     - brewmaster can spend 1 ability point.
