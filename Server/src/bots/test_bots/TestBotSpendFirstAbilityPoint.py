@@ -23,7 +23,7 @@ party = {
 class TestBotSpendFirstAbilityPoint(BaseBot):
     '''
     Tests:
-    - brewmaster can spend 1 ability point.
+    - All heroes can spend 1 ability point.
     '''
     
     _world: World
