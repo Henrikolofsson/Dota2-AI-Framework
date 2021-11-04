@@ -25,7 +25,7 @@ party = {
 class TestBotDenyKill(BaseBot):
     '''
     Tests:
-    - All heroes should attempt to get denies.
+    - All heroes should attempt to only get denies.
     '''
     
     _world: World
