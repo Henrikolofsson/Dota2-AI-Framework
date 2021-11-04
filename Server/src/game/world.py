@@ -197,7 +197,7 @@ class World:
         return allied_creeps
 
     def get_enemy_creeps_of(self, unit: Unit) -> list[Unit]:
-        '''Returns all allied creeps of given unit.'''
+        '''Returns all enemy creeps of given unit.'''
         enemy_creeps: list[Unit] = []
 
         for enemy_unit in self.get_enemies_of(unit):
@@ -207,3 +207,13 @@ class World:
                 enemy_creeps.append(enemy_unit)
 
         return enemy_creeps
+
+    def get_enemy_heroes_of(self, unit: Unit) -> list[Hero]:
+        '''Returns all enemy heroes of given unit.'''
+        enemy_heroes: list[Hero] = []
+
+        for enemy_unit in self.get_enemies_of(unit):
+            if isinstance(enemy_unit, Hero):
+                enemy_heroes.append(enemy_unit)
+
+        return enemy_heroes
