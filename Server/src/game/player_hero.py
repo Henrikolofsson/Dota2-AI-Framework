@@ -56,11 +56,11 @@ class PlayerHero(Hero):
             self.commands.append(self.command)
             self.command = None
 
-    def attack(self, target) -> None:
+    def attack(self, target_id: str) -> None:
         self.command = {
             self.get_name(): {
                 "command": "ATTACK",
-                "target": target
+                "target": target_id
             }
         }
 
