@@ -43,11 +43,11 @@ class TestBotDisassemble(BaseBot):
         self._heroes = heroes
 
     def actions(self, hero: PlayerHero) -> None:
-        if self._world.get_game_ticks() >= 1 and self._world.get_game_ticks() <= 5:
+        if self._world.get_game_ticks() == 5:
             if self._hero_name_equals_any(hero.get_name(), [
                 "npc_dota_hero_abyssal_underlord",
             ]):
-                hero.buy("item_bracer")
+                hero.buy("item_solar_crest")
         
         if self._world.get_game_ticks() == 30:
             items = hero.get_items()

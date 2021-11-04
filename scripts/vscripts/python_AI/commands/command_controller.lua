@@ -251,7 +251,7 @@ function Command_controller:Disassemble_item(hero_entity, result)
     local slot = result.slot
     local item_entity = hero_entity:GetItemInSlot(slot)
 
-    if item_entity and item_entity.IsDisassemlable then
+    if item_entity and item_entity:IsDisassemblable() then
         hero_entity:DisassembleItem(item_entity)
     else
         Warning("Hero" .. hero_entity:GetName() .. "tried to disassemble Item" .. item_entity:GetName())
