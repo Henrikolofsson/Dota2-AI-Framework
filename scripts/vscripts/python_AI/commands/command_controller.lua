@@ -26,6 +26,7 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "BUY"                                         then self:Buy(hero_entity, result)
     elseif command == "SELL"                                        then self:Sell(hero_entity, result)
     elseif command == "USE_ITEM"                                    then self:Use_item(hero_entity, result)
+    elseif command == "DISASSEMBLE"                                 then self:Disassemble_item(hero_entity, result)
     elseif command == "NOOP"                                        then self:Noop(hero_entity, result)
     elseif command == "CAST_ABILITY_TOGGLE"                         then self:Cast_ability_toggle(hero_entity, result)
     elseif command == "CAST_ABILITY_NO_TARGET"                      then self:Cast_ability_no_target(hero_entity, result)
@@ -243,6 +244,17 @@ function Command_controller:Use_item(hero_entity, result)
         self:Use_ability(hero_entity, item_entity)
     else
         Warning("Bot tried to use item in empty slot")
+    end
+end
+
+function Command_controller:Disassemble_item(hero_entity, result)
+    local slot = result.slot
+    local item_entity = hero_entity:GetItemInSlot(slot)
+
+    if item_entity and item_entity.IsDisassemlable then
+        hero_entity:DisassembleItem(item_entity)
+    else
+        Warning("Hero" .. hero_entity:GetName() .. "tried to disassemble Item" .. item_entity:GetName())
     end
 end
 
