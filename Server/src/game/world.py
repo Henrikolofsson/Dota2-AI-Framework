@@ -159,7 +159,7 @@ class World:
         enemies: list[Unit] = []
         
         for unit in self.get_units():
-            if unit.get_team() == to_get_enemies_of.get_team():
+            if unit.get_team() != to_get_enemies_of.get_team():
                 enemies.append(unit)
 
         return enemies
@@ -195,3 +195,15 @@ class World:
                 allied_creeps.append(allied_unit)
 
         return allied_creeps
+
+    def get_enemy_creeps_of(self, unit: Unit) -> list[Unit]:
+        '''Returns all allied creeps of given unit.'''
+        enemy_creeps: list[Unit] = []
+
+        for enemy_unit in self.get_enemies_of(unit):
+            if not isinstance(enemy_unit, Building)\
+            and not isinstance(enemy_unit, Hero)\
+            and not isinstance(enemy_unit, Courier):
+                enemy_creeps.append(enemy_unit)
+
+        return enemy_creeps
