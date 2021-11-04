@@ -35,22 +35,5 @@ class CourierBot(BaseBot):
         self.heroes = heroes
 
     def actions(self, hero: PlayerHero) -> None:
-        if self.world.get_game_ticks() == 30 and hero.get_name() == "npc_dota_hero_bane":
-            print(f'issued move_to_hero for hero: {hero}')
-            hero.courier_move_to_hero()
-
-        if self.world.get_game_ticks() == 40 and hero.get_name() == "npc_dota_hero_bane":
-            print(f'issued move_to_hero for hero: {hero}')
-            hero.courier_stop()
-
-        if self.world.get_game_ticks() == 60 and hero.get_name() == "npc_dota_hero_bane":
-            print(f'issued retrieve for hero: {hero}')
-            hero.courier_retrieve()
-
-        if self.world.get_game_ticks() == 100 and hero.get_name() == "npc_dota_hero_bane":
-            print(f'issued move_to_hero for hero: {hero}')
-            hero.courier_move_to_hero()
-
-        if self.world.get_game_ticks() == 150 and hero.get_name() == "npc_dota_hero_bane":
-            print(f'issued retrieve for hero: {hero}')
-            hero.courier_retrieve()
+        pass
+    
