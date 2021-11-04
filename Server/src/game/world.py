@@ -190,7 +190,8 @@ class World:
 
         for allied_unit in self.get_allies_of(unit):
             if not isinstance(allied_unit, Building)\
-            and not isinstance(allied_unit, Hero):
+            and not isinstance(allied_unit, Hero)\
+            and not isinstance(allied_unit, Courier):
                 allied_creeps.append(allied_unit)
 
         return allied_creeps
