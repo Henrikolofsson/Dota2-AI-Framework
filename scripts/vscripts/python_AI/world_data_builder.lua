@@ -74,6 +74,19 @@ function World_data_builder:Has_tower_aggro(hero_entity)
 end
 
 ---@param hero_entity table
+---@return boolean
+function World_data_builder:Has_aggro(hero_entity)
+    for _index, unit in ipairs(self.all_units) do
+        ---@type table
+        local aggro_target = unit:GetAggroTarget()
+        if aggro_target == hero_entity then
+            return true
+        end
+    end
+    return false
+end
+
+---@param hero_entity table
 ---@return integer
 function World_data_builder:Get_hero_ability_count(hero_entity)
     return hero_entity:GetAbilityCount() - 1 --minus 1 because lua for loops are upper boundary inclusive
@@ -116,6 +129,7 @@ end
 function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.type = "Hero"
     hero_data.hasTowerAggro = self:Has_tower_aggro(hero_entity)
+    hero_data.hasAggro = self:Has_aggro(hero_entity)
     hero_data.deaths = hero_entity:GetDeaths()
     hero_data.items = self:Get_items_data(hero_entity)
 
