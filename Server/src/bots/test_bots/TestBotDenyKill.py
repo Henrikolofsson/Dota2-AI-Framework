@@ -67,8 +67,7 @@ class TestBotDenyKill(BaseBot):
     def push_lane(self, hero: PlayerHero, lane_tower_name: str) -> None:
         if self.is_near_allied_creeps(hero):
             creep_to_deny: Union[Unit, None] = self.get_creep_to_deny(hero)
-            if creep_to_deny is not None\
-            and creep_to_deny.get_health() < hero.get_attack_damage() + 40:
+            if creep_to_deny is not None:
                 hero.attack(creep_to_deny.get_id())
             else:
                 hero.move(*self.get_closest_allied_creep(hero).get_position().to_list())
@@ -81,7 +80,7 @@ class TestBotDenyKill(BaseBot):
         closest_allied_creeps.sort(key=lambda creep: self._world.get_distance_between_units(hero, creep))
 
         for creep in closest_allied_creeps:
-            if creep.is_deniable():
+            if creep.is_deniable() and creep.get_health() < hero.get_attack_damage() + 40:
                 return creep
 
     def is_near_allied_creeps(self, hero: PlayerHero) -> bool:
