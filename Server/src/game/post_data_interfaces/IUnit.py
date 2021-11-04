@@ -14,6 +14,7 @@ class IUnit(IPhysicalEntity):
     maxMana: int
     level: int
     attackRange: int
+    attackDamage: int
     attackTarget: int
     alive: bool
     forwardVector: IPosition
