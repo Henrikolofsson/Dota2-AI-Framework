@@ -12,6 +12,7 @@ class Hero(Unit):
     _ability_points: int
     _abilities: list[Ability]
     _has_tower_aggro: bool
+    _has_aggro: bool
     _deaths: int
     _denies: int
     _gold: int
@@ -23,6 +24,7 @@ class Hero(Unit):
         hero_data = cast(IHero, data)
         self._ability_points = hero_data["abilityPoints"]
         self._has_tower_aggro = hero_data["hasTowerAggro"]
+        self._has_aggro = hero_data["hasAggro"]
         self._deaths = hero_data["deaths"]
         self._denies = hero_data["denies"]
         self._gold = hero_data["gold"]
@@ -48,6 +50,9 @@ class Hero(Unit):
 
     def get_has_tower_aggro(self) -> bool:
         return self._has_tower_aggro
+
+    def get_has_aggro(self) -> bool:
+        return self._has_aggro
 
     def get_deaths(self) -> int:
         return self._deaths
