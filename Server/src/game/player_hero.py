@@ -56,11 +56,11 @@ class PlayerHero(Hero):
             self.commands.append(self.command)
             self.command = None
 
-    def attack(self, target) -> None:
+    def attack(self, target_id: str) -> None:
         self.command = {
             self.get_name(): {
                 "command": "ATTACK",
-                "target": target
+                "target": target_id
             }
         }
 
@@ -74,7 +74,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast(self, ability, target=-1, position=[-1, -1, -1]) -> None:
+    def cast(self, ability, target=-1, position=(-1, -1, -1)) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -93,7 +93,7 @@ class PlayerHero(Hero):
     def sell(self, slot: int) -> None:
         self.command = {self.get_name(): {"command": "SELL", "slot": slot}}
 
-    def use_item(self, slot, target=-1, position=[-1, -1, -1]) -> None:
+    def use_item(self, slot, target=-1, position=(-1, -1, -1)) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -114,107 +114,100 @@ class PlayerHero(Hero):
             }
         }
 
-    def level_up(self, abilityIndex: int) -> None:
+    def level_up(self, ability_index: int) -> None:
         self.command = {
             self.get_name(): {
                 "command": "LEVELUP",
-                "abilityIndex": abilityIndex
+                "abilityIndex": ability_index
             }
         }
 
     def noop(self) -> None:
         self.command = {self.get_name(): {"command": "NOOP"}}
 
-    def cast_toggle(self, abilityIndex) -> None:
+    def cast_toggle(self, ability_index) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TOGGLE",
-                "ability": abilityIndex,
+                "ability": ability_index,
             }
         }
 
-    def cast_no_target(self, abilityIndex) -> None:
+    def cast_no_target(self, ability_index) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_NO_TARGET",
-                "ability": abilityIndex,
+                "ability": ability_index,
             }
         }
 
-    def cast_target_point(self, abilityIndex, position) -> None:
+    def cast_target_point(self, ability_index, position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_NO_TARGET",
-                "ability": abilityIndex,
+                "ability": ability_index,
                 "x": x,
                 "y": y,
                 "z": z
             }
         }
 
-    def cast_target_area(self, abilityIndex, position) -> None:
+    def cast_target_area(self, ability_index, position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_AREA",
-                "ability": abilityIndex,
+                "ability": ability_index,
                 "x": x,
                 "y": y,
                 "z": z
             }
         }
 
-    def cast_target_unit(self, abilityIndex, target) -> None:
+    def cast_target_unit(self, ability_index, target) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT",
-                "ability": abilityIndex,
+                "ability": ability_index,
                 "target": target
             }
         }
 
-    def cast_vector_targeting(self, abilityIndex, position) -> None:
+    def cast_vector_targeting(self, ability_index, position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_VECTOR_TARGETING",
-                "ability": abilityIndex,
+                "ability": ability_index,
                 "x": x,
                 "y": y,
                 "z": z
             }
         }
 
-    def cast_target_unit_aoe(self, abilityIndex, target) -> None:
+    def cast_target_unit_aoe(self, ability_index, target) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT_AOE",
-                "ability": abilityIndex,
+                "ability": ability_index,
                 "target": target
             }
         }
 
     def cast_combo_target_point_unit(self,
-                                     abilityIndex,
+                                     ability_index,
                                      target=-1,
-                                     position=[-1, -1, -1]) -> None:
+                                     position=(-1, -1, -1)) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_COMBO_TARGET_POINT_UNIT",
-                "ability": abilityIndex,
+                "ability": ability_index,
                 "target": target,
                 "x": x,
                 "y": y,
                 "z": z
-            }
-        }
-
-    def courier_move_to_hero(self) -> None:
-        self.command = {
-            self.get_name(): {
-                "command": "COURIER_MOVE_TO_HERO"
             }
         }
 
@@ -229,6 +222,52 @@ class PlayerHero(Hero):
         self.command = {
             self.get_name(): {
                 "command": "COURIER_RETRIEVE"
+            }
+        }
+
+    def courier_secret_shop(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_SECRET_SHOP"
+            }
+        }
+
+    def courier_return_items(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_RETURN_ITEMS"
+            }
+        }
+
+    def courier_speed_burst(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_SPEED_BURST"
+            }
+        }
+
+    def courier_transfer_items(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_TRANSFER_ITEMS"
+            }
+        }
+
+    def courier_shield(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_SHIELD"
+            }
+        }
+
+    def courier_move_to_position(self, x, y, z=384.00) -> None:
+        # 384 is the z value at ground level.
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_MOVE_TO_POSITION",
+                "x": x,
+                "y": y,
+                "z": z
             }
         }
 

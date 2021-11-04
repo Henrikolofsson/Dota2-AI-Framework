@@ -21,13 +21,14 @@ if __name__ == '__main__':
         dire_bot_filename = settings['dire_bot_filename']
         dire_bot_class_name = settings['dire_bot_class_name']
         difficulty = settings['native_bots_difficulty']
+        number_of_games = settings['number_of_games']
 
         radiant_bot = load_class(base_dir, radiant_bot_filename, radiant_bot_class_name)
         dire_bot = load_class(base_dir, dire_bot_filename, dire_bot_class_name)
 
         radiant_bot_framework = BotFramework(radiant_bot, RADIANT_TEAM)
         dire_bot_framework = BotFramework(dire_bot, DIRE_TEAM)
-        webserver = setup_web_server(settings_filename, radiant_bot_framework, dire_bot_framework)
+        webserver = setup_web_server(settings_filename, radiant_bot_framework, dire_bot_framework, number_of_games)
         webserver.run(server='waitress', host="localhost", port=8080, debug=False, quiet=False)
         webserver.close()
     except FileNotFoundError as fe:

@@ -8,7 +8,8 @@ from game.post_data_interfaces.IUnit import IUnit
 
 class Unit(PhysicalEntity):
 
-    _attack_range: float
+    _attack_range: int
+    _attack_damage: int
     _attack_target: Union[int, None]
     _is_attacking: bool
     _level: int
@@ -31,6 +32,7 @@ class Unit(PhysicalEntity):
         unit_data: IUnit = cast(IUnit, data)
         self._name = unit_data["name"]
         self._attack_range = unit_data["attackRange"]
+        self._attack_damage = unit_data["attackDamage"]
         self._attack_target = unit_data["attackTarget"] if "attackTarget" in unit_data else None
         self._is_attacking = unit_data["isAttacking"]
         self._level = unit_data["level"]
@@ -47,8 +49,11 @@ class Unit(PhysicalEntity):
         self._team = unit_data["team"]
         self._forward_vector = Position(*unit_data["forwardVector"])
 
-    def get_attack_range(self) -> float:
+    def get_attack_range(self) -> int:
         return self._attack_range
+
+    def get_attack_damage(self) -> int:
+        return self._attack_damage
 
     def get_attack_target(self) -> Union[int, None]:
         return self._attack_target

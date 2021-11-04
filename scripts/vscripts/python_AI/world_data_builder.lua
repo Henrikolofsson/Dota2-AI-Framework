@@ -36,6 +36,7 @@ function World_data_builder:Insert_base_unit_data(unit_data, unit_entity)
     unit_data.name = unit_entity:GetName()
     unit_data.team = unit_entity:GetTeamNumber()
     unit_data.attackRange = unit_entity:Script_GetAttackRange()
+    unit_data.attackDamage = unit_entity:GetAttackDamage()
     unit_data.forwardVector = Utilities:Vector_to_array(unit_entity:GetForwardVector())
     unit_data.isAttacking = unit_entity:IsAttacking()
 end
