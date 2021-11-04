@@ -1,118 +1,70 @@
 local Courier_commands = {}
 
-local courier_origin_pos = {}
-local stash_use_range = 700
-local max_transfer_range = 500
-local stash_position_radiant = Vector(-6554.667480, -6723.997559, 384.000000)
-local stash_position_dire = Vector(7413.382324, 6215.563965, 384.000000)
+local ABILITY_RETRIEVE = 0
+local ABILITY_GO_TO_SECRET_SHOP = 1
+local ABILITY_RETURN_ITEMS_TO_STASH = 2
+local ABILITY_SPEED_BURST = 3
+local ABILITY_TRANSFER_ITEMS = 4
+local ABILITY_SHIELD = 5
 
-function Courier_commands:Move_to_hero(hero_entity)
-    --[[
-        GetPreferredCourierForPlayer always returns the courier that's associated
-        with a particular hero. This matches what you would expect in a real game
-        of Dota where you can only use your own courier.
-
-        The MoveToNPC command continues to be applied on subsequent game ticks, i.e.
-        you only have issue it once and the NPC in question (courier in this case)
-        will continue close the distance to the target NPC. It still continues to do
-        this even if it is standing right next to the target. In other words, you
-        have to issue a stop command for it to stop following the hero.
-    ]]
-    local player_id = hero_entity:GetPlayerOwnerID()
-    local courier_entity = PlayerResource:GetPreferredCourierForPlayer(player_id)
-
-    Courier_commands:Save_courier_origin(courier_entity)
-    courier_entity:MoveToNPC(hero_entity)
+function Courier_commands:Move_to_position(hero_entity, result)
+    local courier_entity = Courier_commands:Get_courier(hero_entity)
+    local destination = Vector(result.x, result.y, result.z)
+    courier_entity:MoveToPosition(destination)
 end
 
 function Courier_commands:Stop(hero_entity)
-    --[[
-        Stops the courier at its current position. Because COURIER_MOVE_TO_HERO never
-        stops the courier from following the hero, a stop command is necessary if the
-        AI changes its mind and wants to leave the courier at its current position.
-    ]]
-    local player_id = hero_entity:GetPlayerOwnerID()
-    local courier = PlayerResource:GetPreferredCourierForPlayer(player_id)
-    courier:Stop()
-end
-
-function Courier_commands:Move_to_base(courier)
-    --[[
-        Moves a courier to its origin position.
-        The origin position is the vector where a particular courier spawned at
-        the start of the game.
-    ]]
-    courier:MoveToPosition(courier_origin_pos[courier])
+    local courier_entity = Courier_commands:Get_courier(hero_entity)
+    courier_entity:Stop()
 end
 
 function Courier_commands:Retrieve(hero_entity)
-    --[[
-        1. Courier moves to within range of the stash.
-            - Range is defined by @stash_use_range.
-        2. Courier picks up the items from the stash.
-        3. Courier moves towards the hero.
-        4. Courier delivers items when it's within the range.
-            - Range is defined by @max_transfer_range.
-        5. Courier moves back to its origin position.
+    Courier_commands:Use_ability(hero_entity, ABILITY_RETRIEVE)
+end
 
-        Currently ignores all edge cases like full inventories, courier deaths, and other
-        things that might come up later.
-    ]]
+function Courier_commands:Go_to_secret_shop(hero_entity)
+    Courier_commands:Use_ability(hero_entity, ABILITY_GO_TO_SECRET_SHOP)
+end
+
+function Courier_commands:Return_items_to_stash(hero_entity)
+    Courier_commands:Use_ability(hero_entity, ABILITY_RETURN_ITEMS_TO_STASH)
+end
+
+function Courier_commands:Speed_burst(hero_entity)
+    Courier_commands:Use_ability_restricted(hero_entity, 10, ABILITY_SPEED_BURST)
+end
+
+function Courier_commands:Transfer_items(hero_entity)
+    Courier_commands:Use_ability(hero_entity, ABILITY_TRANSFER_ITEMS)
+end
+
+function Courier_commands:Shield(hero_entity)
+    Courier_commands:Use_ability_restricted(hero_entity, 20, ABILITY_SHIELD)
+end
+
+function Courier_commands:Use_ability_restricted(hero_entity, level, ability_index)
+    local courier_entity = Courier_commands:Get_courier(hero_entity)
+    local courier_level = courier_entity:GetLevel()
+
+    if courier_level >= level then
+        local ability = courier_entity:GetAbilityByIndex(ability_index)
+        local cooldown_ready = ability:IsCooldownReady()
+        if cooldown_ready then
+            courier_entity:CastAbilityNoTarget(ability, courier_entity:GetPlayerOwnerID())
+        end
+    end 
+end
+
+function Courier_commands:Use_ability(hero_entity, ability_index)
+    local courier_entity = Courier_commands:Get_courier(hero_entity)
+    local ability = courier_entity:GetAbilityByIndex(ability_index)
+    courier_entity:CastAbilityNoTarget(ability, courier_entity:GetPlayerOwnerID())
+end
+
+function Courier_commands:Get_courier(hero_entity)
     local player_id = hero_entity:GetPlayerOwnerID()
     local courier_entity = PlayerResource:GetPreferredCourierForPlayer(player_id)
-    local team = hero_entity:GetTeam()
-    local stash_position = team == DOTA_TEAM_GOODGUYS and stash_position_radiant or stash_position_dire
-
-    Courier_commands:Save_courier_origin(courier_entity)
-    courier_entity:MoveToPosition(stash_position)
-
-    Timers:CreateTimer(function()
-        if courier_entity:IsPositionInRange(stash_position, stash_use_range) then
-            Courier_commands:Get_stashed_items(hero_entity, courier_entity)
-            courier_entity:MoveToNPC(hero_entity)
-
-            Timers:CreateTimer(function()
-                local range_to_hero = courier_entity:GetRangeToUnit(hero_entity)
-                if range_to_hero <= max_transfer_range then
-                    Courier_commands:Transfer_to_hero(hero_entity, courier_entity)
-                    Courier_commands:Move_to_base(courier_entity)
-                    return nil
-                end
-                return 1.0
-              end
-            )
-
-            return nil
-        end
-        return 1.0
-      end
-    )
-end
-
-function Courier_commands:Transfer_to_hero(hero_entity, courier_entity)
-    for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9 do
-        local maybe_item = courier_entity:GetItemInSlot(i)
-        if maybe_item then
-            local item = courier_entity:TakeItem(maybe_item)
-            hero_entity:AddItem(item)
-        end
-    end
-end
-
-function Courier_commands:Get_stashed_items(hero_entity, courier_entity)
-    for i = DOTA_STASH_SLOT_1, DOTA_STASH_SLOT_6 do
-        local stashed_item = hero_entity:GetItemInSlot(i)
-        if stashed_item then
-            local item = hero_entity:TakeItem(stashed_item)
-            courier_entity:AddItem(item)
-        end
-    end
-end
-
-function Courier_commands:Save_courier_origin(courier_entity)
-    if not courier_origin_pos[courier_entity] then
-        courier_origin_pos[courier_entity] = courier_entity:GetOrigin()
-    end
+    return courier_entity
 end
 
 return Courier_commands
