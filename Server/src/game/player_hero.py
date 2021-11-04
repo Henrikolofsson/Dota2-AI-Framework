@@ -22,6 +22,8 @@ class PlayerHero(Hero):
             "SELL",
             "USE_ITEM",
             "DISASSEMBLE",
+            "UNLOCK_ITEM",
+            "LOCK_ITEM"
             "LEVELUP",
             "NOOP",
         ]
@@ -110,6 +112,22 @@ class PlayerHero(Hero):
         self.command = {
             self.get_name(): {
                 "command": "DISASSEMBLE",
+                "slot": slot
+            }
+        }
+
+    def unlock_item(self, slot) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "UNLOCK_ITEM",
+                "slot": slot
+            }
+        }
+
+    def lock_item(self, slot) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "LOCK_ITEM",
                 "slot": slot
             }
         }

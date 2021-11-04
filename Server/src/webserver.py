@@ -1,7 +1,8 @@
 import json
 from enum import Enum, auto
-
+from bot_framework import  BotFramework
 from bottle import request, response, Bottle
+from pathlib import Path
 
 
 class ServerState(Enum):
@@ -24,7 +25,8 @@ class ServerState(Enum):
     UPDATE = auto()
 
 
-def setup_web_server(settings_filename, radiant_bot_framework, dire_bot_framework) -> Bottle:
+def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramework,
+                     dire_bot_framework: BotFramework, games_remaining: int) -> Bottle:
     """Defines the web server routes and return the Bottle app instance."""
     app = Bottle()
     state = ServerState.SETTINGS
@@ -50,7 +52,16 @@ def setup_web_server(settings_filename, radiant_bot_framework, dire_bot_framewor
 
     @app.post("/api/game_ended")
     def game_ended():
-        return {'status': 'ok', 'message': 'not implemented'}
+        nonlocal state, games_remaining, radiant_bot_framework, dire_bot_framework
+        state = ServerState.SETTINGS
+        games_remaining -= 1
+
+        if games_remaining == 0:
+            return {'status': 'done'}
+        else:
+            radiant_bot_framework = radiant_bot_framework.create_new_bot_framework()
+            dire_bot_framework = dire_bot_framework.create_new_bot_framework()
+            return {'status': 'restart'}
 
     @app.post("/api/update")
     def update():

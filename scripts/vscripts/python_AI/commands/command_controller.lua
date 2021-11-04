@@ -1,4 +1,5 @@
 local item_shop_availability = require "python_AI.commands.item_handlers.item_shop_availability"
+local item_disassemblable = require "python_AI.commands.item_handlers.item_disassemblable"
 local Utilities = require "utilities.utilities"
 local Courier_commands = require "python_AI.commands.courier_commands"
 
@@ -27,6 +28,8 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "SELL"                                        then self:Sell(hero_entity, result)
     elseif command == "USE_ITEM"                                    then self:Use_item(hero_entity, result)
     elseif command == "DISASSEMBLE"                                 then self:Disassemble_item(hero_entity, result)
+    elseif command == "UNLOCK_ITEM"                                 then self:Check_and_unlock_item(hero_entity, result)
+    elseif command == "LOCK_ITEM"                                   then self:Check_and_lock_item(hero_entity, result)
     elseif command == "NOOP"                                        then self:Noop(hero_entity, result)
     elseif command == "CAST_ABILITY_TOGGLE"                         then self:Cast_ability_toggle(hero_entity, result)
     elseif command == "CAST_ABILITY_NO_TARGET"                      then self:Cast_ability_no_target(hero_entity, result)
@@ -256,10 +259,38 @@ function Command_controller:Disassemble_item(hero_entity, result)
     local slot = result.slot
     local item_entity = hero_entity:GetItemInSlot(slot)
 
-    if item_entity and item_entity.IsDisassemlable then
+    if item_entity and self:Hero_can_disassemble_item(item_entity) then
         hero_entity:DisassembleItem(item_entity)
     else
         Warning("Hero" .. hero_entity:GetName() .. "tried to disassemble Item" .. item_entity:GetName())
+    end
+end
+
+function Command_controller:Hero_can_disassemble_item(item_entity)
+    for _index, value in ipairs(item_disassemblable) do
+        if item_entity:GetName() == value then
+            return true
+        end
+    end
+    return false
+end
+
+
+function Command_controller:Check_and_unlock_item(hero_entity, result)
+    local slot = result.slot
+    local item_entity = hero_entity:GetItemInSlot(slot)
+
+    if item_entity:IsCombineLocked() then
+        item_entity:SetCombineLocked(false)
+    end
+end
+
+function Command_controller:Check_and_lock_item(hero_entity, result)
+    local slot = result.slot
+    local item_entity = hero_entity:GetItemInSlot(slot)
+
+    if not item_entity:IsCombineLocked() then
+        item_entity:SetCombineLocked(true)
     end
 end
 
