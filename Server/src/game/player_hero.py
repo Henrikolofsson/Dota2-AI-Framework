@@ -21,6 +21,7 @@ class PlayerHero(Hero):
             "BUY",
             "SELL",
             "USE_ITEM",
+            "DISASSEMBLE",
             "LEVELUP",
             "NOOP",
         ]
@@ -102,6 +103,14 @@ class PlayerHero(Hero):
                 "x": x,
                 "y": y,
                 "z": z
+            }
+        }
+    
+    def disassemble_item(self, slot) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "DISASSEMBLE",
+                "slot": slot
             }
         }
 
