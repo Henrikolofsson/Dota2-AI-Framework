@@ -47,12 +47,22 @@ class TestBotDisassemble(BaseBot):
             if self._hero_name_equals_any(hero.get_name(), [
                 "npc_dota_hero_abyssal_underlord",
             ]):
-                hero.buy("item_solar_crest")
+                hero.buy("item_echo_sabre")
         
         if self._world.get_game_ticks() == 30:
             items = hero.get_items()
             if len(items):
                 hero.disassemble_item(items[0].get_slot())
+        
+        if self._world.get_game_ticks() == 35:
+            items = hero.get_items()
+            if len(items):
+                hero.unlock_item(items[0].get_slot())
+
+        if self._world.get_game_ticks() == 40:
+            items = hero.get_items()
+            if len(items):
+                hero.lock_item(items[0].get_slot())
 
     def _hero_name_equals_any(self, to_test: str, to_test_against: list[str]) -> bool:
         for value in to_test_against:
