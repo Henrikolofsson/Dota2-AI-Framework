@@ -10,5 +10,6 @@ class IHero(IUnit):
     items: dict[str, Union[IItem, list[Any]]]
     xp: int
     hasTowerAggro: bool
+    hasAggro: bool
     gold: int
     deaths: int
