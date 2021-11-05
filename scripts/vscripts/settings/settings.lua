@@ -12,5 +12,7 @@ Settings = {
     ---@type table
     dire_party_names = nil,
     ---@type boolean
-    spectator_mode = nil
+    spectator_mode = nil,
+    ---@type boolean
+    auto_restart_client_on_server_restart = nil,
 }

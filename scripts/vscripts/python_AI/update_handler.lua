@@ -1,4 +1,9 @@
--- Constants
+-- imports
+local Match_end_controller = require "match_end.match_end_controller"
+
+
+
+-- constants
 local RADIANT_UPDATE_ROUTE = "radiant_update"
 local DIRE_UPDATE_ROUTE = "dire_update"
 
@@ -34,7 +39,12 @@ function Update_handler:Update(entities, heroes, on_update_callback)
         ---@param result table
         function(result)
             if result["StatusCode"] == 406 then
-                print("Request update was Not Acceptable! Addon restart needed.")
+                if Settings.auto_restart_client_on_server_restart then
+                    print("Restarting addon.")
+                    Match_end_controller:Force_restart()
+                else
+                    print("Request update was Not Acceptable! Addon restart needed.")
+                end
                 Timers:RemoveTimer("UpdateForTeam" .. tostring(heroes[1]:GetTeam()))
                 return
             end

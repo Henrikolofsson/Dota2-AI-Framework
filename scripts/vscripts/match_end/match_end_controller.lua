@@ -36,6 +36,11 @@ function Match_end_controller:Handle_restart_game()
     )
 end
 
+function Match_end_controller:Force_restart()
+    ---@type table
+    Restart()
+end
+
 function Match_end_controller:Handle_exit()
     ---@type table
     Exit()

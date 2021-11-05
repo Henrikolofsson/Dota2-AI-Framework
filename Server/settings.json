@@ -9,5 +9,6 @@
   "should_dire_be_native_bots": false,
   "grant_global_vision": false,
   "spectator_mode": true,
-  "number_of_games": 2
+  "number_of_games": 2,
+  "auto_restart_client_on_server_restart": true
 }
