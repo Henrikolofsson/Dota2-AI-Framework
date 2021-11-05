@@ -10,6 +10,8 @@ class Item(BaseEntity):
     _cast_range: int
     _name: str
     _slot: int
+    _combine_locked: bool
+    _disassemblable: bool
 
     def update(self, data: IEntity):
         super().update(data)
@@ -18,6 +20,8 @@ class Item(BaseEntity):
         self._name = item_data["name"]
         self._cast_range = item_data["castRange"]
         self._slot = item_data["slot"]
+        self._combine_locked = item_data["combineLocked"]
+        self._disassemblable = item_data["disassemblable"]
 
     def get_charges(self) -> int:
         return self._charges
@@ -30,6 +34,12 @@ class Item(BaseEntity):
 
     def get_slot(self) -> int:
         return self._slot
+
+    def is_combine_locked(self) -> bool:
+        return self._combine_locked
+
+    def is_disassemblable(self) -> bool:
+        return self._disassemblable
 
     def get_type(self) -> EntityType:
         return EntityType.ITEM

@@ -1,5 +1,6 @@
 -- imports
 local Utilities = require "utilities.utilities"
+local Command_controller = require "python_AI.commands.command_controller"
 
 
 
@@ -41,18 +42,20 @@ function World_data_builder:Insert_base_unit_data(unit_data, unit_entity)
     unit_data.isAttacking = unit_entity:IsAttacking()
 end
 
----@param hero_entity table
+---@param unit_entity table
 ---@return table items
-function World_data_builder:Get_items_data(hero_entity)
+function World_data_builder:Get_items_data(unit_entity)
     local items = {}
     for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_6, 1 do
-        local item = hero_entity:GetItemInSlot(i)
+        local item = unit_entity:GetItemInSlot(i)
         items[i] = {}
         if item then
             items[i].name = item:GetName()
             items[i].slot = item:GetItemSlot()
             items[i].charges = item:GetCurrentCharges()
             items[i].castRange = item:GetCastRange()
+            items[i].combineLocked = item:IsCombineLocked()
+            items[i].disassemblable = Command_controller:Hero_can_disassemble_item(item)
         end
     end
     return items
@@ -143,6 +146,13 @@ function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     -- should not be seen by enemy team END
 end
 
+---@param courier_data table
+---@param courier_entity table
+function World_data_builder:Insert_courier_data(courier_data, courier_entity)
+    courier_data.type = "Courier"
+    courier_data.items = self:Get_items_data(courier_entity)
+end
+
 ---@param unit_entity table
 ---@return table unit_data
 function World_data_builder:Get_unit_data(unit_entity)
@@ -159,7 +169,7 @@ function World_data_builder:Get_unit_data(unit_entity)
             unit_data.type = "Building"
         end
     elseif unit_entity:IsCourier() then
-        unit_data.type = "Courier"
+        self:Insert_courier_data(unit_data, unit_entity)
     else
         unit_data.type = "BaseNPC"
     end

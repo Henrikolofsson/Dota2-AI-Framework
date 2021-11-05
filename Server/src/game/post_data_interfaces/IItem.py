@@ -5,3 +5,5 @@ class IItem(IEntity):
     castRange: int
     name: str
     slot: int
+    combineLocked: bool
+    disassemblable: bool
