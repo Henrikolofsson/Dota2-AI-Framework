@@ -1,15 +1,15 @@
-from enum import Enum, unique
+from enum import Enum, auto, unique
 
 @unique
 class EntityType(Enum):
-    ABILITY = 0
-    BUILDING = 1
-    HERO = 2
-    ITEM = 3
-    PHYSICAL_ENTITY = 4
-    PLAYER_HERO = 5
-    TOWER = 6
-    TREE = 7
-    UNIT = 8
-    COURIER = 9
-    RUNE = 10
+    ABILITY = auto()
+    BUILDING = auto()
+    HERO = auto()
+    ITEM = auto()
+    PHYSICAL_ENTITY = auto()
+    PLAYER_HERO = auto()
+    TOWER = auto()
+    TREE = auto()
+    UNIT = auto()
+    COURIER = auto()
+    RUNE = auto()
