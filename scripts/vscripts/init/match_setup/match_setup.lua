@@ -42,6 +42,12 @@ function Match_setup:Force_game_start()
     SendToServerConsole("dota_dev forcegamestart")
 end
 
+function Match_setup:Rune_handler()
+    ---@type table
+    local GameMode = GameRules:GetGameModeEntity()
+    GameMode:SetUseDefaultDOTARuneSpawnLogic(true)
+end
+
 function Match_setup:Enable_courier()
     -- 'Free Courier Mode' is the style of couriers introduced in patch 7.23 where
     -- each hero gets a free courier.
@@ -53,6 +59,7 @@ function Match_setup:Run()
     self:Set_bot_thinking_enabled()
     self:Remove_all_game_rule_starting_delays()
     self:Grant_global_vision()
+    self:Rune_handler()
     self:Enable_courier()
 end
 

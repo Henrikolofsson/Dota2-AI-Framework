@@ -15,6 +15,7 @@ from game.hero import Hero
 from game.player_hero import PlayerHero
 from game.tree import Tree
 from game.courier import Courier
+from game.rune import Rune
 
 
 class World:
@@ -77,6 +78,8 @@ class World:
             new_entity = Tree(entity_id)
         elif entity_data["type"] == "Courier":
             new_entity = Courier(entity_id)
+        elif entity_data["type"] == "Rune":
+            new_entity = Rune(entity_id)
         else:
             raise Exception(
                 "Error, the following entity did not match our entities:\n{}".format(entity_data)
@@ -217,3 +220,13 @@ class World:
                 enemy_heroes.append(enemy_unit)
 
         return enemy_heroes
+
+    def get_runes(self) -> list[Rune]:
+        '''Returns all runes.'''
+        runes: list[Rune] = []
+        
+        for entity in self._entities:
+            if isinstance(entity, Rune):
+                runes.append(entity)
+        
+        return runes

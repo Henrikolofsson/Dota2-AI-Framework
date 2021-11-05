@@ -12,3 +12,4 @@ class EntityType(Enum):
     TREE = 7
     UNIT = 8
     COURIER = 9
+    RUNE = 10

@@ -24,6 +24,7 @@ class PlayerHero(Hero):
             "DISASSEMBLE",
             "UNLOCK_ITEM",
             "LOCK_ITEM"
+            "PICK_UP_RUNE"
             "LEVELUP",
             "NOOP",
         ]
@@ -129,6 +130,14 @@ class PlayerHero(Hero):
             self.get_name(): {
                 "command": "LOCK_ITEM",
                 "slot": slot
+            }
+        }
+
+    def pick_up_rune(self, target_id: str) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "PICK_UP_RUNE",
+                "target": target_id
             }
         }
 

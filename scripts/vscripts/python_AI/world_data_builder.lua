@@ -196,6 +196,25 @@ function World_data_builder:Insert_trees()
     end
 end
 
+---@param rune_entity table
+---@return table tree_data
+function World_data_builder:Get_rune_data(rune_entity)
+    local rune_data = {}
+    rune_data.origin = Utilities:Vector_to_array(rune_entity:GetOrigin())
+    rune_data.type = "Rune"
+    return rune_data
+end
+
+function World_data_builder:Insert_runes()
+    local rune_entity = Entities:FindByClassname(nil, "dota_item_rune")
+    while rune_entity ~= nil do
+        if IsLocationVisible(self.requesting_hero:GetTeam(), rune_entity:GetOrigin()) then
+            self.entities[rune_entity:entindex()] = self:Get_rune_data(rune_entity)
+        end
+        rune_entity = Entities:FindByClassname(rune_entity, "dota_item_rune")
+    end
+end
+
 ---@param flags table should_get_invulnerable: ```boolean```
 ---@return table all_units
 function World_data_builder:Get_all_units(flags)
@@ -237,6 +256,7 @@ function World_data_builder:Get_all_entities(hero_entity)
     self.all_units = {}
 
     self:Insert_trees()
+    self:Insert_runes()
     self:Insert_all_units()
 
     return self.entities

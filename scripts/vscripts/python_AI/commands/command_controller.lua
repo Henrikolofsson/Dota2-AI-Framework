@@ -30,6 +30,7 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "DISASSEMBLE"                                 then self:Disassemble_item(hero_entity, result)
     elseif command == "UNLOCK_ITEM"                                 then self:Check_and_unlock_item(hero_entity, result)
     elseif command == "LOCK_ITEM"                                   then self:Check_and_lock_item(hero_entity, result)
+    elseif command == "PICK_UP_RUNE"                                then self:Pick_up_rune(hero_entity, result)
     elseif command == "NOOP"                                        then self:Noop(hero_entity, result)
     elseif command == "CAST_ABILITY_TOGGLE"                         then self:Cast_ability_toggle(hero_entity, result)
     elseif command == "CAST_ABILITY_NO_TARGET"                      then self:Cast_ability_no_target(hero_entity, result)
@@ -223,6 +224,10 @@ function Command_controller:Check_and_lock_item(hero_entity, result)
     if not item_entity:IsCombineLocked() then
         item_entity:SetCombineLocked(true)
     end
+end
+
+function Command_controller:Pick_up_rune(hero_entity, result)
+    hero_entity:PickupRune(EntIndexToHScript(result.target))
 end
 
 function Command_controller:Cast_ability_toggle(hero_entity, result)
