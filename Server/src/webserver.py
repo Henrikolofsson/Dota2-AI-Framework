@@ -1,8 +1,9 @@
 import json
 from enum import Enum, auto
-from bot_framework import  BotFramework
+from bot_framework import BotFramework
 from bottle import request, response, Bottle
 from pathlib import Path
+from threading import Lock
 
 
 class ServerState(Enum):
@@ -31,6 +32,15 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
     app = Bottle()
     state = ServerState.SETTINGS
 
+    # To support ending and restarting games, and to run multiple consecutive games, we need to create
+    # new BotFramework objects. A possible issue is that this will be done at the same time as an update
+    # is being handled for the current game, possibly corrupting data. To solve this issue two locks
+    # are used: radiant_lock and dire_lock. Each lock is acquire when an update is being handled for that
+    # team. To create new instances of the framework, both locks must be acquired. The end result should
+    # be that any "in flight" updates are always finished before a new game is initiated.
+    radiant_lock = Lock()
+    dire_lock = Lock()
+
     @app.get("/api/settings")
     def settings():
         nonlocal state
@@ -53,24 +63,27 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
     @app.post("/api/game_ended")
     def game_ended():
         nonlocal state, games_remaining, radiant_bot_framework, dire_bot_framework
-        state = ServerState.SETTINGS
-        games_remaining -= 1
 
-        if games_remaining == 0:
-            return {'status': 'done'}
-        else:
-            radiant_bot_framework = radiant_bot_framework.create_new_bot_framework()
-            dire_bot_framework = dire_bot_framework.create_new_bot_framework()
-            return {'status': 'restart'}
+        with radiant_lock, dire_lock:
+            state = ServerState.SETTINGS
+            games_remaining -= 1
+
+            if games_remaining == 0:
+                return {'status': 'done'}
+            else:
+                radiant_bot_framework = radiant_bot_framework.create_new_bot_framework()
+                dire_bot_framework = dire_bot_framework.create_new_bot_framework()
+                return {'status': 'restart'}
 
     @app.post("/api/restart_game")
     def restart_game():
         nonlocal state, radiant_bot_framework, dire_bot_framework
-        state = ServerState.SETTINGS
 
-        radiant_bot_framework = radiant_bot_framework.create_new_bot_framework()
-        dire_bot_framework = dire_bot_framework.create_new_bot_framework()
-        return {'status': 'restart'}
+        with radiant_lock, dire_lock:
+            state = ServerState.SETTINGS
+            radiant_bot_framework = radiant_bot_framework.create_new_bot_framework()
+            dire_bot_framework = dire_bot_framework.create_new_bot_framework()
+            return {'status': 'restart'}
 
     @app.post("/api/update")
     def update():
@@ -78,33 +91,34 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
 
     @app.post("/api/radiant_update")
     def radiant_update():
-        return update_game_state(radiant_bot_framework, state)
+        return update_game_state(radiant_bot_framework, state, radiant_lock)
 
     @app.post("/api/dire_update")
     def dire_update():
-        return update_game_state(dire_bot_framework, state)
+        return update_game_state(dire_bot_framework, state, dire_lock)
 
     return app
 
 
-def update_game_state(bot_framework, state):
-    if state != ServerState.UPDATE:
-        response.status = 406
-        return {'status:': 'error', 'message': 'invalid server state in update game state'}
+def update_game_state(bot_framework, state, bot_framework_lock):
+    with bot_framework_lock:
+        if state != ServerState.UPDATE:
+            response.status = 406
+            return {'status:': 'error', 'message': 'invalid server state in update game state'}
 
-    if request.content_type != 'application/json':
-        response.status = 415
-        return {'status': 'error', 'message': 'This API only understands JSON'}
+        if request.content_type != 'application/json':
+            response.status = 415
+            return {'status': 'error', 'message': 'This API only understands JSON'}
 
-    # If the JSON document is large (bigger than the Bottle constant MEMFILE_MAX) then
-    # requests.json will contain the json as a string and we need a separate parsing step.
-    # Otherwise request.json will already have parsed the JSON into a dict.
-    raw_json = request.json
-    parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
+        # If the JSON document is large (bigger than the Bottle constant MEMFILE_MAX) then
+        # requests.json will contain the json as a string and we need a separate parsing step.
+        # Otherwise request.json will already have parsed the JSON into a dict.
+        raw_json = request.json
+        parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
 
-    bot_framework.update(parsed_json)
-    bot_framework.generate_bot_commands()
-    commands = bot_framework.receive_bot_commands()
-    return json.dumps(commands)
+        bot_framework.update(parsed_json)
+        bot_framework.generate_bot_commands()
+        commands = bot_framework.receive_bot_commands()
+        return json.dumps(commands)
 
 

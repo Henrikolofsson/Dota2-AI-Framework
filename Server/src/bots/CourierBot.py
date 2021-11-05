@@ -29,11 +29,15 @@ class CourierBot(BaseBot):
     def __init__(self, world: World, team):
         self.world = world
         self.party = party[team]
+        self.team = team
         print('Loaded CourierBot')
 
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self.heroes = heroes
 
     def actions(self, hero: PlayerHero) -> None:
-        pass
-    
+        if hero.get_name() == 'npc_dota_hero_bane':
+            print(f"team: {self.team} game_tick: {self.world.get_game_ticks()}")
+
+        if hero.get_name() == 'npc_dota_hero_brewmaster':
+            print(f"team: {self.team} game_tick: {self.world.get_game_ticks()}")
