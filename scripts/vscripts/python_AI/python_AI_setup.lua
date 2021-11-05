@@ -26,7 +26,9 @@ end
 ---@param dire_heroes table
 function Python_AI_setup:Initialize_bot_thinking(radiant_heroes, dire_heroes)
     self:Set_context_think_for_heroes(radiant_heroes)
-    self:Set_context_think_for_heroes(dire_heroes)
+    if not Settings.should_dire_be_native_bots then
+        self:Set_context_think_for_heroes(dire_heroes)
+    end
 end
 
 
