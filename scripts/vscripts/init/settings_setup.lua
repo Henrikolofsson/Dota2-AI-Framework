@@ -7,11 +7,11 @@ function Settings_setup:Get_and_set_settings()
     request:Send(
         ---@param settings_json table
         function(settings_json)
-            ---@type table
             if settings_json["StatusCode"] == 406 then
                 print("Request settings was Not Acceptable!")
                 return
             end
+            ---@type table
             local settings_data = package.loaded["game/dkjson"].decode(settings_json["Body"])
             for key, value in pairs(settings_data) do
                 Settings[key] = value

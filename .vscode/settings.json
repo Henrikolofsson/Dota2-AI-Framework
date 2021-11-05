@@ -47,6 +47,7 @@
         "GetPreferredCourierForPlayer",
         "DOTA_STASH_SLOT_1",
         "DOTA_STASH_SLOT_6",
-        "DOTA_ITEM_SLOT_9"
+        "DOTA_ITEM_SLOT_9",
+        "DOTA_GAMERULES_STATE_POST_GAME"
     ]
 }

@@ -63,6 +63,15 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
             dire_bot_framework = dire_bot_framework.create_new_bot_framework()
             return {'status': 'restart'}
 
+    @app.post("/api/restart_game")
+    def restart_game():
+        nonlocal state, radiant_bot_framework, dire_bot_framework
+        state = ServerState.SETTINGS
+
+        radiant_bot_framework = radiant_bot_framework.create_new_bot_framework()
+        dire_bot_framework = dire_bot_framework.create_new_bot_framework()
+        return {'status': 'restart'}
+
     @app.post("/api/update")
     def update():
         return update_game_state(radiant_bot_framework, state)

@@ -4,6 +4,7 @@ local Event_controller = require "listeners.event_controller"
 local Match_setup_controller = require "init.match_setup.match_setup_controller"
 local Hero_setup_controller = require "init.hero_setup.hero_setup_controller"
 local Python_AI_controller = require "python_AI.python_AI_controller"
+local Match_end_controller = require "match_end.match_end_controller"
 
 
 
@@ -43,6 +44,20 @@ function Main_controller.On_pre_game_state()
     end
 end
 
+function Main_controller.On_post_game_state()
+    Match_end_controller:Handle_match_end()
+end
+
+function Main_controller.On_player_chat(chat_text)
+    if chat_text == "end" then
+        Match_end_controller:Handle_match_end()
+    elseif chat_text == "restart" then
+        Match_end_controller:Handle_restart_game()
+    elseif chat_text == "exit" then
+        Match_end_controller:Handle_exit()
+    end
+end
+
 function Main_controller:Put_admin_on_spectator_team()
     PlayerResource:SetCustomTeamAssignment(0, 1)
 end
@@ -55,6 +70,8 @@ function Main_controller.Run_after_settings()
     Match_setup_controller:Initialize_match_setup()
     Event_controller:Add_on_hero_selection_game_state_listener(Main_controller.On_hero_selection_game_state)
     Event_controller:Add_on_pre_game_state_listener(Main_controller.On_pre_game_state)
+    Event_controller:Add_on_post_game_state_listener(Main_controller.On_post_game_state)
+    Event_controller:Add_on_player_chat_listener(Main_controller.On_player_chat)
 end
 
 function Main_controller.Run()

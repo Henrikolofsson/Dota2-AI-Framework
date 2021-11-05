@@ -16,4 +16,9 @@ function Game_state_controller:Is_game_in_progress_state()
     return GameRules:State_Get() == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS
 end
 
+---@return boolean
+function Game_state_controller:Is_post_game_state()
+    return GameRules:State_Get() == DOTA_GAMERULES_STATE_POST_GAME
+end
+
 return Game_state_controller
