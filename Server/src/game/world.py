@@ -88,7 +88,7 @@ class World:
         new_entity.update(entity_data)
         self._entities.append(new_entity)
 
-    def get_entity_by_id(self, entity_id: str) -> Union[BaseEntity, None]:
+    def get_entity_by_id(self, entity_id: str) -> Union[PhysicalEntity, None]:
         for entity in self._entities:
             if entity.get_id() == entity_id:
                 return entity
