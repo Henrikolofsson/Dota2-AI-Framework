@@ -36,8 +36,21 @@ class CourierBot(BaseBot):
         self.heroes = heroes
 
     def actions(self, hero: PlayerHero) -> None:
-        if hero.get_name() == 'npc_dota_hero_bane':
-            print(f"team: {self.team} game_tick: {self.world.get_game_ticks()}")
+        if self.world.get_game_ticks() == 5:
+            tower = self.world.get_unit_by_name('dota_goodguys_tower2_bot')
+            tower_pos = tower.get_position()
+            hero.move(tower_pos.x, tower_pos.y, tower_pos.z)
 
-        if hero.get_name() == 'npc_dota_hero_brewmaster':
-            print(f"team: {self.team} game_tick: {self.world.get_game_ticks()}")
+        if self.world.get_game_ticks() == 10:
+            tower = self.world.get_unit_by_name('dota_goodguys_tower2_bot')
+            tower_pos = tower.get_position()
+            hero.courier_move_to_position(tower_pos.x, tower_pos.y, tower_pos.z)
+
+        if self.world.get_game_ticks() == 50:
+            hero.buy("item_clarity")
+
+        if self.world.get_game_ticks() == 60:
+            hero.courier_transfer_items()
+
+
+
