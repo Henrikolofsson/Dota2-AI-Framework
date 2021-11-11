@@ -10,6 +10,8 @@ local Match_end_controller = require "match_end.match_end_controller"
 
 -- constants
 local ONE_SECOND_DELAY = 1.0
+local ADMIN_PLAYER_ID = 0
+local SPECTATOR_TEAM = 1
 
 
 
@@ -59,7 +61,7 @@ function Main_controller.On_player_chat(chat_text)
 end
 
 function Main_controller:Put_admin_on_spectator_team()
-    PlayerResource:SetCustomTeamAssignment(0, 1)
+    PlayerResource:SetCustomTeamAssignment(ADMIN_PLAYER_ID, SPECTATOR_TEAM)
 end
 
 function Main_controller.Run_after_settings()
