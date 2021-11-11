@@ -20,7 +20,7 @@ party = {
     ],
 }
 
-class TestBot1(BaseBot):
+class TestBotPrioritizePurchaser(BaseBot):
     '''
     Tests:
     - Every hero can buy a stack of tango when in range of shop.

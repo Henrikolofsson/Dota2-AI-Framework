@@ -20,7 +20,7 @@ party = {
     ],
 }
 
-class TestBot2(BaseBot):
+class TestBotFirstGameTick(BaseBot):
     '''
     Tests:
     - Every hero can preform action on first game_tick. ( self._world.get_game_ticks() == 1 )
