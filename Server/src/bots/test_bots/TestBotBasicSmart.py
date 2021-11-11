@@ -91,7 +91,7 @@ class TestBotBasicSmart(BaseBot):
             self._should_move_home[hero.get_name()] = True
 
         if self._should_move_home[hero.get_name()]:
-            hero.move(*self._home_position.to_list())
+            hero.move(*self._home_position)
             return
 
         if self.is_near_allied_creeps(hero) and not hero.get_has_tower_aggro():
@@ -106,7 +106,7 @@ class TestBotBasicSmart(BaseBot):
             elif creep_to_deny is not None:
                 hero.attack(creep_to_deny.get_id())
             elif hero.get_has_aggro():
-                hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position().to_list())
+                hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
             elif enemy_hero_to_attack is not None:
                 hero.attack(enemy_hero_to_attack.get_id())
             elif self.should_move_closer_to_allied_creeps(hero):
@@ -114,13 +114,13 @@ class TestBotBasicSmart(BaseBot):
             else:
                 self.stop(hero)
         else:
-            hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position().to_list())
+            hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
 
     def stop(self, hero: PlayerHero) -> None:
-        hero.move(*hero.get_position().to_list())
+        hero.move(*hero.get_position())
 
     def follow(self, hero: PlayerHero, to_follow: Unit) -> None:
-        hero.move(*to_follow.get_position().to_list())
+        hero.move(*to_follow.get_position())
 
     def should_move_closer_to_allied_creeps(self, hero: PlayerHero) -> bool:
         creeps: list[Unit] = self._world.get_allied_creeps_of(hero)

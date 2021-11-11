@@ -1,3 +1,6 @@
+from typing import Iterator
+
+
 class Position():
     _x: float
     _y: float
@@ -37,3 +40,6 @@ class Position():
 
     def to_list(self) -> list[float]:
         return [self.x, self.y, self.z]
+
+    def __iter__(self) -> Iterator[float]:
+        return iter((self.x, self.y, self.z))

@@ -46,7 +46,7 @@ end
 ---@return table items
 function World_data_builder:Get_items_data(unit_entity)
     local items = {}
-    for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_6, 1 do
+    for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_9, 1 do
         local item = unit_entity:GetItemInSlot(i)
         items[i] = {}
         if item then

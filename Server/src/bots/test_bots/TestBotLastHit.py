@@ -70,9 +70,9 @@ class TestBotLastHit(BaseBot):
             if creep_to_last_hit is not None:
                 hero.attack(creep_to_last_hit.get_id())
             else:
-                hero.move(*self.get_closest_allied_creep(hero).get_position().to_list())
+                hero.move(*self.get_closest_allied_creep(hero).get_position())
         else:
-            hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position().to_list())
+            hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
 
     def get_creep_to_last_hit(self, hero: PlayerHero) -> Union[Unit, None]:
         closest_enemy_creeps = self.get_closest_enemy_creeps(hero)

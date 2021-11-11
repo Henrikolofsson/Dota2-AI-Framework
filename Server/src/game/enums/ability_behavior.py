@@ -1,6 +1,5 @@
-from enum import Enum, unique
+from enum import Enum
 
-@unique
 class AbilityBehavior(Enum):
     NONE = 0
     HIDDEN = 1
@@ -33,4 +32,4 @@ class AbilityBehavior(Enum):
     IGNORE_BACKSWING = 134217728
     RUNE_TARGET = 268435456
     DONT_CANCEL_CHANNEL = 536870912
-    # LAST_BEHAVIOR = 536870912
+    LAST_BEHAVIOR = 536870912
