@@ -9,7 +9,9 @@ local item_disassemblable = {
     "item_octarine_core",
     "item_pers",
     "item_sange_and_yasha",
-    "item_vanguard"
+    "item_vanguard",
+    "item_kaya_and_sange",
+    "item_yasha_and_kaya"
 }
 
 return item_disassemblable
