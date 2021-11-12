@@ -13,3 +13,4 @@ class IHero(IUnit):
     hasAggro: bool
     gold: int
     deaths: int
+    courier_id: str

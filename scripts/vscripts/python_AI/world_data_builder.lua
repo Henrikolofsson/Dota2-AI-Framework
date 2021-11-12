@@ -141,6 +141,7 @@ function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.xp = hero_entity:GetCurrentXP()
     hero_data.gold = hero_entity:GetGold()
     hero_data.abilityPoints = hero_entity:GetAbilityPoints()
+    hero_data.courier_id = tostring(PlayerResource:GetPreferredCourierForPlayer(hero_entity:GetPlayerOwnerID()):entindex())
 
     hero_data.abilities = self:Get_hero_abilities(hero_entity)
     -- should not be seen by enemy team END

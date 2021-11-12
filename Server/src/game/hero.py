@@ -18,6 +18,7 @@ class Hero(Unit):
     _gold: int
     _type: str
     _xp: int
+    _courier_id: str
 
     def update(self, data: IEntity):
         super().update(data)
@@ -30,6 +31,7 @@ class Hero(Unit):
         self._gold = hero_data["gold"]
         self._type = hero_data["type"]
         self._xp = hero_data["xp"]
+        self._courier_id = hero_data["courier_id"]
         self._set_abilities(hero_data)
 
     def _set_abilities(self, data: IHero):
@@ -41,6 +43,9 @@ class Hero(Unit):
             ability.update(abilityData)
             self._abilities.append(ability)
             ability_id += 1
+
+    def get_courier_id(self) -> str:
+        return self._courier_id
 
     def get_ability_points(self) -> int:
         return self._ability_points
