@@ -332,7 +332,7 @@ function Command_controller:Use_ability(hero_entity, ability_entity, result)
         return
     end
 
-    if self:Hero_can_afford_to_cast_ability(hero_entity, ability_entity) then
+    if not self:Hero_can_afford_to_cast_ability(hero_entity, ability_entity) then
         Warning("Bot tried to use ability without mana")
     elseif ability_entity:GetCooldownTimeRemaining() > 0 then
         Warning("Bot tried to use ability still on cooldown")
