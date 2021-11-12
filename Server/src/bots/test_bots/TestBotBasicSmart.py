@@ -1,4 +1,5 @@
 from typing import Union
+from game.ability import Ability
 from game.hero import Hero
 from game.position import Position
 from game.unit import Unit
@@ -62,9 +63,41 @@ class TestBotBasicSmart(BaseBot):
             self._should_move_home[hero.get_name()] = False
 
     def actions(self, hero: PlayerHero) -> None:
+        if self._world.get_game_ticks() == 8:
+            hero.buy("item_branches")
+
+        if self._world.get_game_ticks() == 11:
+            hero.buy("item_branches")
+
+        if self._world.get_game_ticks() == 14:
+            hero.buy("item_mantle")
+
+        if self._world.get_game_ticks() == 17:
+            hero.buy("item_gauntlets")
+
+        if self._world.get_game_ticks() == 20:
+            hero.buy("item_slippers")
+
+        if self._world.get_game_ticks() == 24:
+            if len(hero.get_items()) > 0:
+                hero.sell(hero.get_items()[0].get_slot())
+                return
+            
+        if self._world.get_game_ticks() == 27:
+            if len(hero.get_items()) > 0:
+                hero.sell(hero.get_items()[0].get_slot())
+                return
+
+        if self._world.get_game_ticks() < 32:
+            return
+
         self.make_choice(hero)
 
     def make_choice(self, hero: PlayerHero) -> None:
+        if hero.get_ability_points() > 0:
+            hero.level_up(0)
+            return
+
         if self.hero_name_match_any(hero, ["puck", "pudge"]):
             self.push_lane(hero, "dota_goodguys_tower1_top")
         elif self.hero_name_match_any(hero, ["pugna"]):
@@ -100,7 +133,12 @@ class TestBotBasicSmart(BaseBot):
             creep_to_deny: Union[Unit, None] = self.get_creep_to_deny(hero)
             if enemy_hero_to_attack is not None\
             and enemy_hero_to_attack.get_health() < 0.5 * enemy_hero_to_attack.get_max_health():
-                hero.attack(enemy_hero_to_attack.get_id())
+                ability: Ability = hero.get_abilities()[0]
+                if ability.get_cooldown_time_remaining() == 0:
+                    hero.cast_target_unit(ability.get_ability_index(), enemy_hero_to_attack.get_id())
+                else:
+                    hero.attack(enemy_hero_to_attack.get_id())
+
             elif creep_to_last_hit is not None:
                 hero.attack(creep_to_last_hit.get_id())
             elif creep_to_deny is not None:
