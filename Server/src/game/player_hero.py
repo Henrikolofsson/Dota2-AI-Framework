@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import Any, cast
+from game.position import Position
 from game.post_data_interfaces.IHero import IHero
 from game.post_data_interfaces.IEntity import IEntity
 from game.item import Item
@@ -180,7 +181,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_area(self, ability_index: int, position) -> None:
+    def cast_target_area(self, ability_index: int, position: Position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
