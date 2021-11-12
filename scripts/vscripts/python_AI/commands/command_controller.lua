@@ -48,6 +48,7 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "COURIER_SHIELD"                              then Courier_commands:Shield(hero_entity)
     elseif command == "COURIER_STOP"                                then Courier_commands:Stop(hero_entity)
     elseif command == "COURIER_MOVE_TO_POSITION"                    then Courier_commands:Move_to_position(hero_entity, result)
+    elseif command == "COURIER_SELL"                                then Courier_commands:Sell(hero_entity, result)
     else
         self.Error = true
         Warning(hero_entity:GetName() .. " sent invalid command " .. command)
@@ -116,15 +117,18 @@ function Command_controller:Buy(hero_entity, result)
     end
 end
 
-function Command_controller:Sell(hero_entity, result)
+function Command_controller:Sell(unit_entity, result)
     local slot = result.slot
 
-    if hero_entity:CanSellItems() then
-        local item_entity = hero_entity:GetItemInSlot(slot)
+    if unit_entity:CanSellItems() then
+        local item_entity = unit_entity:GetItemInSlot(slot)
         if item_entity then
-            EmitSoundOn("General.Sell", hero_entity)
-            hero_entity:ModifyGold(Utilities:Round_whole(item_entity:GetCost() / 2), true, DOTA_ModifyGold_SellItem) -- Claims sell-operation gives reliable gold. (Second param = true)
-            hero_entity:RemoveItem(item_entity)
+            if item_entity:IsSellable() then
+                unit_entity:SellItem(item_entity)
+                EmitSoundOn("General.Sell", unit_entity)
+            else
+                Warning("Item in slot " .. slot .. " is not sellable.")
+            end
         else
             Warning("No item in slot " .. slot)
         end

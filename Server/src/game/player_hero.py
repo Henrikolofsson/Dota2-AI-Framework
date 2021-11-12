@@ -169,7 +169,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_point(self, ability_index: int, position) -> None:
+    def cast_target_point(self, ability_index: int, position: Position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -193,16 +193,16 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_unit(self, ability_index: int, target) -> None:
+    def cast_target_unit(self, ability_index: int, target_id: str) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT",
                 "ability": ability_index,
-                "target": target
+                "target": target_id
             }
         }
 
-    def cast_vector_targeting(self, ability_index: int, position) -> None:
+    def cast_vector_targeting(self, ability_index: int, position: Position) -> None:
         x, y, z = position
         self.command = {
             self.get_name(): {
@@ -214,12 +214,12 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_unit_aoe(self, ability_index: int, target) -> None:
+    def cast_target_unit_aoe(self, ability_index: int, target_id: str) -> None:
         self.command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT_AOE",
                 "ability": ability_index,
-                "target": target
+                "target": target_id
             }
         }
 
@@ -293,6 +293,14 @@ class PlayerHero(Hero):
                 "x": x,
                 "y": y,
                 "z": z
+            }
+        }
+
+    def courier_sell(self, slot: int) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "COURIER_SELL",
+                "slot": slot
             }
         }
 
