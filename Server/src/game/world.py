@@ -111,12 +111,13 @@ class World:
         '''Returns the distance between position1 and position2.'''
         return sqrt(((position2.x - position1.x)**2) + ((position2.y - position1.y)**2))
 
+    def get_distance_between_entities(self, entity1: PhysicalEntity, entity2: PhysicalEntity) -> float:
+        '''Returns the distance between entity1 and entity2.'''
+        return self.get_distance_between_positions(entity1.get_position(), entity2.get_position())
+
     def get_distance_between_units(self, unit1: Unit, unit2: Unit) -> float:
         '''Returns the distance between position of unit1 and position of unit2.'''
-        return self.get_distance_between_positions(
-            unit1.get_position(),
-            unit2.get_position()
-        )
+        return self.get_distance_between_entities(unit1, unit2)
 
     def get_enemies_in_attack_range_of(self, unit: Unit) -> list[Unit]:
         '''Returns all enemies in attack range of specified unit.'''
@@ -230,3 +231,23 @@ class World:
                 runes.append(entity)
         
         return runes
+
+    def get_all_trees(self) -> list[Tree]:
+        '''Returns all trees.'''
+        trees: list[Tree] = []
+
+        for entity in self._entities:
+            if isinstance(entity, Tree):
+                trees.append(entity)
+
+        return trees
+
+    def get_trees_in_range_of(self, unit: Unit, range: float) -> list[Tree]:
+        '''Returns all trees in specified range of given unit.'''
+        trees: list[Tree] = []
+
+        for tree in self.get_all_trees():
+            if self.get_distance_between_entities(unit, tree) <= range:
+                trees.append(tree)
+
+        return trees
