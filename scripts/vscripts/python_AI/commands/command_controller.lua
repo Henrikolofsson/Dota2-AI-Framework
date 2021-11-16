@@ -50,7 +50,6 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "COURIER_MOVE_TO_POSITION"                    then Courier_commands:Move_to_position(hero_entity, result)
     elseif command == "COURIER_SELL"                                then Courier_commands:Sell(hero_entity, result)
     else
-        self.Error = true
         Warning(hero_entity:GetName() .. " sent invalid command " .. command)
     end
 end
@@ -85,7 +84,7 @@ end
 function Command_controller:Buy_item_for_unit(unit_entity, hero_entity, name_of_item_to_buy)
     EmitSoundOn("General.Buy", unit_entity)
     unit_entity:AddItem(CreateItem(name_of_item_to_buy, unit_entity, unit_entity))
-    hero_entity:SpendGold(GetItemCost(name_of_item_to_buy), DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?    
+    hero_entity:SpendGold(GetItemCost(name_of_item_to_buy), DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
 end
 
 function Command_controller:Unit_can_buy_item(unit_entity, item_name)
@@ -143,7 +142,6 @@ end
 
 function Command_controller:Move_to(hero_entity, result)
     hero_entity:MoveToPosition(Vector(result.x, result.y, result.z))
-    -- Say(nil, hero_entity:GetName() .. " moving to " .. result.x .. ", " .. result.y .. ", " .. result.z, false)
 end
 
 function Command_controller:Level_up(hero_entity, result)
@@ -161,15 +159,11 @@ function Command_controller:Level_up(hero_entity, result)
         return
     end
     ability_entity:UpgradeAbility(false)
-    hero_entity:SetAbilityPoints(ability_points - 1) --UpgradeAbility doesn't decrease the ability points
-    -- Say(nil, hero_entity:GetName() .. " levelled up ability " .. ability_index, false)
+    hero_entity:SetAbilityPoints(ability_points - 1)
 end
 
 function Command_controller:Attack(hero_entity, result)
-    --Might want to check attack range
-    --hero_entity:PerformAttack(EntIndexToHScript(result.target), true, true, false, true)
     hero_entity:MoveToTargetToAttack(EntIndexToHScript(result.target))
-    -- Say(nil, hero_entity:GetName() .. " attacking " .. result.target, false)
 end
 
 function Command_controller:Cast(hero_entity, result)
@@ -185,7 +179,7 @@ function Command_controller:Use_item(hero_entity, result)
     local item_entity = hero_entity:GetItemInSlot(slot)
     Warning("Hero" .. hero_entity:GetName() .. "is attempting to use item " .. item_entity:GetName())
     if item_entity then
-        self:Use_ability(hero_entity, item_entity)
+        self:Use_ability(hero_entity, item_entity, result)
     else
         Warning("Bot tried to use item in empty slot")
     end
@@ -238,7 +232,6 @@ function Command_controller:Cast_ability_toggle(hero_entity, result)
     local ability_entity = hero_entity:GetAbilityByIndex(result.ability)
     if self:SetupAbility(hero_entity, ability_entity) then
         local player_id = hero_entity:GetPlayerOwnerID()
-        -- ability_entity:OnToggle()
         hero_entity:CastAbilityToggle(ability_entity, player_id)
     end
 end
@@ -298,10 +291,10 @@ function Command_controller:Cast_ability_combo_target_point_unit(hero_entity, re
     if self:SetupAbility(hero_entity, ability_entity) then
         local behavior = ability_entity:GetBehavior()
         local player_id = hero_entity:GetPlayerOwnerID()
-        if Utilities:Bitwise_AND(behavior, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) then
+        if bit.band(behavior, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) ~= 0 then
             local target_entity = EntIndexToHScript(result.target)
             hero_entity:CastAbilityOnTarget(target_entity, ability_entity, player_id)
-        elseif Utilities:Bitwise_AND(behavior, DOTA_ABILITY_BEHAVIOR_POINT) then
+        elseif bit.band(behavior, DOTA_ABILITY_BEHAVIOR_POINT) ~= 0 then
             hero_entity:CastAbilityOnPosition(Vector(result.x, result.y, result.z), ability_entity, player_id)
         end
     end
@@ -344,26 +337,20 @@ function Command_controller:Use_ability(hero_entity, ability_entity, result)
         end
 
         --There is some logic missing here to check for range and make the hero face the right direction
-        if Utilities:Bitwise_AND(behavior, DOTA_ABILITY_BEHAVIOR_NO_TARGET) then
-            -- Say(nil, hero_entity:GetName() .. " casting " .. ability_entity:GetName(), false)
+        if bit.band(behavior, DOTA_ABILITY_BEHAVIOR_NO_TARGET) ~= 0 then
             hero_entity:CastAbilityNoTarget(ability_entity, player_id)
-        elseif Utilities:Bitwise_AND(behavior, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) then
+
+        elseif bit.band(behavior, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) ~= 0 then
             local target_entity = EntIndexToHScript(result.target)
             if target_entity:IsAlive() then
-                -- Say(nil, hero_entity:GetName() .. " casting " .. ability_entity:GetName() .. " on unit " .. target_entity:GetName(), false)
                 hero_entity:CastAbilityOnTarget(target_entity, ability_entity, player_id)
             end
-        elseif Utilities:Bitwise_AND(behavior, DOTA_ABILITY_BEHAVIOR_POINT) then
-            -- Say(
-            --     nil,
-            --     hero_entity:GetName() ..
-            --         " casting " .. ability_entity:GetName() .. " on " .. result.x .. ", " .. result.y .. ", " .. result.z,
-            --     false
-            -- )
+
+        elseif bit.band(behavior, DOTA_ABILITY_BEHAVIOR_POINT) ~= 0 then
             hero_entity:CastAbilityOnPosition(Vector(result.x, result.y, result.z), ability_entity, player_id)
+
         else
             Warning(hero_entity:GetName() .. " sent invalid cast command " .. behavior)
-            self._Error = true
         end
     end
 end
