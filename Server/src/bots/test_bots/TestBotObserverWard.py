@@ -53,7 +53,7 @@ class TestBotObserverWard(BaseBot):
             ]):
                items = hero.get_items()
                if len(items) and items[0].get_cast_range() >= self._world.get_distance_between_positions(position1 = hero.get_position(), position2 = Position(-1900, 1400, 0)):
-                    hero.use_item(0, (-1900, 1400, 0))
+                    hero.use_item(0, position = (-1900, 1400, 0))
                     if len(items) == 0:
                         hero.move(-4000, -4000, 0)
                else: 
