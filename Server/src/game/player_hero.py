@@ -91,6 +91,13 @@ class PlayerHero(Hero):
             }
         }
 
+    def use_glyph_of_fortification(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "GLYPH"
+            }
+        }
+
     def buy(self, item: str) -> None:
         self.command = {self.get_name(): {"command": "BUY", "item": item}}
 
