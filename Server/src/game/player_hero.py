@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+from time import time
 from typing import Any, cast
+from game.ability import Ability
+from game.post_data_interfaces.IPlayerHero import IPlayerHero
 from game.position import Position
 from game.post_data_interfaces.IHero import IHero
 from game.post_data_interfaces.IEntity import IEntity
@@ -11,49 +14,86 @@ from game.hero import Hero
 
 class PlayerHero(Hero):
 
-    _items: list[Item]
+    _time_of_death: float
+    _ability_points: int
+    _abilities: list[Ability]
+    _denies: int
+    _gold: int
+    _xp: int
+    _courier_id: str
+    _buyback_cost: int
+    _buyback_cooldown_time: float
 
     def __init__(self, entity_id: str):
         super().__init__(entity_id)
-        self.commands = [
-            "ATTACK",
-            "MOVE",
-            "CAST",
-            "BUY",
-            "SELL",
-            "USE_ITEM",
-            "DISASSEMBLE",
-            "UNLOCK_ITEM",
-            "LOCK_ITEM"
-            "PICK_UP_RUNE"
-            "LEVELUP",
-            "NOOP",
-        ]
         self.command = None
         self.commands = []
 
     def update(self, data: IEntity):
         super().update(data)
-        player_hero_data: IHero = cast(IHero, data)
-        self._set_items(player_hero_data)
+        player_hero_data: IHero = cast(IPlayerHero, data)
 
-    def _set_items(self, player_hero_data: IHero) -> None:
-        self._items = []
+        if player_hero_data["alive"]:
+            self._time_of_death = 0
 
-        item_id = 0
-        for item_data in player_hero_data["items"].values():
-            if isinstance(item_data, list):
-                continue
-            item = Item(str(item_id))
-            item.update(item_data)
-            self._items.append(item)
-            item_id += 1
+        self._ability_points = player_hero_data["abilityPoints"]
+        self._denies = player_hero_data["denies"]
+        self._gold = player_hero_data["gold"]
+        self._xp = player_hero_data["xp"]
+        self._courier_id = player_hero_data["courier_id"]
+        self._buyback_cost = player_hero_data["buybackCost"]
+        self._buyback_cooldown_time = player_hero_data["buybackCooldownTime"]
+        self._set_abilities(player_hero_data)
+
+    def _set_abilities(self, data: IPlayerHero):
+        self._abilities = []
+
+        ability_id = 0
+        for abilityData in data["abilities"].values():
+            ability = Ability(str(ability_id))
+            ability.update(abilityData)
+            self._abilities.append(ability)
+            ability_id += 1
+
+    def set_time_of_death(self, time: float) -> None:
+        self._time_of_death = time
+
+    def get_buyback_cooldown_time_remaining(self) -> float:
+        if self._alive:
+            return 0
+
+        time_elapsed_since_death = time() - self._time_of_death
+        return self._buyback_cooldown_time - time_elapsed_since_death
 
     def get_command(self) -> dict[str, Any]:
         return self.command
 
+    def get_courier_id(self) -> str:
+        return self._courier_id
+
+    def get_buyback_cost(self) -> int:
+        return self._buyback_cost
+
+    def get_buyback_cooldown_time(self) -> float:
+        return self._buyback_cooldown_time
+
+    def get_ability_points(self) -> int:
+        return self._ability_points
+
+    def get_abilities(self) -> list[Ability]:
+        return self._abilities
+
     def get_items(self) -> list[Item]:
         return self._items
+
+    def get_denies(self) -> int:
+        return self._denies
+
+    def get_gold(self) -> int:
+        return self._gold
+
+    def get_xp(self) -> int:
+        return self._xp
 
     def clear_and_archive_command(self) -> None:
         if self.command:
@@ -88,6 +128,13 @@ class PlayerHero(Hero):
                 "x": x,
                 "y": y,
                 "z": z
+            }
+        }
+
+    def use_glyph_of_fortification(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "GLYPH"
             }
         }
 
@@ -233,6 +280,13 @@ class PlayerHero(Hero):
                 "x": x,
                 "y": y,
                 "z": z
+            }
+        }
+
+    def buyback(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "BUYBACK"
             }
         }
 

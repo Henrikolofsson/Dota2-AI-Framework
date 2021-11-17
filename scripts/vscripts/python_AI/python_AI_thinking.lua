@@ -65,5 +65,45 @@ function Python_AI_thinking:Before_world_building(heroes)
     end
 end
 
+---@param radiant_heroes table of radiant hero entities.
+---@param dire_heroes table of dire hero entities.
+function Python_AI_thinking:Collect_and_send_statistics(radiant_heroes, dire_heroes)
+    --[[
+        Collects game statistics and sends them to the statistics route on the
+        Python web server.
+    ]]
+    local statistics = Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes)
+    Python_AI_thinking:Send_statistics(statistics)
+end
+
+
+---@param radiant_heroes table of radiant hero entities.
+---@param dire_heroes table of dire hero entities.
+function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes)
+    return {
+        statistics = {
+            dire_stats = {"stats for radiant"},
+            radiant_stats = {"stats for dire"}
+        }
+    }
+end
+
+
+---@param statistics table to be sent to the server.
+function Python_AI_thinking:Send_statistics(statistics)
+    local route = "http://localhost:8080/api/statistics"
+    local body = package.loaded["game/dkjson"].encode(statistics)
+
+    local request = CreateHTTPRequestScriptVM("POST", route)
+    request:SetHTTPRequestHeaderValue("Accept", "application/json")
+    request:SetHTTPRequestRawPostBody("application/json", body)
+    request:Send(
+        ---@param result table
+        function(result)
+            -- currently ignoring response.
+        end
+    )
+end
+
 
 return Python_AI_thinking

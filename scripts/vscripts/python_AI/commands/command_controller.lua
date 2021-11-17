@@ -32,6 +32,8 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "LOCK_ITEM"                                   then self:Check_and_lock_item(hero_entity, result)
     elseif command == "PICK_UP_RUNE"                                then self:Pick_up_rune(hero_entity, result)
     elseif command == "NOOP"                                        then self:Noop(hero_entity, result)
+    elseif command == "GLYPH"                                       then self:Cast_glyph_of_fortification(hero_entity)
+    elseif command == "BUYBACK"                                     then self:Buyback(hero_entity)
     elseif command == "CAST_ABILITY_TOGGLE"                         then self:Cast_ability_toggle(hero_entity, result)
     elseif command == "CAST_ABILITY_NO_TARGET"                      then self:Cast_ability_no_target(hero_entity, result)
     elseif command == "CAST_ABILITY_TARGET_POINT"                   then self:Cast_ability_target_point(hero_entity, result)
@@ -222,6 +224,25 @@ function Command_controller:Check_and_lock_item(hero_entity, result)
     if not item_entity:IsCombineLocked() then
         item_entity:SetCombineLocked(true)
     end
+end
+
+function Command_controller:Buyback(hero_entity)
+    hero_entity:Buyback()
+end
+
+function Command_controller:Cast_glyph_of_fortification(hero_entity)
+    ExecuteOrderFromTable({
+        UnitIndex = hero_entity:entindex(),
+        OrderType = DOTA_UNIT_ORDER_GLYPH,
+    })
+end
+
+function Command_controller:Scan(hero_entity, result) -- unused
+    ExecuteOrderFromTable({
+        UnitIndex = hero_entity:entindex(),
+        OrderType = DOTA_UNIT_ORDER_RADAR,
+        Position = Vector(result.x, result.y, result.z),
+    })
 end
 
 function Command_controller:Pick_up_rune(hero_entity, result)
