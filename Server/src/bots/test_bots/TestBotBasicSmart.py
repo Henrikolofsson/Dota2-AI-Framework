@@ -26,8 +26,8 @@ party = {
 }
 
 home_position = {
-    RADIANT_TEAM: Position(-6871, -6981, 256),
-    DIRE_TEAM: Position(6875, 5663, 256),
+    RADIANT_TEAM: Position(-6774, -6311, 256),
+    DIRE_TEAM: Position(6910, 6200, 256),
 }
 
 class TestBotBasicSmart(BaseBot):
