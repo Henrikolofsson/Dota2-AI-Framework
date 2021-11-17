@@ -135,8 +135,13 @@ function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.hasAggro = self:Has_aggro(hero_entity)
     hero_data.deaths = hero_entity:GetDeaths()
     hero_data.items = self:Get_items_data(hero_entity)
+end
 
-    -- should not be seen by enemy team BEGIN
+---@param hero_data table
+---@param hero_entity table
+function World_data_builder:Insert_player_hero_data(hero_data, hero_entity)
+    hero_data.type = "PlayerHero"
+
     hero_data.denies = hero_entity:GetDenies()
     hero_data.xp = hero_entity:GetCurrentXP()
     hero_data.gold = hero_entity:GetGold()
@@ -146,7 +151,6 @@ function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.buybackCooldownTime = hero_entity:GetBuybackCooldownTime()
 
     hero_data.abilities = self:Get_hero_abilities(hero_entity)
-    -- should not be seen by enemy team END
 end
 
 ---@param courier_data table
@@ -164,6 +168,10 @@ function World_data_builder:Get_unit_data(unit_entity)
 
     if unit_entity:IsHero() then
         self:Insert_base_hero_data(unit_data, unit_entity)
+
+        if self.requesting_team == unit_entity:GetTeam() then
+            self:Insert_player_hero_data(unit_data, unit_entity)
+        end
 
     elseif unit_entity:IsBuilding() then
         if unit_entity:IsTower() then
