@@ -3,6 +3,7 @@ from base_bot import BaseBot
 from game.player_hero import PlayerHero
 from game.world import World
 from framework import RADIANT_TEAM, DIRE_TEAM
+from game.enums.ward_spots import WardSpotPosition
 
 party = {
     RADIANT_TEAM: [
@@ -52,12 +53,13 @@ class TestBotObserverWard(BaseBot):
                 "npc_dota_hero_abyssal_underlord",
             ]):
                items = hero.get_items()
-               if len(items) and items[0].get_cast_range() >= self._world.get_distance_between_positions(position1 = hero.get_position(), position2 = Position(-1900, 1400, 0)):
-                    hero.use_item(0, position = (-1900, 1400, 0))
+               chosen_position = WardSpotPosition.RADIANT_BELOW_MID.value
+               if len(items) and items[0].get_cast_range() >= self._world.get_distance_between_positions(position1 = hero.get_position(), position2 = chosen_position):
+                    hero.use_item(0, position = chosen_position)
+               else: 
+                    hero.move(*chosen_position)
                     if len(items) == 0:
                         hero.move(-4000, -4000, 0)
-               else: 
-                    hero.move(-1900, 1400, 0)
 
             return
 
