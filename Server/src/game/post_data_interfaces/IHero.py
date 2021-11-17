@@ -14,3 +14,5 @@ class IHero(IUnit):
     gold: int
     deaths: int
     courier_id: str
+    buybackCost: int
+    buybackCooldownTime: float

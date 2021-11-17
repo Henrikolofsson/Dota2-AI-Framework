@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from time import time
 from typing import Any, cast
 from game.position import Position
 from game.post_data_interfaces.IHero import IHero
@@ -11,6 +12,7 @@ from game.hero import Hero
 
 class PlayerHero(Hero):
 
+    _time_of_death: float
     _items: list[Item]
 
     def __init__(self, entity_id: str):
@@ -35,6 +37,8 @@ class PlayerHero(Hero):
     def update(self, data: IEntity):
         super().update(data)
         player_hero_data: IHero = cast(IHero, data)
+        if player_hero_data["alive"]:
+            self._time_of_death = 0
         self._set_items(player_hero_data)
 
     def _set_items(self, player_hero_data: IHero) -> None:
@@ -48,6 +52,16 @@ class PlayerHero(Hero):
             item.update(item_data)
             self._items.append(item)
             item_id += 1
+
+    def set_time_of_death(self, time: float) -> None:
+        self._time_of_death = time
+
+    def get_buyback_cooldown_time_remaining(self) -> float:
+        if self._alive:
+            return 0
+
+        time_elapsed_since_death = time() - self._time_of_death
+        return self._buyback_cooldown_time - time_elapsed_since_death
 
     def get_command(self) -> dict[str, Any]:
         return self.command
@@ -240,6 +254,13 @@ class PlayerHero(Hero):
                 "x": x,
                 "y": y,
                 "z": z
+            }
+        }
+
+    def buyback(self) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "BUYBACK"
             }
         }
 

@@ -19,6 +19,8 @@ class Hero(Unit):
     _type: str
     _xp: int
     _courier_id: str
+    _buyback_cost: int
+    _buyback_cooldown_time: float
 
     def update(self, data: IEntity):
         super().update(data)
@@ -32,6 +34,8 @@ class Hero(Unit):
         self._type = hero_data["type"]
         self._xp = hero_data["xp"]
         self._courier_id = hero_data["courier_id"]
+        self._buyback_cost = hero_data["buybackCost"]
+        self._buyback_cooldown_time = hero_data["buybackCooldownTime"]
         self._set_abilities(hero_data)
 
     def _set_abilities(self, data: IHero):
@@ -46,6 +50,12 @@ class Hero(Unit):
 
     def get_courier_id(self) -> str:
         return self._courier_id
+
+    def get_buyback_cost(self) -> int:
+        return self._buyback_cost
+
+    def get_buyback_cooldown_time(self) -> float:
+        return self._buyback_cooldown_time
 
     def get_ability_points(self) -> int:
         return self._ability_points
