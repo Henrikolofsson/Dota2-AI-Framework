@@ -1,0 +1,45 @@
+from base_bot import BaseBot
+from game.player_hero import PlayerHero
+from game.world import World
+from framework import RADIANT_TEAM, DIRE_TEAM
+
+party = {
+    RADIANT_TEAM: [
+        "npc_dota_hero_bane",
+        "npc_dota_hero_batrider",
+        "npc_dota_hero_dazzle",
+        "npc_dota_hero_wisp",
+        "npc_dota_hero_lich",
+    ],
+    DIRE_TEAM: [
+        "npc_dota_hero_brewmaster",
+        "npc_dota_hero_doom_bringer",
+        "npc_dota_hero_abyssal_underlord",
+        "npc_dota_hero_beastmaster",
+        "npc_dota_hero_axe",
+    ],
+}
+
+class TestBotGlyph(BaseBot):
+    '''
+    Tests:
+    - Hero should use glyph of fortification after 5 minutes (910 gameticks ≈ 5:06).
+    '''
+    
+    _world: World
+    _team: int
+    party: list[str]
+    _heroes: list[PlayerHero]
+
+    def __init__(self, world: World, team: int) -> None:
+        self._world = world
+        self._team = team
+        self.party = party[team]
+
+    def initialize(self, heroes: list[PlayerHero]) -> None:
+        self._heroes = heroes
+
+    def actions(self, hero: PlayerHero) -> None:
+
+        if self._world.get_game_ticks() >= 910:
+            hero.use_glyph_of_fortification()
