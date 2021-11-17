@@ -85,9 +85,12 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
             dire_bot_framework = dire_bot_framework.create_new_bot_framework()
             return {'status': 'restart'}
 
-    @app.post("/api/update")
-    def update():
-        return update_game_state(radiant_bot_framework, state)
+    @app.post("/api/statistics")
+    def statistics():
+        raw_json = request.json
+        parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
+        # todo: Call some function to handle statistics
+        # print(parsed_json)
 
     @app.post("/api/radiant_update")
     def radiant_update():
