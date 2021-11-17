@@ -34,7 +34,6 @@ end
 ---@param player_id integer
 ---@param hero_name string
 function Hero_selector:Select_hero_for_player(player_id, hero_name)
-    print("hero_name" .. tostring(hero_name))
     PlayerResource:GetPlayer(player_id):SetSelectedHero(hero_name)
 end
 
@@ -93,7 +92,6 @@ end
 ---@param from_player_id integer
 ---@param to_player_id integer
 function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_player_id)
-    DeepPrintTable(picked_hero_names)
     ---@type integer
     for player_id = from_player_id, to_player_id do
         local hero_name_index = player_id + 1
