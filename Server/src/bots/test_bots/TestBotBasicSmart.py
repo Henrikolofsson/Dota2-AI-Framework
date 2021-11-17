@@ -26,8 +26,8 @@ party = {
 }
 
 home_position = {
-    RADIANT_TEAM: Position(-6826, -7261, 256),
-    DIRE_TEAM: Position(6826, 7261, 256),
+    RADIANT_TEAM: Position(-6871, -6981, 256),
+    DIRE_TEAM: Position(6875, 5663, 256),
 }
 
 class TestBotBasicSmart(BaseBot):
@@ -49,6 +49,7 @@ class TestBotBasicSmart(BaseBot):
     _heroes: list[PlayerHero]
     _should_move_home: dict[str, bool]
     _home_position: Position
+    _lane_tower_positions: dict[str, Position]
 
     def __init__(self, world: World, team: int) -> None:
         self._world = world
@@ -56,6 +57,7 @@ class TestBotBasicSmart(BaseBot):
         self.party = party[team]
         self._should_move_home = {}
         self._home_position = home_position[team]
+        self._lane_tower_positions = {}
 
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes
@@ -63,6 +65,19 @@ class TestBotBasicSmart(BaseBot):
             self._should_move_home[hero.get_name()] = False
 
     def actions(self, hero: PlayerHero) -> None:
+        if self._world.get_game_ticks() == 1:
+            for lane_tower_name in [
+                "dota_goodguys_tower1_top",
+                "dota_goodguys_tower1_mid",
+                "dota_goodguys_tower1_bot",
+                "dota_badguys_tower1_top",
+                "dota_badguys_tower1_mid",
+                "dota_badguys_tower1_bot",
+            ]:
+                tower: Union[Unit, None] = self._world.get_unit_by_name(lane_tower_name)
+                if tower is not None:
+                    self._lane_tower_positions[lane_tower_name] = tower.get_position()
+
         if self._world.get_game_ticks() == 8:
             hero.buy("item_branches")
 
@@ -94,7 +109,7 @@ class TestBotBasicSmart(BaseBot):
         self.make_choice(hero)
 
     def make_choice(self, hero: PlayerHero) -> None:
-        if hero.get_ability_points() > 0:
+        if hero.get_ability_points() > 0 and hero.get_abilities()[0].get_level() < 4:
             hero.level_up(0)
             return
 
@@ -127,6 +142,8 @@ class TestBotBasicSmart(BaseBot):
             hero.move(*self._home_position)
             return
 
+        lane_tower_position: Position = self._lane_tower_positions[lane_tower_name]
+
         if self.is_near_allied_creeps(hero) and not hero.get_has_tower_aggro():
             enemy_hero_to_attack: Union[Hero, None] = self.get_enemy_hero_to_attack(hero)
             creep_to_last_hit: Union[Unit, None] = self.get_creep_to_last_hit(hero)
@@ -144,7 +161,7 @@ class TestBotBasicSmart(BaseBot):
             elif creep_to_deny is not None:
                 hero.attack(creep_to_deny.get_id())
             elif hero.get_has_aggro():
-                hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
+                hero.move(*lane_tower_position)
             elif enemy_hero_to_attack is not None:
                 hero.attack(enemy_hero_to_attack.get_id())
             elif self.should_move_closer_to_allied_creeps(hero):
@@ -152,7 +169,7 @@ class TestBotBasicSmart(BaseBot):
             else:
                 self.stop(hero)
         else:
-            hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
+            hero.move(*lane_tower_position)
 
     def stop(self, hero: PlayerHero) -> None:
         hero.move(*hero.get_position())
