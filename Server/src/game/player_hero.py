@@ -157,6 +157,14 @@ class PlayerHero(Hero):
             }
         }
     
+    def toggle_item(self, slot: int) -> None:
+        self.command = {
+            self.get_name(): {
+                "command": "TOGGLE_ITEM",
+                "slot": slot
+            }
+        }
+
     def disassemble_item(self, slot: int) -> None:
         self.command = {
             self.get_name(): {

@@ -132,6 +132,7 @@ end
 function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.type = "Hero"
     hero_data.hasTowerAggro = self:Has_tower_aggro(hero_entity)
+    print(hero_data.hasTowerAggro)
     hero_data.hasAggro = self:Has_aggro(hero_entity)
     hero_data.deaths = hero_entity:GetDeaths()
     hero_data.items = self:Get_items_data(hero_entity)
@@ -249,6 +250,26 @@ function World_data_builder:Get_all_units(flags)
     )
 end
 
+function World_data_builder:Insert_all_towers()
+    local all_units = FindUnitsInRadius(
+        self.requesting_hero:GetTeamNumber(),
+        self.requesting_hero:GetOrigin(),
+        nil,
+        FIND_UNITS_EVERYWHERE,
+        DOTA_UNIT_TARGET_TEAM_BOTH,
+        DOTA_UNIT_TARGET_ALL,
+        DOTA_UNIT_TARGET_FLAG_NONE,
+        FIND_ANY_ORDER,
+        true
+    )
+
+    for _index, unit in ipairs(all_units) do
+        if unit:IsTower() then
+            self.entities[unit:entindex()] = self:Get_unit_data(unit)
+        end
+    end
+end
+
 function World_data_builder:Insert_all_units()
     self.all_units = self:Get_all_units( { should_get_invulnerable = false } )
     Utilities:Insert_range(self.all_units, self:Get_all_units( { should_get_invulnerable = true } ))
@@ -256,6 +277,8 @@ function World_data_builder:Insert_all_units()
     for _index, unit in ipairs(self.all_units) do
         self.entities[unit:entindex()] = self:Get_unit_data(unit)
     end
+
+    self:Insert_all_towers()
 end
 
 ---@param hero_entity table
