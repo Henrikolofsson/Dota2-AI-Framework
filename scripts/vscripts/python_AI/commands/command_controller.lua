@@ -30,6 +30,7 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "DISASSEMBLE"                                 then self:Disassemble_item(hero_entity, result)
     elseif command == "UNLOCK_ITEM"                                 then self:Check_and_unlock_item(hero_entity, result)
     elseif command == "LOCK_ITEM"                                   then self:Check_and_lock_item(hero_entity, result)
+    elseif command == "TOGGLE_ITEM"                                 then self:Toggle_item(hero_entity, result)
     elseif command == "PICK_UP_RUNE"                                then self:Pick_up_rune(hero_entity, result)
     elseif command == "NOOP"                                        then self:Noop(hero_entity, result)
     elseif command == "GLYPH"                                       then self:Cast_glyph_of_fortification(hero_entity)
@@ -212,8 +213,12 @@ function Command_controller:Check_and_unlock_item(hero_entity, result)
     local slot = result.slot
     local item_entity = hero_entity:GetItemInSlot(slot)
 
-    if item_entity:IsCombineLocked() then
-        item_entity:SetCombineLocked(false)
+    if item_entity then
+        if item_entity:IsCombineLocked() then
+            item_entity:SetCombineLocked(false)
+        end
+    else
+        Warning("No item in slot " .. slot)
     end
 end
 
@@ -221,8 +226,23 @@ function Command_controller:Check_and_lock_item(hero_entity, result)
     local slot = result.slot
     local item_entity = hero_entity:GetItemInSlot(slot)
 
-    if not item_entity:IsCombineLocked() then
-        item_entity:SetCombineLocked(true)
+    if item_entity then
+        if not item_entity:IsCombineLocked() then
+            item_entity:SetCombineLocked(true)
+        end
+    else
+        Warning("No item in slot " .. slot)
+    end
+end
+
+function Command_controller:Toggle_item(hero_entity, result)
+    local slot = result.slot
+    local item_entity = hero_entity:GetItemInSlot(slot)
+
+    if item_entity then
+        item_entity:OnToggle()
+    else
+        Warning("No item in slot " .. slot)
     end
 end
 
