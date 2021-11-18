@@ -188,6 +188,16 @@ class World:
 
         return enemy_towers
 
+    def get_allied_towers_of(self, unit: Unit) -> list[Tower]:
+        '''Returns all enemy towers of given unit.'''
+        allied_towers: list[Tower] = []
+
+        for allied_unit in self.get_allies_of(unit):
+            if isinstance(allied_unit, Tower):
+                allied_towers.append(allied_unit)
+        
+        return allied_towers
+
     def get_allied_creeps_of(self, unit: Unit) -> list[Unit]:
         '''Returns all allied creeps of given unit.'''
         allied_creeps: list[Unit] = []
