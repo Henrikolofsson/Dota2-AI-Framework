@@ -2,6 +2,7 @@
 local World_data_builder = require "python_AI.world_data_builder"
 local Update_handler = require "python_AI.update_handler"
 local Command_controller = require "python_AI.commands.command_controller"
+local Utilities = require "utilities.utilities"
 
 
 
@@ -80,12 +81,21 @@ end
 ---@param radiant_heroes table of radiant hero entities.
 ---@param dire_heroes table of dire hero entities.
 function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes)
-    return {
-        statistics = {
-            dire_stats = {"stats for radiant"},
-            radiant_stats = {"stats for dire"}
-        }
-    }
+    local heroes = Utilities:Concat_lists(radiant_heroes, dire_heroes)
+    local stats = {}
+
+    -- General stats.
+    stats["game_time"] = GameRules:GetGameTime()
+
+    -- Hero specific stats.
+    for i, hero in ipairs(heroes) do
+        stats[(i - 1) .. "_id"] = hero:GetPlayerID()
+        stats[(i - 1) .. "_team"] = hero:GetTeam()
+        stats[(i - 1) .. "_name"] = hero:GetName()
+        stats[(i - 1) .. "_gold"] = hero:GetGold()
+    end
+
+    return stats
 end
 
 
