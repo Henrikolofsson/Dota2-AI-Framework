@@ -1,6 +1,8 @@
+import csv
 import os
 
 from datetime import datetime
+from typing import Iterable
 
 
 class Statistics:
@@ -15,15 +17,13 @@ class Statistics:
     def save(self, game_statistics: dict) -> bool:
         stats = self.to_csv(game_statistics)
 
-        # Opens the file in append mode, meaning that new data will be written to
-        # the end of the file if the file already exists, otherwise a new file will
-        # be created.
-        with open(self.filename, "a", encoding="utf") as f:
-            f.write(str(stats))
-            f.write("\n")
+        # newline="" is important to ensure that the csv is written properly.
+        # see: https://docs.python.org/3/library/csv.html#id3
+        with open(self.filename, "a", encoding="utf8", newline="") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(stats)
 
         return True
 
-    def to_csv(self, game_statistics: dict):
-        # Not implemented.
-        return game_statistics
+    def to_csv(self, game_statistics: dict) -> Iterable[str]:
+        return str(game_statistics).split(" ")  # placeholder
