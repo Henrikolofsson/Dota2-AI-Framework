@@ -42,6 +42,27 @@ function Courier_commands:Shield(hero_entity)
     Courier_commands:Use_ability_restricted(hero_entity, 20, ABILITY_SHIELD)
 end
 
+function Courier_commands:Sell(hero_entity, result)
+    local courier_entity = Courier_commands:Get_courier(hero_entity)
+    local slot = result.slot
+
+    if courier_entity:CanSellItems() then
+        local item_entity = courier_entity:GetItemInSlot(slot)
+        if item_entity then
+            if item_entity:IsSellable() then
+                courier_entity:SellItem(item_entity)
+                EmitSoundOn("General.Sell", courier_entity)
+            else
+                Warning("Item in slot " .. slot .. " of courier is not sellable.")
+            end
+        else
+            Warning("No item in slot " .. slot .. " of courier.")
+        end
+    else
+        Warning("Bot tried to sell courier item outside shop.")
+    end
+end
+
 function Courier_commands:Use_ability_restricted(hero_entity, level, ability_index)
     local courier_entity = Courier_commands:Get_courier(hero_entity)
     local courier_level = courier_entity:GetLevel()

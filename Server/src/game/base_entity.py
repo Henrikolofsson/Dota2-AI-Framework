@@ -11,7 +11,7 @@ class BaseEntity(ABC):
     
     _entity_id: str
 
-    def __init__(self, entity_id: str):
+    def __init__(self, entity_id: str) -> None:
         self._entity_id = entity_id
 
     def get_id(self) -> str:

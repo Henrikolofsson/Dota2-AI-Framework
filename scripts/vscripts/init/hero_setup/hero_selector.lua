@@ -34,7 +34,6 @@ end
 ---@param player_id integer
 ---@param hero_name string
 function Hero_selector:Select_hero_for_player(player_id, hero_name)
-    print("hero_name" .. tostring(hero_name))
     PlayerResource:GetPlayer(player_id):SetSelectedHero(hero_name)
 end
 
@@ -93,18 +92,19 @@ end
 ---@param from_player_id integer
 ---@param to_player_id integer
 function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_player_id)
-    DeepPrintTable(picked_hero_names)
     ---@type integer
     for player_id = from_player_id, to_player_id do
-        local hero_name_index = player_id + 1
-        if player_id > 4 then
-            hero_name_index = player_id - 4
+        local hero_name_index = player_id
+        if player_id > 5 then
+            hero_name_index = player_id - 5
         end
 
         self:Put_player_on_team(player_id, team)
         self:Select_hero_for_player(player_id, picked_hero_names[hero_name_index])
         self:Append_hero_to_team_table(player_id, team)
-        self:Kick_player(player_id)
+        if Settings.should_dire_be_native_bots and player_id <= 5 then
+            self:Kick_player(player_id)
+        end
     end
 end
 

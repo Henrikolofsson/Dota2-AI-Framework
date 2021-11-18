@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 from math import sqrt
-from typing import Union, cast
+from typing import Union
 
-from game.post_data_interfaces.IHero import IHero
 from game.post_data_interfaces.IPhysicalEntity import IPhysicalEntity
 
 from game.base_entity import BaseEntity
@@ -16,6 +15,7 @@ from game.player_hero import PlayerHero
 from game.tree import Tree
 from game.courier import Courier
 from game.rune import Rune
+from time import time
 
 
 class World:
@@ -58,7 +58,9 @@ class World:
 
     def _set_dead_if_player_hero_else_remove_entity(self, entity: PhysicalEntity) -> None:
         if isinstance(entity, PlayerHero):
-            entity.set_alive(False)
+            if entity.is_alive():
+                entity.set_alive(False)
+                entity.set_time_of_death(time())
         else:
             self._entities.remove(entity)
 
@@ -71,13 +73,11 @@ class World:
     def _add_new_entity(self, entity_id: str, entity_data: IPhysicalEntity) -> None:
         new_entity: PhysicalEntity
 
-        if entity_data["type"] == "Hero":
-            new_hero: IHero = cast(IHero, entity_data)
-            if new_hero["team"] == self._team: # ugly nested if, need better semantics: type = "Hero" & type = "PlayerHero"
-                new_entity = PlayerHero(entity_id)
-                self._player_heroes.append(new_entity)
-            else:
-                new_entity = Hero(entity_id)
+        if entity_data["type"] == "PlayerHero":
+            new_entity = PlayerHero(entity_id)
+            self._player_heroes.append(new_entity)
+        elif entity_data["type"] == "Hero":
+            new_entity = Hero(entity_id)
         elif entity_data["type"] == "Tower":
             new_entity = Tower(entity_id)
         elif entity_data["type"] == "Building":
@@ -109,24 +109,25 @@ class World:
         '''Returns all bot-controlled heroes.'''
         return self._player_heroes
 
-    def get_unit_by_name(self, name: str) -> PhysicalEntity:
+    def get_unit_by_name(self, name: str) -> Union[Unit, None]:
         '''Returns first entity with specified name.'''
         for unit in self.get_units():
             if unit.get_name() == name:
                 return unit
 
-        raise Exception("No entity with name: {0}".format(name))
+        return None
 
     def get_distance_between_positions(self, position1: Position, position2: Position) -> float:
         '''Returns the distance between position1 and position2.'''
         return sqrt(((position2.x - position1.x)**2) + ((position2.y - position1.y)**2))
 
+    def get_distance_between_entities(self, entity1: PhysicalEntity, entity2: PhysicalEntity) -> float:
+        '''Returns the distance between entity1 and entity2.'''
+        return self.get_distance_between_positions(entity1.get_position(), entity2.get_position())
+
     def get_distance_between_units(self, unit1: Unit, unit2: Unit) -> float:
         '''Returns the distance between position of unit1 and position of unit2.'''
-        return self.get_distance_between_positions(
-            unit1.get_position(),
-            unit2.get_position()
-        )
+        return self.get_distance_between_entities(unit1, unit2)
 
     def get_enemies_in_attack_range_of(self, unit: Unit) -> list[Unit]:
         '''Returns all enemies in attack range of specified unit.'''
@@ -254,3 +255,23 @@ class World:
                 runes.append(entity)
         
         return runes
+
+    def get_all_trees(self) -> list[Tree]:
+        '''Returns all trees.'''
+        trees: list[Tree] = []
+
+        for entity in self._entities:
+            if isinstance(entity, Tree):
+                trees.append(entity)
+
+        return trees
+
+    def get_trees_in_range_of(self, unit: Unit, range: float) -> list[Tree]:
+        '''Returns all trees in specified range of given unit.'''
+        trees: list[Tree] = []
+
+        for tree in self.get_all_trees():
+            if self.get_distance_between_entities(unit, tree) <= range:
+                trees.append(tree)
+
+        return trees

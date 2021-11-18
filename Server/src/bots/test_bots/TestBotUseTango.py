@@ -1,4 +1,5 @@
 from typing import Union
+from game.tree import Tree
 from game.ability import Ability
 from game.hero import Hero
 from game.position import Position
@@ -10,8 +11,8 @@ from framework import RADIANT_TEAM, DIRE_TEAM
 
 party = {
     RADIANT_TEAM: [
-        "npc_dota_hero_puck",
         "npc_dota_hero_pudge",
+        "npc_dota_hero_puck",
         "npc_dota_hero_pugna",
         "npc_dota_hero_queenofpain",
         "npc_dota_hero_razor",
@@ -26,21 +27,14 @@ party = {
 }
 
 home_position = {
-    RADIANT_TEAM: Position(-6774, -6311, 256),
-    DIRE_TEAM: Position(6910, 6200, 256),
+    RADIANT_TEAM: Position(-6826, -7261, 256),
+    DIRE_TEAM: Position(6826, 7261, 256),
 }
 
-class TestBotBasicSmart(BaseBot):
+class TestBotUseTango(BaseBot):
     '''
     Tests:
-    
-    Basic AI.
-    - Heroes moves home when hp is less than 30 % of max hp.
-    - Heroes moves back to fight when hp is greater than 90 % of max hp.
-    - Heroes attack enemy hero if enemy hero has less than 50 % of max hp.
-    - Heroes attempt to get last hits and denies.
-    - Heroes "hard"-flee when attacked by tower.
-    - Heroes "soft"-flee when attacked by creeps or heroes.
+    - All heroes buy tango items at start and use them later when health gets low.
     '''
     
     _world: World
@@ -48,68 +42,40 @@ class TestBotBasicSmart(BaseBot):
     party: list[str]
     _heroes: list[PlayerHero]
     _should_move_home: dict[str, bool]
+    _should_use_tango_countdowns: dict[str, int]
+    _noop_countdowns: dict[str, int]
     _home_position: Position
-    _lane_tower_positions: dict[str, Position]
 
     def __init__(self, world: World, team: int) -> None:
         self._world = world
         self._team = team
         self.party = party[team]
         self._should_move_home = {}
+        self._should_use_tango_countdowns = {}
+        self._noop_countdowns = {}
         self._home_position = home_position[team]
-        self._lane_tower_positions = {}
 
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes
         for hero in heroes:
             self._should_move_home[hero.get_name()] = False
+            self._should_use_tango_countdowns[hero.get_name()] = 15
+            self._noop_countdowns[hero.get_name()] = 0
 
     def actions(self, hero: PlayerHero) -> None:
-        if self._world.get_game_ticks() == 1:
-            for lane_tower_name in [
-                "dota_goodguys_tower1_top",
-                "dota_goodguys_tower1_mid",
-                "dota_goodguys_tower1_bot",
-                "dota_badguys_tower1_top",
-                "dota_badguys_tower1_mid",
-                "dota_badguys_tower1_bot",
-            ]:
-                tower: Union[Unit, None] = self._world.get_unit_by_name(lane_tower_name)
-                if tower is not None:
-                    self._lane_tower_positions[lane_tower_name] = tower.get_position()
+        if self._noop_countdowns[hero.get_name()] != 0:
+            self._noop_countdowns[hero.get_name()] -= 1
+            return
 
-        if self._world.get_game_ticks() == 8:
-            hero.buy("item_branches")
-
-        if self._world.get_game_ticks() == 11:
-            hero.buy("item_branches")
-
-        if self._world.get_game_ticks() == 14:
-            hero.buy("item_mantle")
-
-        if self._world.get_game_ticks() == 17:
-            hero.buy("item_gauntlets")
-
-        if self._world.get_game_ticks() == 20:
-            hero.buy("item_slippers")
-
-        if self._world.get_game_ticks() == 24:
-            if len(hero.get_items()) > 0:
-                hero.sell(hero.get_items()[0].get_slot())
-                return
-            
-        if self._world.get_game_ticks() == 27:
-            if len(hero.get_items()) > 0:
-                hero.sell(hero.get_items()[0].get_slot())
-                return
-
-        if self._world.get_game_ticks() < 32:
+        if self._world.get_game_ticks() < 10 and hero.get_gold() >= 90:
+            hero.buy("item_tango")
             return
 
         self.make_choice(hero)
 
     def make_choice(self, hero: PlayerHero) -> None:
-        if hero.get_ability_points() > 0 and hero.get_abilities()[0].get_level() < 4:
+        
+        if hero.get_ability_points() > 0:
             hero.level_up(0)
             return
 
@@ -133,16 +99,26 @@ class TestBotBasicSmart(BaseBot):
         return False
 
     def push_lane(self, hero: PlayerHero, lane_tower_name: str) -> None:
-        if hero.get_health() > 0.9 * hero.get_max_health():
+        if hero.get_health() > 0.85 * hero.get_max_health():
             self._should_move_home[hero.get_name()] = False
-        elif hero.get_health() < 0.30 * hero.get_max_health():
+            self._should_use_tango_countdowns[hero.get_name()] = 15
+        elif hero.get_health() < 0.6 * hero.get_max_health():
             self._should_move_home[hero.get_name()] = True
 
         if self._should_move_home[hero.get_name()]:
+            if self._should_use_tango_countdowns[hero.get_name()] == 0:
+                if self.use_tango(hero):
+                    self._noop_countdowns[hero.get_name()] = 30
+                    return
+                else:
+                    closest_tree: Union[Tree, None] = self.get_closest_tree(hero)
+                    if closest_tree is not None:
+                        hero.move(*closest_tree.get_position())
+                        return
+            else:
+                self._should_use_tango_countdowns[hero.get_name()] -= 1
             hero.move(*self._home_position)
             return
-
-        lane_tower_position: Position = self._lane_tower_positions[lane_tower_name]
 
         if self.is_near_allied_creeps(hero) and not hero.get_has_tower_aggro():
             enemy_hero_to_attack: Union[Hero, None] = self.get_enemy_hero_to_attack(hero)
@@ -161,7 +137,7 @@ class TestBotBasicSmart(BaseBot):
             elif creep_to_deny is not None:
                 hero.attack(creep_to_deny.get_id())
             elif hero.get_has_aggro():
-                hero.move(*lane_tower_position)
+                hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
             elif enemy_hero_to_attack is not None:
                 hero.attack(enemy_hero_to_attack.get_id())
             elif self.should_move_closer_to_allied_creeps(hero):
@@ -169,7 +145,33 @@ class TestBotBasicSmart(BaseBot):
             else:
                 self.stop(hero)
         else:
-            hero.move(*lane_tower_position)
+            hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
+
+    def use_tango(self, hero: PlayerHero) -> bool:
+        tango_slot: int = self.get_tango_slot(hero)
+        if tango_slot >= 0:
+            tree: Union[Tree, None] = self.get_closest_tree(hero)
+            if tree:
+                hero.use_item(tango_slot, target = tree.get_id())
+                return True
+        
+        return False
+
+
+    def get_tango_slot(self, hero: PlayerHero) -> int:
+        for item in hero.get_items():
+            if item.get_name() == "item_tango":
+                return item.get_slot()
+        
+        return -1
+
+    def get_closest_tree(self, hero: PlayerHero) -> Union[Tree, None]:
+        closest_trees: list[Tree] = self._world.get_trees_in_range_of(hero, 900)
+
+        closest_trees.sort(key=lambda tree: self._world.get_distance_between_entities(hero, tree))
+
+        if closest_trees:
+            return closest_trees[0]
 
     def stop(self, hero: PlayerHero) -> None:
         hero.move(*hero.get_position())

@@ -48,6 +48,10 @@
         "DOTA_STASH_SLOT_1",
         "DOTA_STASH_SLOT_6",
         "DOTA_ITEM_SLOT_9",
-        "DOTA_GAMERULES_STATE_POST_GAME"
+        "DOTA_GAMERULES_STATE_POST_GAME",
+        "bit",
+        "ExecuteOrderFromTable",
+        "DOTA_UNIT_ORDER_RADAR",
+        "DOTA_UNIT_ORDER_GLYPH"
     ]
 }
