@@ -61,7 +61,7 @@ function Main_controller.On_player_chat(chat_text)
 end
 
 function Main_controller:Put_admin_on_spectator_team()
-    PlayerResource:SetCustomTeamAssignment(ADMIN_PLAYER_ID, SPECTATOR_TEAM)
+    PlayerResource:GetPlayer(ADMIN_PLAYER_ID):SetTeam(SPECTATOR_TEAM)
 end
 
 function Main_controller.Run_after_settings()

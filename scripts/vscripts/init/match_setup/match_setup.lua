@@ -35,7 +35,7 @@ function Match_setup:Auto_launch_custom_game()
 end
 
 function Match_setup:Populate_game()
-    SendToServerConsole("dota_create_fake_clients")
+    SendToServerConsole("dota_bot_populate")
 end
 
 function Match_setup:Force_game_start()

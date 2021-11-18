@@ -94,15 +94,15 @@ end
 function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_player_id)
     ---@type integer
     for player_id = from_player_id, to_player_id do
-        local hero_name_index = player_id + 1
-        if player_id > 4 then
-            hero_name_index = player_id - 4
+        local hero_name_index = player_id
+        if player_id > 5 then
+            hero_name_index = player_id - 5
         end
 
         self:Put_player_on_team(player_id, team)
         self:Select_hero_for_player(player_id, picked_hero_names[hero_name_index])
         self:Append_hero_to_team_table(player_id, team)
-        if Settings.should_dire_be_native_bots then
+        if Settings.should_dire_be_native_bots and player_id <= 5 then
             self:Kick_player(player_id)
         end
     end

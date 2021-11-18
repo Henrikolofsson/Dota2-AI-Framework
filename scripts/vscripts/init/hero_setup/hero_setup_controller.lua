@@ -1,6 +1,5 @@
 -- imports
 local Hero_selector = require "init.hero_setup.hero_selector"
-local Native_bot_setup = require "init.hero_setup.native_bot_setup"
 local Utilities = require "utilities.utilities"
 
 
@@ -30,27 +29,8 @@ function Hero_setup_controller:All_players_have_chosen_hero()
     return Utilities:To_bool(self.radiant_heroes)
 end
 
-function Hero_setup_controller:Create_player_0()
-    local hero = GameRules:AddBotPlayerWithEntityScript(Settings.radiant_party_names[1], "Fake Player 0", DOTA_TEAM_GOODGUYS, "", true)
-    local courier = PlayerResource:GetPreferredCourierForPlayer(hero:GetPlayerID())
-
-    table.insert(Hero_selector.radiant_heroes, hero)
-
-    hero:SetOrigin(Vector(-7150, -6150, 384))
-    courier:SetOrigin(Vector(-7250, -6250, 384))
-
-    if Settings.should_dire_be_native_bots then
-        SendToServerConsole("kickid 11")
-    end
-end
-
 function Hero_setup_controller:Select_radiant_heroes()
-    local from_player_id, to_player_id = 0, 4
-
-    if Settings.spectator_mode then
-        from_player_id = 1
-        self:Create_player_0()
-    end
+    local from_player_id, to_player_id = 1, 5
 
     Hero_selector:Pick_heroes(
         Settings.radiant_party_names,
@@ -61,12 +41,7 @@ function Hero_setup_controller:Select_radiant_heroes()
 end
 
 function Hero_setup_controller:Select_dire_heroes()
-    if Settings.should_dire_be_native_bots then
-        Native_bot_setup:Create_bots(Settings.dire_party_names)
-        return
-    end
-
-    local from_player_id, to_player_id = 5, 9
+    local from_player_id, to_player_id = 6, 10
 
     Hero_selector:Pick_heroes(
         Settings.dire_party_names,
