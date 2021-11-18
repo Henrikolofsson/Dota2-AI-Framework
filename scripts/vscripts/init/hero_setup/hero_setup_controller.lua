@@ -39,7 +39,9 @@ function Hero_setup_controller:Create_player_0()
     hero:SetOrigin(Vector(-7150, -6150, 384))
     courier:SetOrigin(Vector(-7250, -6250, 384))
 
-    SendToServerConsole("kickid 11")
+    if Settings.should_dire_be_native_bots then
+        SendToServerConsole("kickid 11")
+    end
 end
 
 function Hero_setup_controller:Select_radiant_heroes()

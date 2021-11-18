@@ -102,7 +102,9 @@ function Hero_selector:Pick_heroes(picked_hero_names, team, from_player_id, to_p
         self:Put_player_on_team(player_id, team)
         self:Select_hero_for_player(player_id, picked_hero_names[hero_name_index])
         self:Append_hero_to_team_table(player_id, team)
-        self:Kick_player(player_id)
+        if Settings.should_dire_be_native_bots then
+            self:Kick_player(player_id)
+        end
     end
 end
 

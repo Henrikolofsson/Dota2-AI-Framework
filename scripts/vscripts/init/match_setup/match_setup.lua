@@ -56,7 +56,9 @@ end
 
 function Match_setup:Run()
     self:Auto_launch_custom_game()
-    self:Set_bot_thinking_enabled()
+    if Settings.should_dire_be_native_bots then
+        self:Set_bot_thinking_enabled()
+    end
     self:Remove_all_game_rule_starting_delays()
     self:Grant_global_vision()
     self:Rune_handler()
