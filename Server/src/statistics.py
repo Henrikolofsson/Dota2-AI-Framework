@@ -11,10 +11,10 @@ class Statistics:
         # that are not tied to a particular hero. Each hero specific column is prefixed with 0-9.
         #
         # game_time = Number of seconds elapsed since map start (doesn't count up when the game is paused) (float).
-        # x_id      = The heroes in-game player id (int)
+        # x_id      = The hero's in-game player id (int)
         # x_team    = The team the hero is on. Radiant is 2, Dire is 3 (int).
-        # x_name    = Hero name, e.g. "npc_dota_hero_puck" (str).
-        # x_gold    = A hero's current gold value (int).
+        # x_name    = The hero's name, e.g. "npc_dota_hero_puck" (str).
+        # x_gold    = The hero's current gold value (int).
         self.field_names = (
             'game_time',
             '0_id', '0_team', '0_name', '0_gold',
