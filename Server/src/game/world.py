@@ -44,6 +44,10 @@ class World:
         for entity in self._entities:
             if entity.get_id() not in new_entities.keys():
                 self._set_dead_if_player_hero_else_remove_entity(entity)
+            if isinstance(entity, Tower):
+                if entity.get_name() == "dota_goodguys_tower1_top":
+                    print(entity.get_name())
+                
 
     def _update_if_exists_else_add_new_entity(self, entity_id: str, entity_data: IPhysicalEntity) -> None:
         entity: Union[BaseEntity, None] = self.get_entity_by_id(entity_id)
@@ -54,6 +58,12 @@ class World:
 
     def _set_dead_if_player_hero_else_remove_entity(self, entity: PhysicalEntity) -> None:
         if isinstance(entity, PlayerHero):
+            entity.set_alive(False)
+        else:
+            self._entities.remove(entity)
+
+    def _set_dead_if_tower_else_remove_entity(self, entity: PhysicalEntity) -> None:
+        if isinstance(entity, Tower):
             entity.set_alive(False)
         else:
             self._entities.remove(entity)
@@ -182,10 +192,24 @@ class World:
         enemy_towers: list[Tower] = []
 
         for enemy_unit in self.get_enemies_of(unit):
+            print(enemy_unit.get_name())
             if isinstance(enemy_unit, Tower):
+                print(enemy_unit.get_name())
                 enemy_towers.append(enemy_unit)
 
         return enemy_towers
+
+    def get_allied_towers_of(self, unit: Unit) -> list[Tower]:
+        '''Returns all enemy towers of given unit.'''
+        allied_towers: list[Tower] = []
+
+        for allied_unit in self.get_allies_of(unit):
+            print(allied_unit.get_name())
+            if isinstance(allied_unit, Tower):
+                print(allied_unit.get_name())
+                allied_towers.append(allied_unit)
+        
+        return allied_towers
 
     def get_allied_creeps_of(self, unit: Unit) -> list[Unit]:
         '''Returns all allied creeps of given unit.'''
