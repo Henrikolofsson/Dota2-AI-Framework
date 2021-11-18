@@ -183,20 +183,9 @@ class World:
         enemy_towers: list[Tower] = []
 
         for enemy_unit in self.get_enemies_of(unit):
-            print(enemy_unit.get_name())
             if isinstance(enemy_unit, Tower):
-                print(enemy_unit.get_name())
                 enemy_towers.append(enemy_unit)
 
-        return enemy_towers
-
-    def get_enemy_living_towers_of(self, unit: Unit) -> list[Tower]:
-        enemy_towers: list[Tower] = []
-
-        for enemy_tower in self.get_enemy_towers_of(unit):
-            if enemy_tower.is_alive():
-                enemy_towers.append(enemy_tower)
-        
         return enemy_towers
 
     def get_allied_towers_of(self, unit: Unit) -> list[Tower]:
@@ -207,15 +196,6 @@ class World:
             if isinstance(allied_unit, Tower):
                 allied_towers.append(allied_unit)
         
-        return allied_towers
-        
-    def get_allied_living_towers_of(self, unit: Unit) -> list[Tower]:
-        allied_towers: list[Tower] = []
-        
-        for allied_tower in self.get_allied_towers_of(unit):
-            if allied_tower.is_alive():
-                allied_towers.append(allied_tower)
-
         return allied_towers
 
     def get_allied_creeps_of(self, unit: Unit) -> list[Unit]:

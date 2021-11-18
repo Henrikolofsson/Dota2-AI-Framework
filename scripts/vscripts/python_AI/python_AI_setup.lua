@@ -31,23 +31,6 @@ function Python_AI_setup:Initialize_bot_thinking(radiant_heroes, dire_heroes)
     if not Settings.should_dire_be_native_bots then
         self:Set_context_think_for_heroes(dire_heroes)
     end
-
-    local tower1top = Entities:FindAllByName("dota_goodguys_tower1_top")
-    --print(tower1top[1]:GetUnitName())
-    --print(tower1top[1]:GetName())
-    Timers:CreateTimer(
-        "asdf",
-        {
-            callback = function()
-                print("Outside")
-                if tower1top[1]:IsAlive() then
-                    tower1top[1]:ForceKill(false)
-                    print("inside")
-                end
-            end,
-            endTime = 10
-        }
-    )
 end
 
 ---@param radiant_heroes table
