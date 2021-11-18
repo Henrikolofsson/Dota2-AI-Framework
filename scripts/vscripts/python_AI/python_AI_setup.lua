@@ -47,7 +47,6 @@ function Python_AI_setup:Initialize_bot_thinking(radiant_heroes, dire_heroes)
             end,
             endTime = 10
         }
-        
     )
 end
 

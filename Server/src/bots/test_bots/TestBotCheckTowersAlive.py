@@ -43,6 +43,9 @@ class TestBotCheckTowersAlive(BaseBot):
         self._heroes = heroes
 
     def actions(self, hero: PlayerHero) -> None:
+        if self._team == RADIANT_TEAM:
+            print(len(self._world.get_allied_towers_of(hero)))
+
         if self._world.get_game_ticks() >= 50:
             if hero.get_name() == "npc_dota_hero_axe":
                 #_radiant_towers = self._world.get_allied_towers_of(hero)
