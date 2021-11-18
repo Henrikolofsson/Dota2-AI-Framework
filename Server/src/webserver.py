@@ -3,6 +3,7 @@ from enum import Enum, auto
 from bot_framework import BotFramework
 from bottle import request, response, Bottle
 from pathlib import Path
+from statistics import  Statistics
 from threading import Lock
 
 
@@ -27,7 +28,8 @@ class ServerState(Enum):
 
 
 def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramework,
-                     dire_bot_framework: BotFramework, games_remaining: int) -> Bottle:
+                     dire_bot_framework: BotFramework, games_remaining: int,
+                     statistics: Statistics) -> Bottle:
     """Defines the web server routes and return the Bottle app instance."""
     app = Bottle()
     state = ServerState.SETTINGS
@@ -86,11 +88,10 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
             return {'status': 'restart'}
 
     @app.post("/api/statistics")
-    def statistics():
+    def collect_statistics():
         raw_json = request.json
         parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
-        # todo: Call some function to handle statistics
-        # print(parsed_json)
+        statistics.save(parsed_json)
 
     @app.post("/api/radiant_update")
     def radiant_update():
@@ -123,5 +124,3 @@ def update_game_state(bot_framework, state, bot_framework_lock):
         bot_framework.generate_bot_commands()
         commands = bot_framework.receive_bot_commands()
         return json.dumps(commands)
-
-
