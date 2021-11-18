@@ -54,12 +54,17 @@ function Match_setup:Enable_courier()
     GameRules:GetGameModeEntity():SetFreeCourierModeEnabled(true)
 end
 
+function Match_setup:Day_night_cycle()
+    GameRules:SetTimeOfDay(0.251)
+end
+
 function Match_setup:Run()
     self:Auto_launch_custom_game()
     if Settings.should_dire_be_native_bots then
         self:Set_bot_thinking_enabled()
     end
     self:Remove_all_game_rule_starting_delays()
+    self:Day_night_cycle()
     self:Grant_global_vision()
     self:Rune_handler()
     self:Enable_courier()

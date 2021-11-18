@@ -72,6 +72,7 @@ function Main_controller.Run_after_settings()
     Match_setup_controller:Initialize_match_setup()
     Event_controller:Add_on_hero_selection_game_state_listener(Main_controller.On_hero_selection_game_state)
     Event_controller:Add_on_pre_game_state_listener(Main_controller.On_pre_game_state)
+    Event_controller:Add_on_in_progress_game_state_listener(Main_controller.in_progress_game_state_callbacks)
     Event_controller:Add_on_post_game_state_listener(Main_controller.On_post_game_state)
     Event_controller:Add_on_player_chat_listener(Main_controller.On_player_chat)
 end
