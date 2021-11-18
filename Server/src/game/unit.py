@@ -27,7 +27,7 @@ class Unit(PhysicalEntity):
     _team: int
     _forward_vector: Position
 
-    def update(self, data: IEntity):
+    def update(self, data: IEntity) -> None:
         super().update(data)
         unit_data: IUnit = cast(IUnit, data)
         self._name = unit_data["name"]

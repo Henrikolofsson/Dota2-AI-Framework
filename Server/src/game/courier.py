@@ -14,7 +14,7 @@ class Courier(Unit):
     def get_type(self) -> EntityType:
         return EntityType.COURIER
 
-    def update(self, data: IEntity):
+    def update(self, data: IEntity) -> None:
         super().update(data)
         courier_entity_data: ICourier = cast(ICourier, data)
         self._set_items(courier_entity_data)

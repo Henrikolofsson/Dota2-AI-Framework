@@ -25,7 +25,7 @@ class Ability(BaseEntity):
     _level: int
 
 
-    def update(self, data: IEntity):
+    def update(self, data: IEntity) -> None:
         super().update(data)
         ability_data: IAbility = cast(IAbility, data)
         self._target_flags = ability_data["targetFlags"]

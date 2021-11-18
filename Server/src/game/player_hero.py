@@ -29,7 +29,7 @@ class PlayerHero(Hero):
         self.command = None
         self.commands = []
 
-    def update(self, data: IEntity):
+    def update(self, data: IEntity) -> None:
         super().update(data)
         player_hero_data: IHero = cast(IPlayerHero, data)
 
@@ -45,7 +45,7 @@ class PlayerHero(Hero):
         self._buyback_cooldown_time = player_hero_data["buybackCooldownTime"]
         self._set_abilities(player_hero_data)
 
-    def _set_abilities(self, data: IPlayerHero):
+    def _set_abilities(self, data: IPlayerHero) -> None:
         self._abilities = []
 
         ability_id = 0

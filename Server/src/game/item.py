@@ -13,7 +13,7 @@ class Item(BaseEntity):
     _combine_locked: bool
     _disassemblable: bool
 
-    def update(self, data: IEntity):
+    def update(self, data: IEntity) -> None:
         super().update(data)
         item_data: IItem = cast(IItem, data)
         self._charges = item_data["charges"]

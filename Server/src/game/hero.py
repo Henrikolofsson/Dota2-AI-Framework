@@ -14,7 +14,7 @@ class Hero(Unit):
     _deaths: int
     _items: list[Item]
 
-    def update(self, data: IEntity):
+    def update(self, data: IEntity) -> None:
         super().update(data)
         hero_data = cast(IHero, data)
 
