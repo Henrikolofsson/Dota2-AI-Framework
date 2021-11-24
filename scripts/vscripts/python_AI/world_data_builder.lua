@@ -56,6 +56,7 @@ function World_data_builder:Get_items_data(unit_entity)
             items[i].castRange = item:GetCastRange()
             items[i].combineLocked = item:IsCombineLocked()
             items[i].disassemblable = Command_controller:Hero_can_disassemble_item(item)
+            items[i].cooldownTimeRemaining = item:GetCooldownTimeRemaining()
         end
     end
     return items
@@ -99,32 +100,41 @@ end
 ---@return table abilities
 function World_data_builder:Get_hero_abilities(hero_entity)
     local abilities = {}
-    local ability_count = self:Get_hero_ability_count(hero_entity)
 
-    for index = 0, ability_count, 1 do
-        local ability_entity = hero_entity:GetAbilityByIndex(index)
-        -- abilityCount returned 16 for me even though the hero had only 5 slots (maybe it's actually max slots?). We fix that by checking for null pointer
-        if ability_entity then
-            abilities[index] = {}
-            abilities[index].type = "Ability"
-            abilities[index].name = ability_entity:GetAbilityName()
-            abilities[index].targetFlags = ability_entity:GetAbilityTargetFlags()
-            abilities[index].targetTeam = ability_entity:GetAbilityTargetTeam()
-            abilities[index].targetType = ability_entity:GetAbilityTargetType()
-            abilities[index].abilityType = ability_entity:GetAbilityType()
-            abilities[index].abilityIndex = ability_entity:GetAbilityIndex()
-            abilities[index].level = ability_entity:GetLevel()
-            abilities[index].maxLevel = ability_entity:GetMaxLevel()
-            abilities[index].abilityDamage = ability_entity:GetAbilityDamage()
-            abilities[index].abilityDamageType = ability_entity:GetAbilityDamage()
-            abilities[index].cooldownTime = ability_entity:GetCooldownTime()
-            abilities[index].cooldownTimeRemaining = ability_entity:GetCooldownTimeRemaining()
-            abilities[index].behavior = ability_entity:GetBehavior()
-            abilities[index].toggleState = ability_entity:GetToggleState()
-        end
+    local hero_ability_key = hero_entity:GetName() .. hero_entity:GetTeam()
+    for index, ability_entity in pairs(Settings.accessible_abilities[hero_ability_key]) do
+        abilities[index] = {}
+        abilities[index].type = "Ability"
+        abilities[index].name = ability_entity:GetAbilityName()
+        abilities[index].targetFlags = ability_entity:GetAbilityTargetFlags()
+        abilities[index].targetTeam = ability_entity:GetAbilityTargetTeam()
+        abilities[index].targetType = ability_entity:GetAbilityTargetType()
+        abilities[index].abilityType = ability_entity:GetAbilityType()
+        abilities[index].abilityIndex = ability_entity:GetAbilityIndex()
+        abilities[index].level = ability_entity:GetLevel()
+        abilities[index].maxLevel = ability_entity:GetMaxLevel()
+        abilities[index].abilityDamage = ability_entity:GetAbilityDamage()
+        abilities[index].abilityDamageType = ability_entity:GetAbilityDamage()
+        abilities[index].cooldownTime = ability_entity:GetCooldownTime()
+        abilities[index].cooldownTimeRemaining = ability_entity:GetCooldownTimeRemaining()
+        abilities[index].behavior = ability_entity:GetBehavior()
+        abilities[index].toggleState = ability_entity:GetToggleState()
+        abilities[index].manaCost = ability_entity:GetManaCost(ability_entity:GetLevel())
+        abilities[index].heroLevelRequiredToLevelUp = ability_entity:GetHeroLevelRequiredToUpgrade()
     end
 
     return abilities
+end
+
+function World_data_builder:Insert_tp_scroll_data(hero_data, hero_entity)
+    hero_data.tpScrollAvailable = false
+    hero_data.tpScrollCooldownTime = 0.
+
+    local scroll_item_entity = hero_entity:GetItemInSlot(DOTA_ITEM_TP_SCROLL)
+    if scroll_item_entity then
+        hero_data.tpScrollAvailable = scroll_item_entity:IsCooldownReady()
+        hero_data.tpScrollCooldownTime = scroll_item_entity:GetCooldownTime()
+    end
 end
 
 ---@param hero_data table
@@ -132,7 +142,6 @@ end
 function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.type = "Hero"
     hero_data.hasTowerAggro = self:Has_tower_aggro(hero_entity)
-    print(hero_data.hasTowerAggro)
     hero_data.hasAggro = self:Has_aggro(hero_entity)
     hero_data.deaths = hero_entity:GetDeaths()
     hero_data.items = self:Get_items_data(hero_entity)
@@ -150,6 +159,8 @@ function World_data_builder:Insert_player_hero_data(hero_data, hero_entity)
     hero_data.courier_id = tostring(PlayerResource:GetPreferredCourierForPlayer(hero_entity:GetPlayerOwnerID()):entindex())
     hero_data.buybackCost = hero_entity:GetBuybackCost(false)
     hero_data.buybackCooldownTime = hero_entity:GetBuybackCooldownTime()
+
+    self:Insert_tp_scroll_data(hero_data, hero_entity)
 
     hero_data.abilities = self:Get_hero_abilities(hero_entity)
 end
