@@ -53,6 +53,7 @@
         "ExecuteOrderFromTable",
         "DOTA_UNIT_ORDER_RADAR",
         "DOTA_UNIT_ORDER_GLYPH",
-        "DOTA_UNIT_TARGET_FLAG_NONE"
+        "DOTA_UNIT_TARGET_FLAG_NONE",
+        "DOTA_ITEM_TP_SCROLL"
     ]
 }
