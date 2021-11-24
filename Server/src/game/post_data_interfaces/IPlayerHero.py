@@ -10,3 +10,5 @@ class IPlayerHero(IHero):
     courier_id: str
     buybackCost: int
     buybackCooldownTime: float
+    tpScrollAvailable: bool
+    tpScrollCooldownTime: float
