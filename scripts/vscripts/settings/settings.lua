@@ -1,4 +1,6 @@
 Settings = {
+    ---@type table
+    accessible_abilities = {},
     ---@type boolean
     should_have_pre_game_delay = nil,
     ---@type boolean
