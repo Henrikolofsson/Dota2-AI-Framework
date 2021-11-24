@@ -7,3 +7,4 @@ class IItem(IEntity):
     slot: int
     combineLocked: bool
     disassemblable: bool
+    cooldownTimeRemaining: float

@@ -12,6 +12,7 @@ class Item(BaseEntity):
     _slot: int
     _combine_locked: bool
     _disassemblable: bool
+    _cooldown_time_remaining: float
 
     def update(self, data: IEntity) -> None:
         super().update(data)
@@ -22,6 +23,7 @@ class Item(BaseEntity):
         self._slot = item_data["slot"]
         self._combine_locked = item_data["combineLocked"]
         self._disassemblable = item_data["disassemblable"]
+        self._cooldown_time_remaining = item_data["cooldownTimeRemaining"]
 
     def get_charges(self) -> int:
         return self._charges
@@ -40,6 +42,9 @@ class Item(BaseEntity):
 
     def is_disassemblable(self) -> bool:
         return self._disassemblable
+
+    def get_cooldown_time_remaining(self) -> float:
+        return self._cooldown_time_remaining
 
     def get_type(self) -> EntityType:
         return EntityType.ITEM
