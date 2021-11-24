@@ -21,7 +21,8 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     end
 
     if     command == "MOVE"                                        then self:Move_to(hero_entity, result)
-    elseif command == "LEVELUP"                                     then self:Level_up(hero_entity, result)
+    elseif command == "STOP"                                        then self:Stop(hero_entity)
+    elseif command == "LEVEL_UP"                                    then self:Level_up(hero_entity, result)
     elseif command == "ATTACK"                                      then self:Attack(hero_entity, result)
     elseif command == "CAST"                                        then self:Cast(hero_entity, result)
     elseif command == "BUY"                                         then self:Buy(hero_entity, result)
@@ -34,6 +35,7 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "PICK_UP_RUNE"                                then self:Pick_up_rune(hero_entity, result)
     elseif command == "NOOP"                                        then self:Noop(hero_entity, result)
     elseif command == "GLYPH"                                       then self:Cast_glyph_of_fortification(hero_entity)
+    elseif command == "TP_SCROLL"                                   then self:Use_tp_scroll(hero_entity, result)
     elseif command == "BUYBACK"                                     then self:Buyback(hero_entity)
     elseif command == "CAST_ABILITY_TOGGLE"                         then self:Cast_ability_toggle(hero_entity, result)
     elseif command == "CAST_ABILITY_NO_TARGET"                      then self:Cast_ability_no_target(hero_entity, result)
@@ -147,6 +149,10 @@ function Command_controller:Move_to(hero_entity, result)
     hero_entity:MoveToPosition(Vector(result.x, result.y, result.z))
 end
 
+function Command_controller:Stop(hero_entity)
+    hero_entity:Stop()
+end
+
 function Command_controller:Level_up(hero_entity, result)
     local ability_points = hero_entity:GetAbilityPoints()
     if ability_points <= 0 then
@@ -154,13 +160,20 @@ function Command_controller:Level_up(hero_entity, result)
         return
     end
 
-    local ability_index = result.abilityIndex
+    local ability_entity = hero_entity:GetAbilityByIndex(result.ability)
 
-    local ability_entity = hero_entity:GetAbilityByIndex(ability_index)
     if ability_entity:GetLevel() == ability_entity:GetMaxLevel() then
         Warning(hero_entity:GetName() .. ": " .. ability_entity:GetName() .. " is maxed out")
         return
     end
+
+    local required_level = ability_entity:GetHeroLevelRequiredToUpgrade()
+    local hero_level = hero_entity:GetLevel()
+    if hero_level < required_level then
+        Warning(hero_entity:GetName() .. "(level " .. hero_level .. ") tried to level up ability " .. ability_entity:GetName() .. " which requries level " .. required_level)
+        return
+    end
+
     ability_entity:UpgradeAbility(false)
     hero_entity:SetAbilityPoints(ability_points - 1)
 end
@@ -255,6 +268,20 @@ function Command_controller:Cast_glyph_of_fortification(hero_entity)
         UnitIndex = hero_entity:entindex(),
         OrderType = DOTA_UNIT_ORDER_GLYPH,
     })
+end
+
+function Command_controller:Use_tp_scroll(hero_entity, result)
+    local tp_scroll_entity = hero_entity:GetItemInSlot(DOTA_ITEM_TP_SCROLL)
+
+    if tp_scroll_entity then
+        if tp_scroll_entity:IsCooldownReady() then
+            self:Use_ability(hero_entity, tp_scroll_entity, result)
+        else
+            Warning("Bot tried to use town portal scrolls while on cooldown.")
+        end
+    else
+        Warning("Bot has no town portal scrolls available.")
+    end
 end
 
 function Command_controller:Scan(hero_entity, result) -- unused
