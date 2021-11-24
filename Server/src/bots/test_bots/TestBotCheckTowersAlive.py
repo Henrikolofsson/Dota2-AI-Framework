@@ -1,10 +1,7 @@
-from types import NoneType
 from base_bot import BaseBot
 from game.player_hero import PlayerHero
 from game.world import World
-from game.ability import Ability
 from game.tower import Tower
-from game.unit import Unit
 from framework import RADIANT_TEAM, DIRE_TEAM
 
 party = {
