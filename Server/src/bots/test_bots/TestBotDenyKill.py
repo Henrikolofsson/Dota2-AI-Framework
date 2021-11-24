@@ -72,7 +72,9 @@ class TestBotDenyKill(BaseBot):
             else:
                 hero.move(*self.get_closest_allied_creep(hero).get_position())
         else:
-            hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
+            lane_tower: Union[Unit, None] = self._world.get_unit_by_name(lane_tower_name)
+            if lane_tower is not None:
+                hero.move(*lane_tower.get_position())
 
     def get_creep_to_deny(self, hero: PlayerHero) -> Union[Unit, None]:
         closest_allied_creeps = self.get_closest_allied_creeps(hero)

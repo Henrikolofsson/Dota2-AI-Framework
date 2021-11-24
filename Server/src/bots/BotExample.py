@@ -109,7 +109,7 @@ class BotExample(BaseBot):
     def attack_building_if_in_range(self, hero: PlayerHero):
         if bool(random.getrandbits(1)):
             self.use_ability_on_enemy(hero)
-            if hero.command:
+            if hero._command:
                 return True
         enemies = self.world.get_enemies_in_range_of(hero, 700)
         enemies = [e for e in enemies if isinstance(e, Building)]
@@ -122,7 +122,7 @@ class BotExample(BaseBot):
     def attack_unit_if_in_range(self, hero: PlayerHero):
         if bool(random.getrandbits(1)):
             self.use_ability_on_enemy(hero)
-            if hero.command:
+            if hero._command:
                 return True
 
         enemies = self.world.get_enemies_in_range_of(hero, 500)
@@ -160,7 +160,7 @@ class BotExample(BaseBot):
         if (ability.get_behavior()
                 & AbilityBehavior.UNIT_TARGET.value) > 0:
             hero.cast(ability.get_ability_index(),
-                      target=enemy.get_id())
+                      target_id=enemy.get_id())
         else:
             hero.cast(ability.get_ability_index(), position=enemy.get_position().to_list())
 

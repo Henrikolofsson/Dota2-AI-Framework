@@ -120,6 +120,8 @@ class TestBotUseTango(BaseBot):
             hero.move(*self._home_position)
             return
 
+        lane_tower: Union[Unit, None] = self._world.get_unit_by_name(lane_tower_name)
+
         if self.is_near_allied_creeps(hero) and not hero.get_has_tower_aggro():
             enemy_hero_to_attack: Union[Hero, None] = self.get_enemy_hero_to_attack(hero)
             creep_to_last_hit: Union[Unit, None] = self.get_creep_to_last_hit(hero)
@@ -137,7 +139,8 @@ class TestBotUseTango(BaseBot):
             elif creep_to_deny is not None:
                 hero.attack(creep_to_deny.get_id())
             elif hero.get_has_aggro():
-                hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
+                if lane_tower is not None:
+                    hero.move(*lane_tower.get_position())
             elif enemy_hero_to_attack is not None:
                 hero.attack(enemy_hero_to_attack.get_id())
             elif self.should_move_closer_to_allied_creeps(hero):
@@ -145,14 +148,15 @@ class TestBotUseTango(BaseBot):
             else:
                 self.stop(hero)
         else:
-            hero.move(*self._world.get_unit_by_name(lane_tower_name).get_position())
+            if lane_tower is not None:
+                hero.move(*lane_tower.get_position())
 
     def use_tango(self, hero: PlayerHero) -> bool:
         tango_slot: int = self.get_tango_slot(hero)
         if tango_slot >= 0:
             tree: Union[Tree, None] = self.get_closest_tree(hero)
             if tree:
-                hero.use_item(tango_slot, target = tree.get_id())
+                hero.use_item(tango_slot, target_id = tree.get_id())
                 return True
         
         return False

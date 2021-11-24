@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from typing import Any
+from typing import Union
+from base_bot import BaseBot
 from game.post_data_interfaces.IRoot import IRoot
 from game.world import World
+from game.player_hero import CommandProps
 
 
 class BotFramework:
     bot_class: type
     world: World
-    agent: Any
+    agent: BaseBot
     initialized: bool
 
     def __init__(self, bot_class: type, team: int) -> None:
@@ -38,11 +40,11 @@ class BotFramework:
         for hero in self.world.get_player_heroes():
             self.agent.actions(hero)
 
-    def receive_bot_commands(self) -> list[dict[str, Any]]:
-        commands: list[dict[str, Any]] = []
+    def receive_bot_commands(self) -> list[dict[str, CommandProps]]:
+        commands: list[dict[str, CommandProps]] = []
 
         for hero in self.world.get_player_heroes():
-            command: dict[str, Any] = hero.get_command()
+            command: Union[dict[str, CommandProps], None] = hero.get_command()
             if command:
                 commands.append(command)
                 hero.clear_and_archive_command()

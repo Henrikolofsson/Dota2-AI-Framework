@@ -1,4 +1,3 @@
-from game.position import Position
 from base_bot import BaseBot
 from game.player_hero import PlayerHero
 from game.world import World

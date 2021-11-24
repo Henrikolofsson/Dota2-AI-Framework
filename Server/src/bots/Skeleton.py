@@ -1,8 +1,8 @@
-from src.base_bot import BaseBot
-from src.game.world import World
-from src.game.player_hero import PlayerHero
+from base_bot import BaseBot
+from game.world import World
+from game.player_hero import PlayerHero
 
-from src.framework import DIRE_TEAM, RADIANT_TEAM
+from framework import RADIANT_TEAM, DIRE_TEAM
 
 
 class Skeleton(BaseBot):
@@ -31,6 +31,5 @@ class Skeleton(BaseBot):
     def actions(self, hero: PlayerHero):
         """This method will run once for each hero during every gametick. This is the
         starting point for your code commanding the different heroes."""
-        # I'ts good to wait a few gameticks until we issue the first command
-        if self.world.gameticks == 5:
+        if self.world.get_game_ticks() == 1:
             hero.move(0, 0, 256)

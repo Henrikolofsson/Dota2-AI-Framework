@@ -41,4 +41,7 @@ class TestBotSkillAbilityTwiceAtStart(BaseBot):
 
     def actions(self, hero: PlayerHero) -> None:
         if hero.get_ability_points() >= 0:
-            hero.level_up(0)
+            if hero.get_abilities()[0].get_hero_level_required_to_level_up() > 1:
+                hero.level_up(0)
+            else:
+                hero.level_up(1)

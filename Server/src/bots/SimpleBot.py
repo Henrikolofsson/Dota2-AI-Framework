@@ -26,7 +26,7 @@ class SimpleBot(BaseBot):
     heroes: list[PlayerHero]
     world: World
 
-    def __init__(self, world: World, team):
+    def __init__(self, world: World, team: int):
         self.world = world
         self.party = party[team]
         print(self.party)
