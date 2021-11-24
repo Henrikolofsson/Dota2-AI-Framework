@@ -16,3 +16,5 @@ class IAbility(IEntity):
     type: str
     name: str
     level: int
+    manaCost: int
+    heroLevelRequiredToLevelUp: int

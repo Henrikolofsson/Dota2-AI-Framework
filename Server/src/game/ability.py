@@ -23,7 +23,8 @@ class Ability(BaseEntity):
     _type: str
     _name: str
     _level: int
-
+    _mana_cost: int
+    _hero_level_required_to_level_up: int
 
     def update(self, data: IEntity) -> None:
         super().update(data)
@@ -42,6 +43,11 @@ class Ability(BaseEntity):
         self._type = ability_data["type"]
         self._name = ability_data["name"]
         self._level = ability_data["level"]
+        self._mana_cost = ability_data["manaCost"]
+        self._hero_level_required_to_level_up = ability_data["heroLevelRequiredToLevelUp"]
+
+    def get_name(self) -> str:
+        return self._name
 
     def get_ability_damage(self) -> int:
         return self._ability_damage
@@ -81,6 +87,15 @@ class Ability(BaseEntity):
 
     def get_toggle_state(self) -> bool:
         return self._toggle_state
+
+    def get_mana_cost(self) -> int:
+        return self._mana_cost
+
+    def get_hero_level_required_to_level_up(self) -> int:
+        '''
+        Returns the hero level required to level up this ability. If the hero's level is less than this value, this ability cannot be leveled up.
+        '''
+        return self._hero_level_required_to_level_up
 
     def get_type(self) -> EntityType:
         return EntityType.ABILITY
