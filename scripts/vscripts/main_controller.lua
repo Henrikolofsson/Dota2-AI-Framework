@@ -21,6 +21,8 @@ function Main_controller.Initialize_bot_thinking()
         return ONE_SECOND_DELAY
     end
 
+    Hero_setup_controller:Set_accessible_abilities_for_all_heroes()
+
     Python_AI_controller:Initialize_bot_thinking(
         Hero_setup_controller:Get_radiant_heroes(),
         Hero_setup_controller:Get_dire_heroes()

@@ -70,4 +70,26 @@ function Hero_setup_controller:Select_heroes()
     self:Acquire_selected_heroes()
 end
 
+--- Builds accessible abilities table for each hero. This table only includes abilities that can be seen, leveled up or used by a player.
+---@param heroes table
+function Hero_setup_controller:Set_accessible_abilities_for_heroes(heroes)
+    for _index, hero_entity in ipairs(heroes) do
+        local ability_count = hero_entity:GetAbilityCount() - 1
+        local key = hero_entity:GetName() .. hero_entity:GetTeam()
+        Settings.accessible_abilities[key] = {}
+        for index = 0, ability_count, 1 do
+            local ability_entity = hero_entity:GetAbilityByIndex(index)
+            if ability_entity and ability_entity:GetHeroLevelRequiredToUpgrade() ~= 2147483647 then
+                Settings.accessible_abilities[key][index] = ability_entity
+            end
+        end
+    end
+end
+
+--- Builds accessible abilities tables for all radiant and dire heroes.
+function Hero_setup_controller:Set_accessible_abilities_for_all_heroes()
+    self:Set_accessible_abilities_for_heroes(self.radiant_heroes)
+    self:Set_accessible_abilities_for_heroes(self.dire_heroes)
+end
+
 return Hero_setup_controller
