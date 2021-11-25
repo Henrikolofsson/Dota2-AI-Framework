@@ -68,32 +68,37 @@ end
 
 ---@param radiant_heroes table of radiant hero entities.
 ---@param dire_heroes table of dire hero entities.
-function Python_AI_thinking:Collect_and_send_statistics(radiant_heroes, dire_heroes)
+function Python_AI_thinking:Collect_and_send_statistics(radiant_heroes, dire_heroes, game_number)
     --[[
         Collects game statistics and sends them to the statistics route on the
         Python web server.
     ]]
-    local statistics = Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes)
+    local statistics = Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes, game_number)
     Python_AI_thinking:Send_statistics(statistics)
 end
 
 
 ---@param radiant_heroes table of radiant hero entities.
 ---@param dire_heroes table of dire hero entities.
-function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes)
+function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes, game_number)
     local heroes = Utilities:Concat_lists(radiant_heroes, dire_heroes)
     local stats = {}
+    local fields = {}
 
-    -- General stats.
-    stats["game_time"] = GameRules:GetGameTime()
+    stats["game_number"] = game_number
+
+    -- General game statistics that are not tied to a particular hero.
+    fields["game_time"] = GameRules:GetGameTime()
 
     -- Hero specific stats.
     for i, hero in ipairs(heroes) do
-        stats[(i - 1) .. "_id"] = hero:GetPlayerID()
-        stats[(i - 1) .. "_team"] = hero:GetTeam()
-        stats[(i - 1) .. "_name"] = hero:GetName()
-        stats[(i - 1) .. "_gold"] = hero:GetGold()
+        fields[(i - 1) .. "_id"] = hero:GetPlayerID()
+        fields[(i - 1) .. "_team"] = hero:GetTeam()
+        fields[(i - 1) .. "_name"] = hero:GetName()
+        fields[(i - 1) .. "_gold"] = hero:GetGold()
     end
+
+    stats["fields"] = fields
 
     return stats
 end

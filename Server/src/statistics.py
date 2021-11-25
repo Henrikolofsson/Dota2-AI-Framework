@@ -6,7 +6,10 @@ from typing import Iterable
 
 
 class Statistics:
-    def __init__(self):
+    def __init__(self, number_of_games: int):
+        if not os.path.exists("statistics"):
+            os.makedirs("statistics")
+
         # Each data point is stored on a single row. The data starts with general statistics
         # that are not tied to a particular hero. Each hero specific column is prefixed with 0-9.
         #
@@ -29,27 +32,35 @@ class Statistics:
             '9_id', '9_team', '9_name', '9_gold',
         )
 
-        if not os.path.exists("statistics"):
-            os.makedirs("statistics")
+        # In the settings file there's a setting for the number of games that can be played
+        # without restarting Dota. Each game gets its own statistics file with the _x suffix
+        # starting at 0 for the first game.
+        self.number_of_games = number_of_games
 
         t = datetime.today()
         timestamp = f"{t.year}_{t.month}_{t.day}_{t.hour}_{t.minute}_{t.second}"
-        self.filename = f"statistics/{timestamp}_game_stats.csv"
 
-        with open(self.filename, "a", encoding="utf8", newline="") as csv_file:
-            writer = csv.writer(csv_file)
-            writer.writerow(self.field_names)
+        # Maps from i -> "statistics/2021_11_18_14_23_14_game_stats_i.csv"
+        self.filenames = {i: f"statistics/{timestamp}_game_stats_{i}.csv"
+                          for i in range(self.number_of_games)}
+
+        for filename in self.filenames.values():
+            with open(filename, "a", encoding="utf8", newline="") as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow(self.field_names)
 
     def save(self, game_statistics: dict) -> bool:
+        game_number = game_statistics['game_number']
+        filename = self.filenames[game_number]
         stats = self.to_csv(game_statistics)
 
         # newline="" is important to ensure that the csv is written properly.
         # see: https://docs.python.org/3/library/csv.html#id3
-        with open(self.filename, "a", encoding="utf8", newline="") as csv_file:
+        with open(filename, "a", encoding="utf8", newline="") as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(stats)
 
         return True
 
     def to_csv(self, game_statistics: dict) -> Iterable[str]:
-        return [game_statistics[field_name] for field_name in self.field_names]
+        return [game_statistics['fields'][field_name] for field_name in self.field_names]

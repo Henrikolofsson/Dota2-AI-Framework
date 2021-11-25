@@ -58,6 +58,7 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
 
         user_settings['radiant_party_names'] = r_party
         user_settings['dire_party_names'] = d_party
+        user_settings['game_number'] = user_settings['number_of_games'] - games_remaining
 
         state = ServerState.UPDATE
         return json.dumps(user_settings)
