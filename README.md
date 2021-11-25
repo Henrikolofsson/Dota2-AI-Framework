@@ -2,13 +2,19 @@
 
 ## User Manual
 
-### 1. Collecting Statistics
+### Settings
+
+### Creating bots
+
+### Chat commands
+
+### Statistics
 
 The framework collects statistics from the game as it is running. The statistics are saved to timestamped csv files in the Server/src/statistics folder. 
 
 It's possible to run multiple consecutive games without restarting Dota (defined in settings.json). To account for that possibility, each csv file has a suffix indicating which game it belongs to for that particular instance of Dota.
 
-#### 1.1 Defining collection interval
+#### Statistics: defining the collection interval
 
 You can adjust how often statistics are collected by setting the collection_interval variable in the function Python_AI_setup:Set_statistics_collection.
 
@@ -22,7 +28,7 @@ function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
 end
 ```
 
-#### 1.2 Defining what statistics to collect
+#### Statistics: defining what statistics to collect
 
 To collect statistics that are not currently collected you must do the following:
 1. (Re)define the column names for the csv file in Statistics.py.
@@ -39,9 +45,7 @@ end
 ```
 3. The statistics are sent as a JSON document to the Python server. You must ensure that the to_csv method in Statistics.py correctly translates the statistics that you've gathered into csv that matches the columns that you have defined. 
 
-#### 1.3 Caveats
-
-##### 1.3.1 Hero order
+#### Statistics: hero order
 
 Heroes are ordered within a particular game but not between games. 
 
@@ -50,7 +54,7 @@ Example:
 - In the next game (either through a complete restart of the Dota client or via the restart chat command), 'npc_dota_hero_queenofpain' could be in a different position in the hero list.
 - This means that you cannot rely on hero order when analyzing statistics from multiple games.
 
-##### 1.3.2 Restarting the game with the chat command
+#### Statistics: restarting the game with the chat command
 
 The framework supports restarting the current game with the "restart" chat command (sent to the "all" chat channel in-game). If this chat command is used, the statistics for the new game will be appended to the same file as the previous game. If this happens, and you still want to save the resulting data, the csv file must be manually processed and split based on the game time timestamps. Moving to the next game with the "end" command will however save the statistics to the next numbered file. 
 
