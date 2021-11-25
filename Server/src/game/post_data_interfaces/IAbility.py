@@ -10,7 +10,6 @@ class IAbility(IEntity):
     abilityType: int
     maxLevel: int
     cooldownTimeRemaining: float
-    cooldownTime: float
     targetType: int
     abilityIndex: int
     type: str

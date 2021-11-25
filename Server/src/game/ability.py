@@ -17,7 +17,6 @@ class Ability(BaseEntity):
     _ability_type: int
     _max_level: int
     _cooldown_time_remaining: float
-    _cooldown_time: float
     _target_type: int
     _ability_index: int
     _type: str
@@ -38,7 +37,6 @@ class Ability(BaseEntity):
         self._ability_type = ability_data["abilityType"]
         self._max_level = ability_data["maxLevel"]
         self._cooldown_time_remaining = ability_data["cooldownTimeRemaining"]
-        self._cooldown_time = ability_data["cooldownTime"]
         self._ability_index = ability_data["abilityIndex"]
         self._type = ability_data["type"]
         self._name = ability_data["name"]
@@ -63,9 +61,6 @@ class Ability(BaseEntity):
 
     def get_behavior(self) -> int:
         return self._behavior
-
-    def get_cooldown_time(self) -> float:
-        return self._cooldown_time
 
     def get_cooldown_time_remaining(self) -> float:
         return self._cooldown_time_remaining
