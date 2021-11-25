@@ -16,6 +16,8 @@ class CommandProps(TypedDict, total=False):
     command: str
     item: str
     slot: int
+    slot1: int
+    slot2: int
     ability: int
     target: str
     x: float
@@ -221,6 +223,15 @@ class PlayerHero(Hero):
             }
         }
     
+    def swap_item_slots(self, slot1: int, slot2: int) -> None:
+        self._command = {
+            self.get_name(): {
+                "command": "SWAP_ITEM_SLOTS",
+                "slot1": slot1,
+                "slot2": slot2,
+            }
+        }
+
     def toggle_item(self, slot: int) -> None:
         self._command = {
             self.get_name(): {

@@ -3,6 +3,13 @@ local item_disassemblable = require "python_AI.commands.item_handlers.item_disas
 local Utilities = require "utilities.utilities"
 local Courier_commands = require "python_AI.commands.courier_commands"
 
+
+
+-- constants
+local slot_outside_range_warning_format = "%s tried to swap item where slot%s was %s which is out of inventory range(" .. DOTA_ITEM_SLOT_1 .. "-" .. DOTA_ITEM_SLOT_9 .. ")."
+
+
+
 local Command_controller = {}
 
 function Command_controller:Hero_has_active_ability(hero_entity)
@@ -28,6 +35,7 @@ function Command_controller:Parse_hero_command(hero_entity, result)
     elseif command == "BUY"                                         then self:Buy(hero_entity, result)
     elseif command == "SELL"                                        then self:Sell(hero_entity, result)
     elseif command == "USE_ITEM"                                    then self:Use_item(hero_entity, result)
+    elseif command == "SWAP_ITEM_SLOTS"                             then self:Swap_item_slots(hero_entity, result)
     elseif command == "DISASSEMBLE"                                 then self:Disassemble_item(hero_entity, result)
     elseif command == "UNLOCK_ITEM"                                 then self:Check_and_unlock_item(hero_entity, result)
     elseif command == "LOCK_ITEM"                                   then self:Check_and_lock_item(hero_entity, result)
@@ -185,7 +193,7 @@ end
 function Command_controller:Cast(hero_entity, result)
     local ability_entity = hero_entity:GetAbilityByIndex(result.ability)
 
-    if ability_entity and ability_entity ~= nil then
+    if ability_entity then
         self:Use_ability(hero_entity, ability_entity, result)
     end
 end
@@ -199,6 +207,23 @@ function Command_controller:Use_item(hero_entity, result)
     else
         Warning("Bot tried to use item in empty slot")
     end
+end
+
+function Command_controller:Item_slot_in_range(item_slot)
+    return item_slot >= DOTA_ITEM_SLOT_1 and item_slot <= DOTA_ITEM_SLOT_9
+end
+
+function Command_controller:Swap_item_slots(hero_entity, results)
+    local slot1, slot2 = results.slot1, results.slot2
+
+    for index, slot in ipairs({slot1, slot2}) do
+        if not self:Item_slot_in_range(slot) then
+            Warning(string.format(slot_outside_range_warning_format, hero_entity:GetName(), index, slot))
+            return
+        end
+    end
+
+    hero_entity:SwapItems(slot1, slot2)
 end
 
 function Command_controller:Disassemble_item(hero_entity, result)
