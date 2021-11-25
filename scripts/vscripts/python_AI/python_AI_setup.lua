@@ -42,12 +42,16 @@ function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
     ]]
     local collection_interval = 5
 
+    -- To keep track of which game these statistics are part of when running
+    -- multiple games without restarting Dota.
+    local game_number = Settings.game_number
+
     Timers:CreateTimer(
         "CollectStatistics",
         {
             ---@return number
             callback = function()
-                Python_AI_thinking:Collect_and_send_statistics(radiant_heroes, dire_heroes)
+                Python_AI_thinking:Collect_and_send_statistics(radiant_heroes, dire_heroes, game_number)
                 return collection_interval
             end
         }
