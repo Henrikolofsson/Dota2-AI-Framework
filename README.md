@@ -46,11 +46,11 @@ end
 Heroes are ordered within a particular game but not between games. 
 
 Example: 
-- 'npc_dota_hero_queenofpain' might is in position 0 of the hero list in the Dota addon. Statistics related to this hero will be collected first and be placed in the first position for all statistics collected during that particular game.
+- 'npc_dota_hero_queenofpain' is in position 1 of the hero list in the Dota addon. Statistics related to this hero will be collected first and be placed in the first position for all statistics collected during that particular game.
 - In the next game (either through a complete restart of the Dota client or via the restart chat command), 'npc_dota_hero_queenofpain' could be in a different position in the hero list.
 - This means that you cannot rely on hero order when analyzing statistics from multiple games.
 
 ##### 1.3.2 Restarting the game with the chat command
 
-The framework supports restarting the current game with the "restart" chat command (sent to the "all" chat channel in-game). If this chat command is used, the statistics for the new game will be appended to the same file as the previous game. If this happens and you still want to save the resulting data, the csv file must be manually processed and split based on the game-time timestamps.
+The framework supports restarting the current game with the "restart" chat command (sent to the "all" chat channel in-game). If this chat command is used, the statistics for the new game will be appended to the same file as the previous game. If this happens, and you still want to save the resulting data, the csv file must be manually processed and split based on the game time timestamps.
 
