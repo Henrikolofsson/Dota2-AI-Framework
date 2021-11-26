@@ -151,7 +151,10 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast(self, ability_index: int, target_id: str="-1", position: Position=Position(-1, -1, -1)) -> None:
+    def cast(self, ability_index: int, target_id: str="-1", position: Union[Position, None]=None) -> None:
+        if position is None:
+            position = Position(0, 0, 0)
+
         x, y, z = position
         self._command = {
             self.get_name(): {
@@ -210,7 +213,10 @@ class PlayerHero(Hero):
             }
         }
 
-    def use_item(self, slot: int, target_id: str="-1", position: Position=Position(-1, -1, -1)) -> None:
+    def use_item(self, slot: int, target_id: str="-1", position: Union[Position, None]=None) -> None:
+        if position is None:
+            position = Position(0, 0, 0)
+
         x, y, z = position
         self._command = {
             self.get_name(): {
@@ -357,7 +363,10 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_combo_target_point_unit(self, ability_index: int, target_id: str="-1", position: Position=Position(-1, -1, -1)) -> None:
+    def cast_combo_target_point_unit(self, ability_index: int, target_id: str="-1", position: Union[Position, None]=None) -> None:
+        if position is None:
+            position = Position(0, 0, 0)
+
         x, y, z = position
         self._command = {
             self.get_name(): {
