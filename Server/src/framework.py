@@ -11,11 +11,21 @@ DIRE_TEAM = 3
 settings_directory = Path(__file__).parent.parent
 settings_filename = settings_directory / 'settings.json'
 
+
+def load_settings(filename: Path) -> dict:
+    try:
+        with open(filename) as f:
+            settings_data = json.loads(f.read())
+        return settings_data
+    except FileNotFoundError as fe:
+        exit_with_error(f"Couldn't open {settings_filename}.")
+    except json.decoder.JSONDecodeError:
+        exit_with_error(f"Malformed JSON file: {settings_filename}")
+
+
 if __name__ == '__main__':
     try:
-        with open(settings_filename) as f:
-            settings = json.loads(f.read())
-
+        settings = load_settings(settings_filename)
         base_dir = settings['base_dir_bots']
         radiant_bot_filename = settings['radiant_bot_filename']
         radiant_bot_class_name = settings['radiant_bot_class_name']
@@ -34,11 +44,7 @@ if __name__ == '__main__':
                                      number_of_games, Statistics(number_of_games))
         webserver.run(server='waitress', host="localhost", port=8080, debug=False, quiet=False)
         webserver.close()
-    except FileNotFoundError as fe:
-        exit_with_error(f"Couldn't open {settings_filename}.")
-    except json.decoder.JSONDecodeError:
-        exit_with_error(f"Malformed JSON file: {settings_filename}")
     except KeyError as key_error:
         exit_with_error(f"Couldn't open required key from {settings_filename}: {key_error}")
     except BotClassError as bot_error:
-        exit_with_error(f"Couldn't import the bot class: {bot_error}")
+        exit_with_error(f"Couldn't import the bot class:\n{bot_error}")
