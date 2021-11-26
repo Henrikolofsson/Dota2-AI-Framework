@@ -6,7 +6,8 @@ local Courier_commands = require "python_AI.commands.courier_commands"
 
 
 -- constants
-local slot_outside_range_warning_format = "%s tried to swap item where slot%s was %s which is out of inventory range(" .. DOTA_ITEM_SLOT_1 .. "-" .. DOTA_ITEM_SLOT_9 .. ")."
+local swap_slot_outside_range_warning_format = "%s tried to swap item where slot%s was %s which is out of inventory and backpack range(" .. DOTA_ITEM_SLOT_1 .. "-" .. DOTA_ITEM_SLOT_9 .. ")."
+local use_slot_outside_range_warning_format = "%s tried to use item in slot %s which is out of inventory range(" .. DOTA_ITEM_SLOT_1 .. "-" .. DOTA_ITEM_SLOT_6 .. ")."
 
 
 
@@ -198,10 +199,20 @@ function Command_controller:Cast(hero_entity, result)
     end
 end
 
+function Command_controller:Item_slot_in_useable_range(item_slot)
+    return item_slot >= DOTA_ITEM_SLOT_1 and item_slot <= DOTA_ITEM_SLOT_6
+end
+
 function Command_controller:Use_item(hero_entity, result)
     local slot = result.slot
+
+    if not self:Item_slot_in_useable_range(slot) then
+        Warning(string.format(use_slot_outside_range_warning_format, hero_entity:GetName(), slot))
+        return
+    end
+
     local item_entity = hero_entity:GetItemInSlot(slot)
-    Warning("Hero" .. hero_entity:GetName() .. "is attempting to use item " .. item_entity:GetName())
+
     if item_entity then
         self:Use_ability(hero_entity, item_entity, result)
     else
@@ -218,7 +229,7 @@ function Command_controller:Swap_item_slots(hero_entity, results)
 
     for index, slot in ipairs({slot1, slot2}) do
         if not self:Item_slot_in_range(slot) then
-            Warning(string.format(slot_outside_range_warning_format, hero_entity:GetName(), index, slot))
+            Warning(string.format(swap_slot_outside_range_warning_format, hero_entity:GetName(), index, slot))
             return
         end
     end
