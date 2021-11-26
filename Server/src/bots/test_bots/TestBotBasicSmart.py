@@ -92,7 +92,7 @@ class TestBotBasicSmart(BaseBot):
             self._courier_transferring_items[hero.get_name()] = False
 
     def actions(self, hero: PlayerHero, game_ticks: int) -> None:
-        if self._world.get_game_ticks() == 1 and not self._lane_tower_positions:
+        if game_ticks == 1 and not self._lane_tower_positions:
             for lane_tower_name in [
                 "dota_goodguys_tower1_top",
                 "dota_goodguys_tower1_mid",
@@ -105,14 +105,14 @@ class TestBotBasicSmart(BaseBot):
                 if tower is not None:
                     self._lane_tower_positions[lane_tower_name] = tower.get_position()
 
-        if self._world.get_game_ticks() == 1:
+        if game_ticks == 1:
             if self.hero_name_match_any(hero, ["pugna"]):
                 hero.buy("item_ward_observer")
             else:
                 hero.buy("item_boots")
             return
 
-        if self._world.get_game_ticks() == 2:
+        if game_ticks == 2:
             hero.buy("item_tpscroll")
             return
 
