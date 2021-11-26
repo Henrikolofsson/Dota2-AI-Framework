@@ -29,6 +29,12 @@ class BotFramework:
             raise Exception("Invalid party: list contains duplicate hero names.")
         return self.agent.get_party()
 
+    def update_and_receive_commands(self, data: IRoot) -> list[dict[str, CommandProps]]:
+        self.update(data)
+        self.generate_bot_commands()
+        commands = self.receive_bot_commands()
+        return commands
+
     def update(self, data: IRoot) -> None:
         self.world.update(data["entities"])
 
