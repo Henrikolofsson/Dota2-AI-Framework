@@ -36,7 +36,7 @@ BaseBot methods with default implementation which can optionally be overridden:
 | method | description |
 |--------|-----------------------------------------------------------------------------------|
 | before_actions | Called every game tick before actions is called for each hero. |
-| after_actions | Called every game tick when actions has been called for each hero. |
+| after_actions | Called every game tick after actions has been called for each hero. |
 
 #### Creating bots: class constructor
 
