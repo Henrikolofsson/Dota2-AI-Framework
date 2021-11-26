@@ -20,7 +20,7 @@ The constructor should have a single argument: world. The world parameter is an 
 
 #### Creating bots: game ticks
 
-Game ticks are a fundamental concept in the framework. On each game tick, the game state is updated and each bot controlled hero is allowed to perform a single command. The framework's tick rate is adjustable and ultimately a question of how often the Lua addon sends updates to the Python server. Do not confuse the framework's tick rate with Dota 2's tick rate; they are completely unrelated.
+Game ticks are a fundamental concept in the framework. On each game tick, the game state is updated and each bot controlled hero is allowed to perform a single command. The framework's tick rate is adjustable and ultimately a question of how often the Lua addon sends updates to the Python server. Do not confuse the framework's tick rate with Dota 2's tick rate; they are completely unrelated. The framework's default tick rate is 0.33 seconds which means that a particular hero can never execute more than three commands per second.
 
 #### Creating bots: using the same bot on both teams
 
