@@ -120,8 +120,5 @@ def update_game_state(bot_framework, state, bot_framework_lock):
         # Otherwise request.json will already have parsed the JSON into a dict.
         raw_json = request.json
         parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
-
-        bot_framework.update(parsed_json)
-        bot_framework.generate_bot_commands()
-        commands = bot_framework.receive_bot_commands()
+        commands = bot_framework.update_and_receive_commands(parsed_json)
         return json.dumps(commands)
