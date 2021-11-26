@@ -31,6 +31,9 @@ class SimpleBot(BaseBot):
         self.party = party[team]
         print(self.party)
 
+    def get_party(self) -> list[str]:
+        return self.party
+
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self.heroes = heroes
 

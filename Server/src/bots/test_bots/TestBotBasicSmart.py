@@ -61,7 +61,7 @@ class TestBotBasicSmart(BaseBot):
     
     _world: World
     _team: int
-    party: list[str]
+    _party: list[str]
     _heroes: list[PlayerHero]
     _should_move_home: dict[str, bool]
     _home_position: Position
@@ -73,13 +73,16 @@ class TestBotBasicSmart(BaseBot):
     def __init__(self, world: World, team: int) -> None:
         self._world = world
         self._team = team
-        self.party = party[team]
+        self._party = party[team]
         self._should_move_home = {}
         self._home_position = home_position[team]
         self._secret_shop_position = secret_shop_position[team]
         self._lane_tower_positions = {}
         self._courier_moving_to_secret_shop = {}
         self._courier_transferring_items = {}
+
+    def get_party(self) -> list[str]:
+        return self._party
 
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes

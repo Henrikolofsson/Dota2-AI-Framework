@@ -1,5 +1,4 @@
 import random
-import os
 import datetime
 from game.position import Position
 from game.ability import Ability
@@ -15,8 +14,8 @@ class BotExampleDire(BaseBot):
 
     world: World
 
-    def __init__(self, world, team: int):
-        self.party = [
+    def __init__(self, world: World, team: int):
+        self._party = [
             "npc_dota_hero_bane",
             "npc_dota_hero_batrider",
             "npc_dota_hero_dazzle",
@@ -35,6 +34,9 @@ class BotExampleDire(BaseBot):
         self.world = world
 
         print("init")
+
+    def get_party(self) -> list[str]:
+        return self._party
 
     def initialize(self, heroes):
         self.top_fallback_point = self.world.get_unit_by_name(

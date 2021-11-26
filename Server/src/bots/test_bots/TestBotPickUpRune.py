@@ -28,13 +28,16 @@ class TestBotPickUpRune(BaseBot):
     
     _world: World
     _team: int
-    party: list[str]
+    _party: list[str]
     _heroes: list[PlayerHero]
 
     def __init__(self, world: World, team: int) -> None:
         self._world = world
         self._team = team
-        self.party = party[team]
+        self._party = party[team]
+
+    def get_party(self) -> list[str]:
+        return self._party
 
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes

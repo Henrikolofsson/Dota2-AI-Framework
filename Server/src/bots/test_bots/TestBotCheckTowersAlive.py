@@ -24,17 +24,20 @@ party = {
 class TestBotCheckTowersAlive(BaseBot):
     _world: World
     _team: int
-    party: list[str]
+    _party: list[str]
     _heroes: list[PlayerHero]
     _dire_towers: list[Tower]
     _radiant_towers: list[Tower]
     _dire_tower1_top: Tower
 
 
-    def __init__(self, world: World, team):
+    def __init__(self, world: World, team: int):
         self._world = world
         self._team = team
-        self.party = party[team]
+        self._party = party[team]
+
+    def get_party(self) -> list[str]:
+        return self._party
 
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes
@@ -64,5 +67,4 @@ class TestBotCheckTowersAlive(BaseBot):
             if hero.get_position().y == 5000:
                 if hero.get_position().z == 0:
                     return True
-                else:
-                    return False
+        return False

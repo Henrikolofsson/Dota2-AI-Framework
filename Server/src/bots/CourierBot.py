@@ -32,6 +32,9 @@ class CourierBot(BaseBot):
         self.team = team
         print('Loaded CourierBot')
 
+    def get_party(self) -> list[str]:
+        return self.party
+
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self.heroes = heroes
 

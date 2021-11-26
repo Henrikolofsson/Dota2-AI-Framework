@@ -21,6 +21,9 @@ class Skeleton(BaseBot):
         ]
         self.world = world
 
+    def get_party(self) -> list[str]:
+        return self.party
+
     def initialize(self, heroes: list[PlayerHero]):
         """This method will run once when the game is starting before the actions method
         start getting called. In this method you can setup variables and values

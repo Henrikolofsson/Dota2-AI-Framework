@@ -39,7 +39,7 @@ class TestBotUseTango(BaseBot):
     
     _world: World
     _team: int
-    party: list[str]
+    _party: list[str]
     _heroes: list[PlayerHero]
     _should_move_home: dict[str, bool]
     _should_use_tango_countdowns: dict[str, int]
@@ -49,11 +49,14 @@ class TestBotUseTango(BaseBot):
     def __init__(self, world: World, team: int) -> None:
         self._world = world
         self._team = team
-        self.party = party[team]
+        self._party = party[team]
         self._should_move_home = {}
         self._should_use_tango_countdowns = {}
         self._noop_countdowns = {}
         self._home_position = home_position[team]
+
+    def get_party(self) -> list[str]:
+        return self._party
 
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes
