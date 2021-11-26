@@ -16,8 +16,8 @@ All of the following settings should be defined in the settings.json file.
 | native_bots_difficulty                |                   | `string`  | <i>deprecated</i> |
 | should_have_pre_game_delay            | `true`            | `boolean` | Whether to keep the pre game state or to skip it. If `true`, the game will keep the default pre game state of 90 seconds. If `false` the game starts immediately. |
 | should_dire_be_native_bots            | `false`           | `boolean` | Allows your bot to play as team Radiant against the standard Dota 2 bots. |
-| grant_global_vision                   | `false`           | `boolean` | Gives both teams vision of entire map at all times. |
-| spectator_mode                        | `true`            | `boolean` | Allows you to run the game as spectator. |
+| grant_global_vision                   | `false`           | `boolean` | Gives both teams vision of entire map, allowing bots to access information about enemy entities on the map which would otherwise be hidden. |
+| spectator_mode                        | `true`            | `boolean` | Allows you to run the game as spectator granting you global vision while the bots have normal vision. |
 | number_of_games                       | `1`               | `number`  | Number of times the game will run. While number_of_games is greater than 1 the game will restart when it ends. A game ends when a team wins or the chat command "end" is used. |
 | auto_restart_client_on_server_restart | `true`            | `boolean` | If enabled, the Dota addon will run the console command "dota_launch_custom_game Dota2-AI-Framework dota" when it detects the python server has restarted, effectively restarting the addon. |
 
@@ -30,6 +30,13 @@ A bot is written as a Python class that inherits from BaseBot. BaseBot is an abs
 | initialize | Called on the first game tick with a list of the hero entities that belong to this bot. |
 | actions    | Called every game tick, once for each hero on the bot's team. In this method, the bot developer decides on what action each hero should take in a particular game tick. |
 | get_party  | Should return a list of the heroes that the bot intends to use. |
+
+BaseBot methods with default implementation which can optionally be overridden:
+
+| method | description |
+|--------|-----------------------------------------------------------------------------------|
+| before_actions | Called every game tick before actions is called for each hero. |
+| after_actions | Called every game tick after actions has been called for each hero. |
 
 #### Creating bots: class constructor
 
