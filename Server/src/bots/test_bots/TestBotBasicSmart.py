@@ -1,4 +1,6 @@
 from typing import Union
+from game.physical_entity import PhysicalEntity
+from game.rune import Rune
 from game.enums.ability_behavior import AbilityBehavior
 from game.courier import Courier
 from game.ability import Ability
@@ -101,7 +103,19 @@ class TestBotBasicSmart(BaseBot):
                     self._lane_tower_positions[lane_tower_name] = tower.get_position()
 
         if self._world.get_game_ticks() == 1:
-            hero.buy("item_boots")
+            if self.hero_name_match_any(hero, ["pugna"]):
+                hero.buy("item_ward_observer")
+            else:
+                hero.buy("item_boots")
+            return
+
+        if self.place_observer_ward(hero):
+            return
+
+        if self.get_bottle(hero):
+            return
+
+        if self.pick_up_rune_with_bottle(hero):
             return
 
         if self.get_better_boots(hero):
@@ -114,6 +128,72 @@ class TestBotBasicSmart(BaseBot):
             return
 
         self.make_choice(hero)
+
+    def pick_up_rune_with_bottle(self, hero: PlayerHero) -> bool:
+        bottle_slot: int = self.get_item_slot_by_name(hero, "item_bottle")
+        runes: list[Rune] = self._world.get_runes()
+
+        if self.hero_name_match_any(hero, ["pugna"]) \
+        and bottle_slot != -1\
+        and runes:
+            hero.use_item(bottle_slot, runes[0].get_id())
+            return True
+
+        return False
+
+    def get_bottle(self, hero: PlayerHero) -> bool:
+        bottle_slot: int = self.get_item_slot_by_name(hero, "item_bottle")
+
+        if self.hero_name_match_any(hero, ["pugna"]) \
+        and bottle_slot == -1:
+            courier: Union[PhysicalEntity, None] = self._world.get_entity_by_id(hero.get_courier_id())
+            if isinstance(courier, Courier):
+                if self.courier_has_bottle(courier):
+                    if self._courier_transferring_items[hero.get_name()] == True:
+                        return False
+                    else:
+                        self._courier_transferring_items[hero.get_name()] = True
+                        hero.courier_transfer_items()
+                        return True
+                
+                elif hero.get_gold() >= 675:
+                    hero.buy("item_bottle")
+                    return True
+
+        return False
+
+    def courier_has_bottle(self, courier: Courier) -> bool:
+        for item in courier.get_items():
+            if item.get_name() == "item_bottle":
+                return True
+        
+        return False
+
+    def place_observer_ward(self, hero: PlayerHero) -> bool:
+        ward_slot: int = self.get_item_slot_by_name(hero, "item_ward_observer")
+
+        if ward_slot != -1:
+            rune_position: Position = Position(-1629, 1167, 0)
+
+            if self._world.get_distance_between_positions(hero.get_position(), rune_position) < 600:
+                runes: list[Rune] = self._world.get_runes()
+                if runes:
+                    hero.pick_up_rune(runes[0].get_id())
+                else:
+                    hero.use_item(slot=ward_slot, position=rune_position)
+            else:
+                hero.move(*rune_position)
+
+            return True
+
+        return False
+
+    def get_item_slot_by_name(self, hero: PlayerHero, item_name: str) -> int:
+        for item in hero.get_items():
+            if item.get_name() == item_name:
+                return item.get_slot()
+
+        return -1
 
     def make_choice(self, hero: PlayerHero) -> None:
         if self.level_up_ability(hero):
@@ -447,6 +527,8 @@ class TestBotBasicSmart(BaseBot):
         creeps_with_distance_to_hero: dict[Unit, float] = {}
 
         for allied_creep in creeps:
+            if allied_creep.get_name() == "npc_dota_ward_base":
+                continue
             creeps_with_distance_to_hero[allied_creep] = self._world.get_distance_between_units(hero, allied_creep)
 
         return min(creeps_with_distance_to_hero.keys(), key=(lambda allied_creep: creeps_with_distance_to_hero[allied_creep]))
