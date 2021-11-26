@@ -14,7 +14,7 @@ class BotExampleRadiant(BaseBot):
 
     world: World
 
-    def __init__(self, world: World, team: int):
+    def __init__(self, world: World):
         self._party = [
             "npc_dota_hero_brewmaster",
             "npc_dota_hero_doom_bringer",
@@ -48,7 +48,7 @@ class BotExampleRadiant(BaseBot):
 
         print("initialize")
 
-    def actions(self, hero: PlayerHero):
+    def actions(self, hero: PlayerHero, game_ticks: int):
 
         print("actions!" + hero.get_name())
         if not hero.is_alive():

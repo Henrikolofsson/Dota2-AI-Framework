@@ -10,6 +10,7 @@ from game.player_hero import CommandProps
 class BotFramework:
     bot_class: type
     world: World
+    team: int
     agent: BaseBot
     initialized: bool
 
@@ -17,7 +18,7 @@ class BotFramework:
         self.bot_class = bot_class
         self.world = World(team)
         self.team = team
-        self.agent = bot_class(self.world, team)
+        self.agent = bot_class(self.world)
         self.initialized = False
 
     def get_party(self) -> list[str]:
@@ -43,8 +44,14 @@ class BotFramework:
             self.agent.initialize(self.world.get_player_heroes())
             self.initialized = True
 
+        game_ticks: int = self.world.get_game_ticks()
+
+        self.agent.before_actions(game_ticks)
+
         for hero in self.world.get_player_heroes():
-            self.agent.actions(hero)
+            self.agent.actions(hero, game_ticks)
+
+        self.agent.after_actions(game_ticks)
 
     def receive_bot_commands(self) -> list[dict[str, CommandProps]]:
         commands: list[dict[str, CommandProps]] = []

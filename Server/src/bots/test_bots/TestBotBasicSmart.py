@@ -60,7 +60,6 @@ class TestBotBasicSmart(BaseBot):
     '''
     
     _world: World
-    _team: int
     _party: list[str]
     _heroes: list[PlayerHero]
     _should_move_home: dict[str, bool]
@@ -70,10 +69,11 @@ class TestBotBasicSmart(BaseBot):
     _courier_moving_to_secret_shop: dict[str, bool]
     _courier_transferring_items: dict[str, bool]
 
-    def __init__(self, world: World, team: int) -> None:
+    def __init__(self, world: World) -> None:
+        team: int = world.get_team()
+
         self._world = world
-        self._team = team
-        self._party = party[team]
+        self._party = party[world.get_team()]
         self._should_move_home = {}
         self._home_position = home_position[team]
         self._secret_shop_position = secret_shop_position[team]
@@ -91,7 +91,7 @@ class TestBotBasicSmart(BaseBot):
             self._courier_moving_to_secret_shop[hero.get_name()] = False
             self._courier_transferring_items[hero.get_name()] = False
 
-    def actions(self, hero: PlayerHero) -> None:
+    def actions(self, hero: PlayerHero, game_ticks: int) -> None:
         if self._world.get_game_ticks() == 1 and not self._lane_tower_positions:
             for lane_tower_name in [
                 "dota_goodguys_tower1_top",

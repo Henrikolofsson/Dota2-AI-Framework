@@ -9,7 +9,7 @@ class Skeleton(BaseBot):
     """A bot inherits from BaseBot"""
     heroes: list[PlayerHero]
 
-    def __init__(self, world: World, team: int):
+    def __init__(self, world: World):
         """The team parameter can be used if the bot has different behaviour depending
         on if it's a Radiant or Dire bot. Possible values are RADIANT_TEAM (2) and DIRE_TEAM (3)."""
         self.party = [
@@ -31,8 +31,16 @@ class Skeleton(BaseBot):
         """
         self.heroes = heroes
 
-    def actions(self, hero: PlayerHero):
+    def before_actions(self, game_ticks: int) -> None:
+        """This method will run before actions run for each hero."""
+        pass
+
+    def actions(self, hero: PlayerHero, game_ticks: int):
         """This method will run once for each hero during every gametick. This is the
         starting point for your code commanding the different heroes."""
-        if self.world.get_game_ticks() == 1:
+        if game_ticks == 1:
             hero.move(0, 0, 256)
+
+    def after_actions(self, game_ticks: int) -> None:
+        """This method will run after actions has been run for each hero."""
+        pass

@@ -23,7 +23,6 @@ party = {
 
 class TestBotCheckTowersAlive(BaseBot):
     _world: World
-    _team: int
     _party: list[str]
     _heroes: list[PlayerHero]
     _dire_towers: list[Tower]
@@ -31,10 +30,9 @@ class TestBotCheckTowersAlive(BaseBot):
     _dire_tower1_top: Tower
 
 
-    def __init__(self, world: World, team: int):
+    def __init__(self, world: World):
         self._world = world
-        self._team = team
-        self._party = party[team]
+        self._party = party[world.get_team()]
 
     def get_party(self) -> list[str]:
         return self._party
@@ -42,8 +40,8 @@ class TestBotCheckTowersAlive(BaseBot):
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes
 
-    def actions(self, hero: PlayerHero) -> None:
-        # if self._team == RADIANT_TEAM:
+    def actions(self, hero: PlayerHero, game_ticks: int) -> None:
+        # if self._world.get_team() == RADIANT_TEAM:
         #     print(len(self._world.get_allied_towers_of(hero)))
 
         if self._world.get_game_ticks() >= 50:

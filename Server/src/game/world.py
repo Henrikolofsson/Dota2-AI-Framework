@@ -23,12 +23,16 @@ class World:
     _game_ticks: int
     _entities: list[PhysicalEntity]
     _player_heroes: list[PlayerHero]
+    _team: int
 
     def __init__(self, team: int) -> None:
         self._team = team
         self._game_ticks = 0
         self._entities = []
         self._player_heroes = []
+
+    def get_team(self) -> int:
+        return self._team
 
     def get_game_ticks(self) -> int:
         '''
