@@ -128,11 +128,13 @@ end
 function World_data_builder:Insert_tp_scroll_data(hero_data, hero_entity)
     hero_data.tpScrollAvailable = false
     hero_data.tpScrollCooldownTime = 0.
+    hero_data.tpScrollCharges = 0
 
     local scroll_item_entity = hero_entity:GetItemInSlot(DOTA_ITEM_TP_SCROLL)
     if scroll_item_entity then
         hero_data.tpScrollAvailable = scroll_item_entity:IsCooldownReady()
         hero_data.tpScrollCooldownTime = scroll_item_entity:GetCooldownTime()
+        hero_data.tpScrollCharges = scroll_item_entity:GetCurrentCharges()
     end
 end
 
@@ -143,7 +145,24 @@ function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.hasTowerAggro = self:Has_tower_aggro(hero_entity)
     hero_data.hasAggro = self:Has_aggro(hero_entity)
     hero_data.deaths = hero_entity:GetDeaths()
-    hero_data.items = self:Get_items_data(hero_entity)
+end
+
+function World_data_builder:Get_stash_items_data(hero_entity)
+    local items = {}
+    for i = DOTA_STASH_SLOT_1, DOTA_STASH_SLOT_6, 1 do
+        local item = hero_entity:GetItemInSlot(i)
+        items[i] = {}
+        if item then
+            items[i].name = item:GetName()
+            items[i].slot = item:GetItemSlot()
+            items[i].charges = item:GetCurrentCharges()
+            items[i].castRange = item:GetCastRange()
+            items[i].combineLocked = item:IsCombineLocked()
+            items[i].disassemblable = Command_controller:Hero_can_disassemble_item(item)
+            items[i].cooldownTimeRemaining = item:GetCooldownTimeRemaining()
+        end
+    end
+    return items
 end
 
 ---@param hero_data table
@@ -158,6 +177,8 @@ function World_data_builder:Insert_player_hero_data(hero_data, hero_entity)
     hero_data.courier_id = tostring(PlayerResource:GetPreferredCourierForPlayer(hero_entity:GetPlayerOwnerID()):entindex())
     hero_data.buybackCost = hero_entity:GetBuybackCost(false)
     hero_data.buybackCooldownTime = hero_entity:GetBuybackCooldownTime()
+    hero_data.items = self:Get_items_data(hero_entity)
+    hero_data.stashItems = self:Get_stash_items_data(hero_entity)
 
     self:Insert_tp_scroll_data(hero_data, hero_entity)
 
