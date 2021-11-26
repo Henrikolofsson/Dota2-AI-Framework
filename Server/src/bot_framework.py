@@ -21,13 +21,13 @@ class BotFramework:
         self.initialized = False
 
     def get_party(self) -> list[str]:
-        if len(self.agent.party) > 5:
+        if len(self.agent.get_party()) > 5:
             raise Exception("Invalid party: list contains too many hero names.")
-        if len(self.agent.party) < 5:
+        if len(self.agent.get_party()) < 5:
             raise Exception("Invalid party: list contains too few hero names.")
-        if len(set(self.agent.party)) != 5:
+        if len(set(self.agent.get_party())) != 5:
             raise Exception("Invalid party: list contains duplicate hero names.")
-        return self.agent.party
+        return self.agent.get_party()
 
     def update(self, data: IRoot) -> None:
         self.world.update(data["entities"])
