@@ -26,9 +26,9 @@ class SimpleBot(BaseBot):
     heroes: list[PlayerHero]
     world: World
 
-    def __init__(self, world: World, team: int):
+    def __init__(self, world: World):
         self.world = world
-        self.party = party[team]
+        self.party = party[world.get_team()]
         print(self.party)
 
     def get_party(self) -> list[str]:
@@ -37,5 +37,5 @@ class SimpleBot(BaseBot):
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self.heroes = heroes
 
-    def actions(self, hero: PlayerHero) -> None:
+    def actions(self, hero: PlayerHero, game_ticks: int) -> None:
         hero.move(0, 0, 0)

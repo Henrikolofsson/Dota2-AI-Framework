@@ -38,6 +38,9 @@ class PlayerHero(Hero):
     _buyback_cooldown_time: float
     _tp_scroll_available: bool
     _tp_scroll_cooldown_time: float
+    _tp_scroll_charges: int
+    _items: list[Item]
+    _stash_items: list[Item]
 
     _command: Union[dict[str, CommandProps], None]
     _commands: list[dict[str, CommandProps]]
@@ -63,7 +66,34 @@ class PlayerHero(Hero):
         self._buyback_cooldown_time = player_hero_data["buybackCooldownTime"]
         self._tp_scroll_available = player_hero_data["tpScrollAvailable"]
         self._tp_scroll_cooldown_time = player_hero_data["tpScrollCooldownTime"]
+        self._tp_scroll_charges = player_hero_data["tpScrollCharges"]
+        self._set_items(player_hero_data)
+        self._set_stash_items(player_hero_data)
         self._set_abilities(player_hero_data)
+
+    def _set_items(self, player_hero_data: IPlayerHero) -> None:
+        self._items = []
+
+        item_id = 0
+        for item_data in player_hero_data["items"].values():
+            if isinstance(item_data, list):
+                continue
+            item = Item(str(item_id))
+            item.update(item_data)
+            self._items.append(item)
+            item_id += 1
+
+    def _set_stash_items(self, player_hero_data: IPlayerHero) -> None:
+        self._stash_items = []
+
+        item_id = 0
+        for item_data in player_hero_data["stashItems"].values():
+            if isinstance(item_data, list):
+                continue
+            item = Item(str(item_id))
+            item.update(item_data)
+            self._stash_items.append(item)
+            item_id += 1
 
     def _set_abilities(self, player_hero_data: IPlayerHero) -> None:
         self._abilities = []
@@ -106,6 +136,9 @@ class PlayerHero(Hero):
     def get_items(self) -> list[Item]:
         return self._items
 
+    def get_stash_items(self) -> list[Item]:
+        return self._stash_items
+
     def get_denies(self) -> int:
         return self._denies
 
@@ -120,6 +153,9 @@ class PlayerHero(Hero):
 
     def get_tp_scroll_cooldown_time(self) -> float:
         return self._tp_scroll_cooldown_time
+
+    def get_tp_scroll_charges(self) -> int:
+        return self._tp_scroll_charges
 
     def clear_and_archive_command(self) -> None:
         if self._command:

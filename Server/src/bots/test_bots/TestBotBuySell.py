@@ -30,14 +30,12 @@ class TestBotBuySell(BaseBot):
     '''
     
     _world: World
-    _team: int
     _party: list[str]
     _heroes: list[PlayerHero]
 
-    def __init__(self, world: World, team: int) -> None:
+    def __init__(self, world: World) -> None:
         self._world = world
-        self._team = team
-        self._party = party[team]
+        self._party = party[world.get_team()]
 
     def get_party(self) -> list[str]:
         return self._party
@@ -45,7 +43,7 @@ class TestBotBuySell(BaseBot):
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes
 
-    def actions(self, hero: PlayerHero) -> None:
+    def actions(self, hero: PlayerHero, game_ticks: int) -> None:
         if self._world.get_game_ticks() >= 1 and self._world.get_game_ticks() <= 5:
             if self._hero_name_equals_any(hero.get_name(), [
                 "npc_dota_hero_brewmaster",

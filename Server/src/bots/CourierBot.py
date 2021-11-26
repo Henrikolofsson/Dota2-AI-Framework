@@ -26,10 +26,9 @@ class CourierBot(BaseBot):
     heroes: list[PlayerHero]
     world: World
 
-    def __init__(self, world: World, team):
+    def __init__(self, world: World):
         self.world = world
-        self.party = party[team]
-        self.team = team
+        self.party = party[world.get_team()]
         print('Loaded CourierBot')
 
     def get_party(self) -> list[str]:
@@ -38,7 +37,7 @@ class CourierBot(BaseBot):
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self.heroes = heroes
 
-    def actions(self, hero: PlayerHero) -> None:
+    def actions(self, hero: PlayerHero, game_ticks: int) -> None:
         if self.world.get_game_ticks() == 5:
             tower = self.world.get_unit_by_name('dota_goodguys_tower2_bot')
             tower_pos = tower.get_position()

@@ -30,14 +30,12 @@ class TestBotBuyback(BaseBot):
     '''
     
     _world: World
-    _team: int
     _party: list[str]
     _heroes: list[PlayerHero]
 
-    def __init__(self, world: World, team: int) -> None:
+    def __init__(self, world: World) -> None:
         self._world = world
-        self._team = team
-        self._party = party[team]
+        self._party = party[world.get_team()]
 
     def get_party(self) -> list[str]:
         return self._party
@@ -45,8 +43,8 @@ class TestBotBuyback(BaseBot):
     def initialize(self, heroes: list[PlayerHero]) -> None:
         self._heroes = heroes
 
-    def actions(self, hero: PlayerHero) -> None:
-        if self._team == RADIANT_TEAM:
+    def actions(self, hero: PlayerHero, game_ticks: int) -> None:
+        if self._world.get_team() == RADIANT_TEAM:
             hero.move(500, 500, 0)
 
             if not hero.is_alive():
