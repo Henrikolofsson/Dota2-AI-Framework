@@ -3,6 +3,13 @@ local Match_end_controller = require "match_end.match_end_controller"
 
 
 
+-- restart_flag is set to `true` when restart is forced.
+-- If restart_flag is `true` then `Match_end_controller:Force_restart()` will not be attempted,
+-- preventing console command buffer full.
+local restart_flag = false
+
+
+
 -- constants
 local RADIANT_UPDATE_ROUTE = "radiant_update"
 local DIRE_UPDATE_ROUTE = "dire_update"
@@ -38,8 +45,13 @@ function Update_handler:Update(entities, heroes, on_update_callback)
     request:Send(
         ---@param result table
         function(result)
+            if restart_flag then
+                return
+            end
+
             if result["StatusCode"] == 406 then
                 if Settings.auto_restart_client_on_server_restart then
+                    restart_flag = true
                     print("Restarting addon.")
                     Match_end_controller:Force_restart()
                 else
