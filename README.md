@@ -8,6 +8,16 @@
 
 ### Chat commands
 
+The framework uses in-game chat commands for some functionality. 
+To use a chat command, press enter followed by tab. You should now be in the "all" chat channel. In that channel, type your command and press enter. 
+
+
+| command | description |
+|---------|-------------|
+| restart | Restarts the current game. Does not decrease the counter for the number of games in this session which means that you can run this command an unlimited number of times without restarting Dota.
+| end     | Ends the current game and decreases the number of remaining games. For example, if number_of_games in settings.json is 2, using the end command once will start a new game and put the number of remaining games to 1. Using end again will end the session.  |
+| exit    | Immediately ends the session without taking number_of_games into account.|
+
 ### Statistics
 
 The framework collects statistics from the game as it is running. The statistics are saved to timestamped csv files in the Server/src/statistics folder. 
