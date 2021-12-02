@@ -68,7 +68,7 @@ However, keep in mind that a single command could have effects in-game beyond th
 
 | method | description |
 | ---------------|------------------------------------------------------------------------------------------------------------|
-| move(x, y, z)  | The hero moves to x, y, z. Equivalent to a human play right clicking on a position on the map |
+| move(x, y, z)  | The hero moves to x, y, z. Equivalent to a human player right clicking on a position on the map |
 
 
 ### Chat commands
