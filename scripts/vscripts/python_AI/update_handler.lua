@@ -34,7 +34,12 @@ end
 ---@param on_update_callback function
 function Update_handler:Update(entities, heroes, on_update_callback)
     ---@type table
-    local body = package.loaded["game/dkjson"].encode({["entities"] = entities})
+    local body = package.loaded["game/dkjson"].encode(
+        {
+            ["entities"] = entities,
+            ["game_time"] = GameRules:GetDOTATime(false, true)
+        }
+    )
 
     local route = self:Get_route(heroes)
 
