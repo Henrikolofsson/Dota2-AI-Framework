@@ -70,6 +70,12 @@ However, keep in mind that a single command could have effects in-game beyond th
 | ---------------|------------------------------------------------------------------------------------------------------------|
 | move(x, y, z)  | The hero moves to x, y, z. Equivalent to a human player right clicking on a position on the map |
 
+The World object is used to provide game state information that the bot writer might need to make appropriate decisions.
+
+| method | description |
+|-------------------------------------|-----------------------------------------------------------------------------------------|
+| get_team                          | Returns the team that the hero is on (2 for Radiant and 3 for Dire). |
+| get_game_time()                   | Returns the current game time in seconds to support taking actions that depend on the game clock. |
 
 ### Chat commands
 
