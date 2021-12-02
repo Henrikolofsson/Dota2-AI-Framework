@@ -38,6 +38,7 @@ class BotFramework:
 
     def update(self, data: IRoot) -> None:
         self.world.update(data["entities"])
+        self.world.update_time(data["game_time"])
 
     def generate_bot_commands(self) -> None:
         if not self.initialized:

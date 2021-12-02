@@ -88,7 +88,10 @@ function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes, game
     stats["game_number"] = game_number
 
     -- General game statistics that are not tied to a particular hero.
-    fields["game_time"] = GameRules:GetGameTime()
+
+    -- There is also GameRules:GetGameTime() but that one includes time in menus.
+    -- Menu time is turned off in this command by setting the first argument to false.
+    fields["game_time"] = GameRules:GetDOTATime(false, true)
 
     -- Hero specific stats.
     for i, hero in ipairs(heroes) do

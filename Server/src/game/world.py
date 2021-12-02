@@ -24,12 +24,14 @@ class World:
     _entities: list[PhysicalEntity]
     _player_heroes: list[PlayerHero]
     _team: int
+    _game_time: float
 
     def __init__(self, team: int) -> None:
         self._team = team
         self._game_ticks = 0
         self._entities = []
         self._player_heroes = []
+        self._game_time = 0.0
 
     def get_team(self) -> int:
         return self._team
@@ -58,6 +60,9 @@ class World:
             self._add_new_entity(entity_id, entity_data)
         else:
             entity.update(entity_data)
+
+    def update_time(self, game_time: float):
+        self._game_time = game_time
 
     def _set_dead_if_player_hero_else_remove_entity(self, entity: PhysicalEntity) -> None:
         if isinstance(entity, PlayerHero):
@@ -315,3 +320,15 @@ class World:
                 trees.append(tree)
 
         return trees
+
+    def get_game_time(self) -> float:
+        """
+        Returns game time as the number of seconds from the start of the
+        game. This time reflects in-game clock. E.g. if game clock says
+        01:30, this method will return 90.0
+
+        If the 90 second pre game delayed is used, the time will start
+        counting at -90.0 and hit 0.0 when the game clock hits 0 and the
+        actual game begins.
+        """
+        return self._game_time
