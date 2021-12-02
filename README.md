@@ -52,7 +52,24 @@ It might be the case that you want to use the same bot on both teams and do some
 
 #### Creating bots: using the API
 
-How to use the API.
+For a hero do something it needs to be issued a command in the actions method. A hero is given a command by calling a method on the hero object. Simple example:
+
+```python
+    def actions(self, hero: PlayerHero, game_ticks: int):
+        """This method will run once for each hero during every gametick. This is the
+        starting point for your code commanding the different heroes."""
+        if game_ticks == 1:
+            hero.move(0, 0, 256)
+```
+
+In the above code, all heroes on this bot's team will move to position (0, 0, 256) on the first game tick and then do nothing else for the rest of the game (assuming that this is the complete actions method). Commands are not "saved" between game ticks, and it's legal to not issue a command in a particular game tick. This means that in this case, the heroes will not have any commands to execute on any game tick above 1. 
+
+However, keep in mind that a single command could have effects in-game beyond the immediate game tick. E.g., a hero will keep moving to its designated position independently of the game ticks until it reaches its position, a different command is issued that stops it from moving to the position in question, or it's killed.
+
+| method | description |
+| ---------------|------------------------------------------------------------------------------------------------------------|
+| move(x, y, z)  | The hero moves to x, y, z. Equivalent to a human play right clicking on a position on the map |
+
 
 ### Chat commands
 
