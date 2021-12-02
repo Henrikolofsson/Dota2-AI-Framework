@@ -11,7 +11,8 @@ require "main_controller"
 
 
 
--- Addon entry point.
+-- Entry point. \
+-- Run Addon after 1 second to ensure game has started.
 function Activate()
     GameRules.Main_controller = Main_controller()
     Timers:CreateTimer({

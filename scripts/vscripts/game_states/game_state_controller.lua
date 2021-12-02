@@ -1,4 +1,5 @@
--- Game_state_controller
+-- Game_state_controller \
+-- Test for different game states.
 local Game_state_controller = {}
 
 ---@return boolean
