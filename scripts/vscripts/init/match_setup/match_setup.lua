@@ -7,6 +7,8 @@ function Match_setup:Set_bot_thinking_enabled()
     GameMode:SetBotThinkingEnabled(true)
 end
 
+-- Selection time, showcase time, strategy time and game setup time are all set to 1 second. \
+-- Pre-game time is set to 90 seconds if game should have pre game time (defined in Settings).
 function Match_setup:Remove_all_game_rule_starting_delays()
     GameRules:SetHeroSelectionTime(1.)
     GameRules:SetShowcaseTime(1.)
@@ -17,7 +19,14 @@ function Match_setup:Remove_all_game_rule_starting_delays()
     end
 end
 
+-- Allows both teams to see each other, meaning data of all entities are sent to both python-bot. \
+-- Note: Granting global vision is a cheat and should only be used for testing, not for simply spectating the game. \
+-- ( If you want to spectate the game, set `spectator_mode` to `true` in settings.json. )
 function Match_setup:Grant_global_vision()
+    --[[
+        Some console commands are not reset on restart.
+        This if-statement must therefore have an else-branch for "dota_all_vision" to work properly when switching grant_global_vision setting between restarts.
+    ]]
     if Settings.grant_global_vision then
         SendToServerConsole("dota_all_vision 1")
     else

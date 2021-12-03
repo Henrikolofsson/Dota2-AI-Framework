@@ -1,13 +1,17 @@
 local Match_end_controller = {}
 
+-- Runs console command "dota_launch_custom_game Dota2-AI-Framework dota", forcing a restart provided Addon has the name "Dota2-AI-Framework".
 local function Restart()
     SendToServerConsole("dota_launch_custom_game Dota2-AI-Framework dota")
 end
 
+-- Stops game by kicking running admin. \
+-- Note: does not inform server of exit.
 local function Exit()
     SendToServerConsole("kickid 1")
 end
 
+-- Asks server whether to restart addon or to exit game.
 function Match_end_controller:Handle_match_end()
     ---@type table
     local request = CreateHTTPRequestScriptVM("POST", "http://localhost:8080/api/game_ended")
@@ -25,6 +29,7 @@ function Match_end_controller:Handle_match_end()
     )
 end
 
+-- Informs server of restart, then restarts addon.
 function Match_end_controller:Handle_restart_game()
     ---@type table
     local request = CreateHTTPRequestScriptVM("POST", "http://localhost:8080/api/restart_game")
@@ -36,11 +41,13 @@ function Match_end_controller:Handle_restart_game()
     )
 end
 
+-- Restart addon without informing server.
 function Match_end_controller:Force_restart()
     ---@type table
     Restart()
 end
 
+-- Stop game.
 function Match_end_controller:Handle_exit()
     ---@type table
     Exit()

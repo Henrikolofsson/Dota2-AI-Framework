@@ -15,7 +15,10 @@ local SPECTATOR_TEAM = 1
 
 
 
--- Main_controller
+-- Wait until all bots have chosen a hero then: \
+-- Build global table `accessible_abilities` for filtering which ability data should be sent to server for each hero. \
+-- Start bot thinking process.
+---@return number | nil
 function Main_controller.Initialize_bot_thinking()
     if not Hero_setup_controller:All_players_have_chosen_hero() then
         return ONE_SECOND_DELAY
@@ -34,6 +37,8 @@ function Main_controller.Select_heroes_after_populate_game()
     Timers:CreateTimer(Main_controller.Initialize_bot_thinking)
 end
 
+-- Populate game with bots. \
+-- Wait 1 second to ensure game is populated before continuing.
 function Main_controller.On_hero_selection_game_state()
     Match_setup_controller:Populate_game()
     Timers:CreateTimer({
@@ -42,6 +47,8 @@ function Main_controller.On_hero_selection_game_state()
     })
 end
 
+-- Start spawning creeps immediately if game should not have pre game time. \
+-- Else keep default pre game time.
 function Main_controller.On_pre_game_state()
     if not Settings.should_have_pre_game_delay then
         Match_setup_controller:Force_game_start()
@@ -52,12 +59,14 @@ function Main_controller.On_post_game_state()
     Match_end_controller:Handle_match_end()
 end
 
-function Main_controller.On_player_chat(chat_text)
-    if chat_text == "end" then
+-- Handles player chat commands.
+---@param chat_input string Player input.
+function Main_controller.On_player_chat(chat_input)
+    if chat_input == "end" then
         Match_end_controller:Handle_match_end()
-    elseif chat_text == "restart" then
+    elseif chat_input == "restart" then
         Match_end_controller:Handle_restart_game()
-    elseif chat_text == "exit" then
+    elseif chat_input == "exit" then
         Match_end_controller:Handle_exit()
     end
 end
@@ -66,6 +75,9 @@ function Main_controller:Put_admin_on_spectator_team()
     PlayerResource:GetPlayer(ADMIN_PLAYER_ID):SetTeam(SPECTATOR_TEAM)
 end
 
+-- Determine and set spectator mode. \
+-- Start listening to game events. \
+-- Run match setup.
 function Main_controller.Run_after_settings()
     if Settings.spectator_mode then
         Main_controller:Put_admin_on_spectator_team()
@@ -79,6 +91,8 @@ function Main_controller.Run_after_settings()
     Event_controller:Add_on_player_chat_listener(Main_controller.On_player_chat)
 end
 
+-- Request Settings from server. \
+-- Wait 1 second to ensure settings has been collected before continuing.
 function Main_controller.Run()
     Settings_setup:Get_and_set_settings()
     Timers:CreateTimer({
