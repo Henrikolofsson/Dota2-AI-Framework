@@ -26,7 +26,6 @@ class CommandProps(TypedDict, total=False):
 
 
 class PlayerHero(Hero):
-
     _time_of_death: float
     _ability_points: int
     _abilities: list[Ability]
@@ -170,7 +169,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def move(self, x: float, y: float, z: float) -> None:
+    def move(self, x: float, y: float, z: float = 0) -> None:
         self._command = {
             self.get_name(): {
                 "command": "MOVE",
@@ -187,7 +186,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast(self, ability_index: int, target_id: str="-1", position: Union[Position, None]=None) -> None:
+    def cast(self, ability_index: int, target_id: str = "-1", position: Union[Position, None] = None) -> None:
         if position is None:
             position = Position(0, 0, 0)
 
@@ -249,7 +248,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def use_item(self, slot: int, target_id: str="-1", position: Union[Position, None]=None) -> None:
+    def use_item(self, slot: int, target_id: str = "-1", position: Union[Position, None] = None) -> None:
         if position is None:
             position = Position(0, 0, 0)
 
@@ -264,7 +263,7 @@ class PlayerHero(Hero):
                 "z": z
             }
         }
-    
+
     def swap_item_slots(self, slot1: int, slot2: int) -> None:
         self._command = {
             self.get_name(): {
@@ -399,7 +398,8 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_combo_target_point_unit(self, ability_index: int, target_id: str="-1", position: Union[Position, None]=None) -> None:
+    def cast_combo_target_point_unit(self, ability_index: int, target_id: str = "-1",
+                                     position: Union[Position, None] = None) -> None:
         if position is None:
             position = Position(0, 0, 0)
 
@@ -471,7 +471,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def courier_move_to_position(self, x: float, y: float, z: float=384.00) -> None:
+    def courier_move_to_position(self, x: float, y: float, z: float = 384.00) -> None:
         # 384 is the z value at ground level.
         self._command = {
             self.get_name(): {
