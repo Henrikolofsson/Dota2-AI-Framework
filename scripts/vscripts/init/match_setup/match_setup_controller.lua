@@ -8,6 +8,7 @@ local Match_setup_controller = {}
 
 
 
+-- Populate game with bots.
 function Match_setup_controller:Populate_game()
     Match_setup:Populate_game()
 end

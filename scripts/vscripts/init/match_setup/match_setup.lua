@@ -34,6 +34,7 @@ function Match_setup:Grant_global_vision()
     end
 end
 
+-- Finish game setup after 1 second.
 function Match_setup:Auto_launch_custom_game()
     Timers:CreateTimer({
         endTime = 1.,
@@ -43,15 +44,18 @@ function Match_setup:Auto_launch_custom_game()
     })
 end
 
+-- Populate game with bots.
 function Match_setup:Populate_game()
     SendToServerConsole("dota_bot_populate")
 end
 
+-- Start spawning creeps.
 function Match_setup:Force_game_start()
     SendToServerConsole("dota_dev forcegamestart")
 end
 
-function Match_setup:Rune_handler()
+-- Enable default runes.
+function Match_setup:Enable_runes()
     ---@type table
     local GameMode = GameRules:GetGameModeEntity()
     GameMode:SetUseDefaultDOTARuneSpawnLogic(true)
@@ -63,19 +67,26 @@ function Match_setup:Enable_courier()
     GameRules:GetGameModeEntity():SetFreeCourierModeEnabled(true)
 end
 
-function Match_setup:Day_night_cycle()
+function Match_setup:Start_day_night_cycle()
     GameRules:SetTimeOfDay(0.251)
 end
 
+-- Run game setup. \
+-- - Enable bot thinking if needed.
+-- - Enable day night cycle.
+-- - Enable/disable global vision.
+-- - Enable runes.
+-- - Enable courier.
+-- - Launch game.
 function Match_setup:Run()
     self:Auto_launch_custom_game()
     if Settings.should_dire_be_native_bots then
         self:Set_bot_thinking_enabled()
     end
     self:Remove_all_game_rule_starting_delays()
-    self:Day_night_cycle()
+    self:Start_day_night_cycle()
     self:Grant_global_vision()
-    self:Rune_handler()
+    self:Enable_runes()
     self:Enable_courier()
 end
 

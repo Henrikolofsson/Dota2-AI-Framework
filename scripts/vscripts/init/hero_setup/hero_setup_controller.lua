@@ -6,6 +6,7 @@ local Utilities = require "utilities.utilities"
 
 -- constants
 local ONE_SECOND_DELAY = 1.
+local SIGNED_INTEGER_MAX_32_BIT = 2147483647
 
 
 
@@ -29,6 +30,7 @@ function Hero_setup_controller:All_players_have_chosen_hero()
     return Utilities:To_bool(self.radiant_heroes)
 end
 
+-- Select heroes for players 1-5 using hero names stored in Settings.
 function Hero_setup_controller:Select_radiant_heroes()
     local from_player_id, to_player_id = 1, 5
 
@@ -40,6 +42,7 @@ function Hero_setup_controller:Select_radiant_heroes()
     )
 end
 
+-- Select heroes for players 6-10 using hero names stored in Settings.
 function Hero_setup_controller:Select_dire_heroes()
     local from_player_id, to_player_id = 6, 10
 
@@ -51,6 +54,7 @@ function Hero_setup_controller:Select_dire_heroes()
     )
 end
 
+-- Wait until all heroes have been chosen then store heroes of both teams.
 function Hero_setup_controller:Acquire_selected_heroes()
     Timers:CreateTimer(
         ---@return number
@@ -64,22 +68,25 @@ function Hero_setup_controller:Acquire_selected_heroes()
     )
 end
 
+-- Select heroes for each team.
 function Hero_setup_controller:Select_heroes()
     self:Select_radiant_heroes()
     self:Select_dire_heroes()
     self:Acquire_selected_heroes()
 end
 
---- Builds accessible abilities table for each hero. This table only includes abilities that can be seen, leveled up or used by a player.
+-- Builds accessible abilities table for each hero. This table only includes abilities that can be seen, leveled up or used by a player.
 ---@param heroes table
 function Hero_setup_controller:Set_accessible_abilities_for_heroes(heroes)
     for _index, hero_entity in ipairs(heroes) do
         local ability_count = hero_entity:GetAbilityCount() - 1
+
         local key = hero_entity:GetName() .. hero_entity:GetTeam()
         Settings.accessible_abilities[key] = {}
+
         for index = 0, ability_count, 1 do
             local ability_entity = hero_entity:GetAbilityByIndex(index)
-            if ability_entity and ability_entity:GetHeroLevelRequiredToUpgrade() ~= 2147483647 then
+            if ability_entity and ability_entity:GetHeroLevelRequiredToUpgrade() ~= SIGNED_INTEGER_MAX_32_BIT then
                 Settings.accessible_abilities[key][index] = ability_entity
             end
         end

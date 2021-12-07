@@ -1,6 +1,7 @@
 -- Settings_setup
 local Settings_setup = {}
 
+-- Request settings from server and put response into global table Settings.
 function Settings_setup:Get_and_set_settings()
     ---@type table
     local request = CreateHTTPRequestScriptVM("GET", "http://localhost:8080/api/settings")
