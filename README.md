@@ -59,16 +59,52 @@ For a hero do something it needs to be issued a command in the actions method. A
         """This method will run once for each hero during every gametick. This is the
         starting point for your code commanding the different heroes."""
         if game_ticks == 1:
-            hero.move(0, 0, 256)
+            hero.move(0, 0)
 ```
 
-In the above code, all heroes on this bot's team will move to position (0, 0, 256) on the first game tick and then do nothing else for the rest of the game (assuming that this is the complete actions method). Commands are not "saved" between game ticks, and it's legal to not issue a command in a particular game tick. This means that in this case, the heroes will not have any commands to execute on any game tick above 1. 
+In the above code, all heroes on this bot's team will move to position (0, 0) on the first game tick and then do nothing else for the rest of the game (assuming that this is the complete actions method). Commands are not "saved" between game ticks, and it's legal to not issue a command in a particular game tick. This means that in this case, the heroes will not have any commands to execute on any game tick above 1. 
 
 However, keep in mind that a single command could have effects in-game beyond the immediate game tick. E.g., a hero will keep moving to its designated position independently of the game ticks until it reaches its position, a different command is issued that stops it from moving to the position in question, or it's killed.
 
 | method | description |
 | ---------------|------------------------------------------------------------------------------------------------------------|
-| move(x, y, z)  | The hero moves to x, y, z. Equivalent to a human player right clicking on a position on the map |
+| attack |                                                                                        |
+| move  | The hero moves to x, y. Equivalent to a human player right clicking on a position on the map |
+| stop      |         |
+| cast |    |
+| use_glyph_of_fortification |             |
+| use_tp_scroll |                 |
+| buy     |                           |
+| sell    |                           |
+| use_item |                          |
+| swap_item_slots |                   |
+| toggle_item |         |
+| disassemble_item | 
+| unlock_item |     |
+| lock_item |       |
+| pick_up_rune |    |
+| level_up |   |
+| noop |    |
+| cast_toggle |  |
+| cast_no_target |  |
+| cast_target_point | |
+| cast_target_area |  |
+| cast_target_unit |  |
+| cast_vector_targeting | |
+| cast_target_unit_aoe |  |
+| cast_combo_target_point_unit |  |
+| buyback |  |
+| courier_stop | |
+| courier_retrieve | |
+| courier_secret_shop |  |
+| courier_return_items |  |
+| courier_speed_burst |   |
+| courier_transfer_items | |
+| courier_shield |  |
+| courier_move_to_position |  |
+| courier_sell |  |
+
+For full API documentation see: ...
 
 The World object is used to provide game state information that the bot writer might need to make appropriate decisions.
 
