@@ -1,9 +1,9 @@
 local Utilities = {}
 
----@param table_to_search table
+---@param table_to_search any[] | table<any, any>
 ---@param value_to_find any
 ---@return boolean
-function Utilities:Table_includes_value(table_to_search, value_to_find) -- unused
+function Utilities:Table_includes_value(table_to_search, value_to_find)
     for _index, value in ipairs(table_to_search) do
         if value == value_to_find then
             return true
@@ -13,7 +13,7 @@ function Utilities:Table_includes_value(table_to_search, value_to_find) -- unuse
     return false
 end
 
----@param table_to_count table
+---@param table_to_count any[] | table<any, any>
 ---@return integer
 function Utilities:Get_table_length(table_to_count)
     local count = 0
@@ -29,17 +29,17 @@ function Utilities:Vector_to_array(vector)
     return {vector.x, vector.y, vector.z}
 end
 
----@param original_table table
----@param table_to_insert table
-function Utilities:Insert_range(original_table, table_to_insert)
-    for _index, value in ipairs(table_to_insert) do
-        table.insert(original_table, value)
+---@param original_list any[]
+---@param list_to_add any[]
+function Utilities:Insert_range(original_list, list_to_add)
+    for _index, value in ipairs(list_to_add) do
+        table.insert(original_list, value)
     end
 end
 
 --- Concat 2 one-dimensional tables.
----@param list_a table
----@param list_b table
+---@param list_a any[]
+---@param list_b any[]
 ---@return table new_list new one-dimensional table with all values from both lists.
 function Utilities:Concat_lists(list_a, list_b)
     local new_list = {}

@@ -13,7 +13,9 @@ local ONE_SECOND_DELAY = 1.
 -- Hero_selector
 local Hero_selector = {}
 
+---@type CDOTA_BaseNPC_Hero[]
 Hero_selector.radiant_heroes = {}
+---@type CDOTA_BaseNPC_Hero[]
 Hero_selector.dire_heroes = {}
 
 -- Hero count of both teams equal `FULL_TEAM_COUNT`. \
@@ -49,7 +51,7 @@ end
 
 -- Returns reference to hero team table for of given team.
 ---@param team integer
----@return table
+---@return CDOTA_BaseNPC_Hero[]
 function Hero_selector:Get_table_to_append_to(team)
     if team == DOTA_TEAM_GOODGUYS then
         return self.radiant_heroes
@@ -102,7 +104,7 @@ end
 --   When `should_dire_be_native_bots` is enabled, BotThinking will be enabled. When BotThinking is enabled,
 --   Dota will automatically start controlling the radiant heroes. \
 --   If the owning players of the radiant heroes are kicked; however, Dota will not try to control the heroes.
----@param picked_hero_names table
+---@param picked_hero_names string[]
 ---@param team integer
 ---@param from_player_id integer
 ---@param to_player_id integer

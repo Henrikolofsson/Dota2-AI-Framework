@@ -1,3 +1,8 @@
+---@alias item_name string
+
+-- Table describing in which shop an item is available where key is item \
+-- name and value is shop type (either DOTA_SHOP_HOME or DOTA_SHOP_SECRET).
+---@type table<item_name, integer>
 local item_shop_availability = {
     item_blink = DOTA_SHOP_HOME,
     item_fluffy_hat = DOTA_SHOP_HOME,

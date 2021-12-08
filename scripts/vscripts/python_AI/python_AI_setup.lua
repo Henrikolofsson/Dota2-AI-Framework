@@ -8,7 +8,7 @@ local Python_AI_setup = {}
 
 
 
----@param heroes table
+---@param heroes CDOTA_BaseNPC_Hero[]
 function Python_AI_setup:Set_context_think_for_heroes(heroes)
     Timers:CreateTimer(
         "UpdateForTeam" .. tostring(heroes[1]:GetTeam()),
@@ -22,8 +22,8 @@ function Python_AI_setup:Set_context_think_for_heroes(heroes)
     )
 end
 
----@param radiant_heroes table
----@param dire_heroes table
+---@param radiant_heroes CDOTA_BaseNPC_Hero[]
+---@param dire_heroes CDOTA_BaseNPC_Hero[]
 function Python_AI_setup:Initialize_bot_thinking(radiant_heroes, dire_heroes)
     self:Set_statistics_collection(radiant_heroes, dire_heroes)
 
@@ -33,8 +33,8 @@ function Python_AI_setup:Initialize_bot_thinking(radiant_heroes, dire_heroes)
     end
 end
 
----@param radiant_heroes table
----@param dire_heroes table
+---@param radiant_heroes CDOTA_BaseNPC_Hero[]
+---@param dire_heroes CDOTA_BaseNPC_Hero[]
 function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
     --[[
         Creates a timer that runs the Python_AI_thinking:Collect_and_send_statistics
@@ -57,6 +57,7 @@ function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
         }
     )
 end
+
 
 
 return Python_AI_setup

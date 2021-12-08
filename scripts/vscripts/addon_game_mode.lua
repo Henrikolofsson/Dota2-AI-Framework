@@ -1,3 +1,8 @@
+---@alias CDOTA_BaseNPC any
+---@alias CDOTA_BaseNPC_Hero CDOTA_BaseNPC
+---@alias CDOTABaseAbility any
+---@alias CDOTA_Item CDOTABaseAbility
+
 if Main_controller == nil then
     _G.Main_controller = class({})
 end

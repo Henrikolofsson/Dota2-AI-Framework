@@ -1,3 +1,4 @@
+-- imports
 local item_shop_availability = require "python_AI.commands.item_handlers.item_shop_availability"
 local item_disassemblable = require "python_AI.commands.item_handlers.item_disassemblable"
 local Utilities = require "utilities.utilities"
@@ -6,21 +7,22 @@ local Courier_commands = require "python_AI.commands.courier_commands"
 
 
 -- constants
-local swap_slot_outside_range_warning_format = "%s tried to swap item where slot%s was %s which is out of inventory and backpack range(" .. DOTA_ITEM_SLOT_1 .. "-" .. DOTA_ITEM_SLOT_9 .. ")."
-local use_slot_outside_range_warning_format = "%s tried to use item in slot %s which is out of inventory range(" .. DOTA_ITEM_SLOT_1 .. "-" .. DOTA_ITEM_SLOT_6 .. ")."
+local SWAP_SLOT_OUTSIDE_RANGE_WARNING_FORMAT = "%s tried to swap item where slot%s was %s which is out of inventory and backpack range(" .. DOTA_ITEM_SLOT_1 .. "-" .. DOTA_ITEM_SLOT_9 .. ")."
+local USE_SLOT_OUTSIDE_RANGE_WARNING_FORMAT = "%s tried to use item in slot %s which is out of inventory range(" .. DOTA_ITEM_SLOT_1 .. "-" .. DOTA_ITEM_SLOT_6 .. ")."
 
 
 
 local Command_controller = {}
 
 -- Determine if hero is currently casting an ability.
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@return boolean
 function Command_controller:Hero_has_active_ability(hero_entity)
     return Utilities:To_bool(hero_entity:GetCurrentActiveAbility())
 end
 
----@param hero_entity table
+-- Delegate to appropriate function according to command.
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@param command_props table
 function Command_controller:Parse_hero_command(hero_entity, command_props)
     local command = command_props.command
@@ -31,7 +33,7 @@ function Command_controller:Parse_hero_command(hero_entity, command_props)
 
     --TODO deal with abilities that the hero can interrupt
     if self:Hero_has_active_ability(hero_entity) then
-        Warning(hero_entity .. " is casting an ability. " .. command " was ignored.")
+        Warning(hero_entity:GetName() .. " is casting an ability. " .. command .. " was ignored.")
         return
     end
 
@@ -74,14 +76,16 @@ function Command_controller:Parse_hero_command(hero_entity, command_props)
     end
 end
 
----@param hero_entity table
+-- Compare item cost and hero gold.
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@param item_name string
 ---@return boolean
 function Command_controller:Hero_can_afford_item(hero_entity, item_name)
     return GetItemCost(item_name) <= hero_entity:GetGold()
 end
 
----@param unit_entity table
+-- Check if any inventory or backpack slot is nil.
+---@param unit_entity CDOTA_BaseNPC
 ---@return boolean
 function Command_controller:Unit_has_free_item_slot(unit_entity)
     local item_in_slot
@@ -94,7 +98,8 @@ function Command_controller:Unit_has_free_item_slot(unit_entity)
     return false
 end
 
----@param unit_entity table
+-- Item can stack if unit has item of same name and item is stackable.
+---@param unit_entity CDOTA_BaseNPC
 ---@param item_name string
 ---@return boolean
 function Command_controller:Unit_can_stack_item_of_name(unit_entity, item_name)
@@ -108,8 +113,8 @@ function Command_controller:Unit_can_stack_item_of_name(unit_entity, item_name)
     return false
 end
 
----@param unit_entity table
----@param hero_entity table
+---@param unit_entity CDOTA_BaseNPC to receive item.
+---@param hero_entity CDOTA_BaseNPC_Hero of which to spend gold.
 ---@param name_of_item_to_buy string
 function Command_controller:Buy_item_for_unit(unit_entity, hero_entity, name_of_item_to_buy)
     EmitSoundOn("General.Buy", unit_entity)
@@ -117,7 +122,10 @@ function Command_controller:Buy_item_for_unit(unit_entity, hero_entity, name_of_
     hero_entity:SpendGold(GetItemCost(name_of_item_to_buy), DOTA_ModifyGold_PurchaseItem) --should the reason take DOTA_ModifyGold_PurchaseConsumable into account?
 end
 
----@param unit_entity table
+-- Unit can buy item when:
+-- - Unit is in range of the shop where the item is available.
+-- - Unit has a free item slot or item can stack with existing item in inventory or backpack.
+---@param unit_entity CDOTA_BaseNPC
 ---@param item_name string
 ---@return boolean
 function Command_controller:Unit_can_buy_item(unit_entity, item_name)
@@ -125,13 +133,16 @@ function Command_controller:Unit_can_buy_item(unit_entity, item_name)
     and (self:Unit_has_free_item_slot(unit_entity) or self:Unit_can_stack_item_of_name(unit_entity, item_name))
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@return table
 function Command_controller:Get_courier_of_hero(hero_entity)
     return PlayerResource:GetPreferredCourierForPlayer(hero_entity:GetPlayerID())
 end
 
----@param hero_entity table
+-- - Asserts hero can afford item.
+-- - If hero is able to buy item -> buy item for hero.
+-- - Else if courier of hero is able to buy item -> buy item for courier.
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@param command_props table
 function Command_controller:Buy(hero_entity, command_props)
     local item_name = command_props.item
@@ -153,7 +164,8 @@ function Command_controller:Buy(hero_entity, command_props)
     end
 end
 
----@param unit_entity table
+-- Sells item if unit can sell items and item is sellable.
+---@param unit_entity CDOTA_BaseNPC
 ---@param command_props table
 function Command_controller:Sell(unit_entity, command_props)
     local slot = command_props.slot
@@ -175,18 +187,22 @@ function Command_controller:Sell(unit_entity, command_props)
     end
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@param command_props table
 function Command_controller:Move_to(hero_entity, command_props)
     hero_entity:MoveToPosition(Vector(command_props.x, command_props.y, command_props.z))
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 function Command_controller:Stop(hero_entity)
     hero_entity:Stop()
 end
 
----@param hero_entity table
+-- Level up specified ability and spend ability points if:
+-- - Hero has ability points.
+-- - Given ability is not maxed out.
+-- - Hero has required level to level up given ability.
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@param command_props table
 function Command_controller:Level_up(hero_entity, command_props)
     local ability_points = hero_entity:GetAbilityPoints()
@@ -213,13 +229,13 @@ function Command_controller:Level_up(hero_entity, command_props)
     hero_entity:SetAbilityPoints(ability_points - 1)
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@param command_props table
 function Command_controller:Attack(hero_entity, command_props)
     hero_entity:MoveToTargetToAttack(EntIndexToHScript(command_props.target))
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@param command_props table
 function Command_controller:Cast(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
@@ -229,19 +245,22 @@ function Command_controller:Cast(hero_entity, command_props)
     end
 end
 
+-- Checks if given item slot is an inventory slot and not a backpack slot.
 ---@param item_slot integer
 ---@return boolean
 function Command_controller:Item_slot_in_useable_range(item_slot)
     return item_slot >= DOTA_ITEM_SLOT_1 and item_slot <= DOTA_ITEM_SLOT_6
 end
 
----@param hero_entity table
+-- Use item at given item slot with Command_controller:Use_ability() \
+-- if item slot is an inventory slot and item at slot exists.
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@param command_props table
 function Command_controller:Use_item(hero_entity, command_props)
     local slot = command_props.slot
 
     if not self:Item_slot_in_useable_range(slot) then
-        Warning(string.format(use_slot_outside_range_warning_format, hero_entity:GetName(), slot))
+        Warning(string.format(USE_SLOT_OUTSIDE_RANGE_WARNING_FORMAT, hero_entity:GetName(), slot))
         return
     end
 
@@ -254,18 +273,22 @@ function Command_controller:Use_item(hero_entity, command_props)
     end
 end
 
+-- Checks if item slot is either an inventory slot or backpack slot.
 ---@param item_slot integer
 ---@return boolean
 function Command_controller:Item_slot_in_range(item_slot)
     return item_slot >= DOTA_ITEM_SLOT_1 and item_slot <= DOTA_ITEM_SLOT_9
 end
 
+-- Swaps items in given slots if possible.
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Swap_item_slots(hero_entity, command_props)
     local slot1, slot2 = command_props.slot1, command_props.slot2
 
     for index, slot in ipairs({slot1, slot2}) do
         if not self:Item_slot_in_range(slot) then
-            Warning(string.format(swap_slot_outside_range_warning_format, hero_entity:GetName(), index, slot))
+            Warning(string.format(SWAP_SLOT_OUTSIDE_RANGE_WARNING_FORMAT, hero_entity:GetName(), index, slot))
             return
         end
     end
@@ -273,6 +296,9 @@ function Command_controller:Swap_item_slots(hero_entity, command_props)
     hero_entity:SwapItems(slot1, slot2)
 end
 
+-- Split item into its recipe components.
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Disassemble_item(hero_entity, command_props)
     local slot = command_props.slot
     local item_entity = hero_entity:GetItemInSlot(slot)
@@ -284,6 +310,8 @@ function Command_controller:Disassemble_item(hero_entity, command_props)
     end
 end
 
+---@param item_entity CDOTA_Item
+---@return boolean
 function Command_controller:Hero_can_disassemble_item(item_entity)
     for _index, value in ipairs(item_disassemblable) do
         if item_entity:GetName() == value then
@@ -293,7 +321,8 @@ function Command_controller:Hero_can_disassemble_item(item_entity)
     return false
 end
 
-
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Check_and_unlock_item(hero_entity, command_props)
     local slot = command_props.slot
     local item_entity = hero_entity:GetItemInSlot(slot)
@@ -307,6 +336,8 @@ function Command_controller:Check_and_unlock_item(hero_entity, command_props)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Check_and_lock_item(hero_entity, command_props)
     local slot = command_props.slot
     local item_entity = hero_entity:GetItemInSlot(slot)
@@ -320,6 +351,8 @@ function Command_controller:Check_and_lock_item(hero_entity, command_props)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Toggle_item(hero_entity, command_props)
     local slot = command_props.slot
     local item_entity = hero_entity:GetItemInSlot(slot)
@@ -331,10 +364,12 @@ function Command_controller:Toggle_item(hero_entity, command_props)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
 function Command_controller:Buyback(hero_entity)
     hero_entity:Buyback()
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
 function Command_controller:Cast_glyph_of_fortification(hero_entity)
     ExecuteOrderFromTable({
         UnitIndex = hero_entity:entindex(),
@@ -342,6 +377,9 @@ function Command_controller:Cast_glyph_of_fortification(hero_entity)
     })
 end
 
+-- Use town portal scroll if hero has charges and scroll is off cooldown.
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Use_tp_scroll(hero_entity, command_props)
     local tp_scroll_entity = hero_entity:GetItemInSlot(DOTA_ITEM_TP_SCROLL)
 
@@ -356,7 +394,14 @@ function Command_controller:Use_tp_scroll(hero_entity, command_props)
     end
 end
 
-function Command_controller:Scan(hero_entity, command_props) -- unused
+-- Not yet implemented due to complexity and unclear practical use. \
+-- Implementing this feature is very possible, however due to time constraints it will be abandoned as of now. \
+-- Known problems are:
+-- - How would the "enemy in scan" / "enemy not in scan" information be presented to the bot?
+-- - How to get the data whether: "enemy in scan" / "enemy not in scan"? Only apparent way to know is using an event. \
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
+function Command_controller:Scan(hero_entity, command_props)
     ExecuteOrderFromTable({
         UnitIndex = hero_entity:entindex(),
         OrderType = DOTA_UNIT_ORDER_RADAR,
@@ -364,71 +409,89 @@ function Command_controller:Scan(hero_entity, command_props) -- unused
     })
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Pick_up_rune(hero_entity, command_props)
     hero_entity:PickupRune(EntIndexToHScript(command_props.target))
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Cast_ability_toggle(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
-    if self:SetupAbility(hero_entity, ability_entity) then
+    if self:Hero_can_cast_ability(hero_entity, ability_entity) then
         local player_id = hero_entity:GetPlayerOwnerID()
         hero_entity:CastAbilityToggle(ability_entity, player_id)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Cast_ability_no_target(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
-    if self:SetupAbility(hero_entity, ability_entity) then
+    if self:Hero_can_cast_ability(hero_entity, ability_entity) then
         local player_id = hero_entity:GetPlayerOwnerID()
         hero_entity:CastAbilityNoTarget(ability_entity, player_id)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Cast_ability_target_point(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
-    if self:SetupAbility(hero_entity, ability_entity) then
+    if self:Hero_can_cast_ability(hero_entity, ability_entity) then
         local player_id = hero_entity:GetPlayerOwnerID()
         hero_entity:CastAbilityOnPosition(Vector(command_props.x, command_props.y, command_props.z), ability_entity, player_id)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Cast_ability_target_area(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
-    if self:SetupAbility(hero_entity, ability_entity) then
+    if self:Hero_can_cast_ability(hero_entity, ability_entity) then
         local player_id = hero_entity:GetPlayerOwnerID()
         hero_entity:CastAbilityOnPosition(Vector(command_props.x, command_props.y, command_props.z), ability_entity, player_id)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Cast_ability_target_unit(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
-    if self:SetupAbility(hero_entity, ability_entity) then
+    if self:Hero_can_cast_ability(hero_entity, ability_entity) then
         local player_id = hero_entity:GetPlayerOwnerID()
         local target_entity = EntIndexToHScript(command_props.target)
         hero_entity:CastAbilityOnTarget(target_entity, ability_entity, player_id)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Cast_ability_vector_targeting(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
-    if self:SetupAbility(hero_entity, ability_entity) then
+    if self:Hero_can_cast_ability(hero_entity, ability_entity) then
         local player_id = hero_entity:GetPlayerOwnerID()
         hero_entity:CastAbilityOnPosition(Vector(command_props.x, command_props.y, command_props.z), ability_entity, player_id)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Cast_ability_target_unit_AOE(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
-    if self:SetupAbility(hero_entity, ability_entity) then
+    if self:Hero_can_cast_ability(hero_entity, ability_entity) then
         local player_id = hero_entity:GetPlayerOwnerID()
         local target_entity = EntIndexToHScript(command_props.target)
         hero_entity:CastAbilityOnTarget(target_entity, ability_entity, player_id)
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param command_props any
 function Command_controller:Cast_ability_combo_target_point_unit(hero_entity, command_props)
     local ability_entity = hero_entity:GetAbilityByIndex(command_props.ability)
-    if self:SetupAbility(hero_entity, ability_entity) then
+    if self:Hero_can_cast_ability(hero_entity, ability_entity) then
         local behavior = ability_entity:GetBehavior()
         local player_id = hero_entity:GetPlayerOwnerID()
         if bit.band(behavior, DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) ~= 0 then
@@ -440,11 +503,17 @@ function Command_controller:Cast_ability_combo_target_point_unit(hero_entity, co
     end
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param ability_entity CDOTABaseAbility
+---@return boolean
 function Command_controller:Hero_can_afford_to_cast_ability(hero_entity, ability_entity)
     return ability_entity:GetManaCost(ability_entity:GetLevel()) <= hero_entity:GetMana()
 end
 
-function Command_controller:SetupAbility(hero_entity, ability_entity)
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param ability_entity CDOTABaseAbility
+---@return boolean
+function Command_controller:Hero_can_cast_ability(hero_entity, ability_entity)
     if not self:Hero_can_afford_to_cast_ability(hero_entity, ability_entity) then
         Warning("Bot tried to use ability without mana")
         return false
@@ -455,6 +524,9 @@ function Command_controller:SetupAbility(hero_entity, ability_entity)
     return true
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@param ability_entity CDOTABaseAbility
+---@param command_props any
 function Command_controller:Use_ability(hero_entity, ability_entity, command_props)
     local level = ability_entity:GetLevel()
     local player_id = hero_entity:GetPlayerOwnerID()

@@ -9,7 +9,7 @@ local Utilities = require "utilities.utilities"
 -- Python_AI_thinking
 local Python_AI_thinking = {}
 
----@param heroes table
+---@param heroes CDOTA_BaseNPC_Hero[]
 ---@param commands table
 function Python_AI_thinking.On_update(heroes, commands)
     if not commands then
@@ -29,7 +29,7 @@ function Python_AI_thinking.On_update(heroes, commands)
     end
 end
 
----@param heroes table
+---@param heroes CDOTA_BaseNPC_Hero[]
 ---@return number
 function Python_AI_thinking:On_think(heroes)
     Python_AI_thinking:Before_world_building(heroes)
@@ -39,7 +39,7 @@ function Python_AI_thinking:On_think(heroes)
     Update_handler:Update(all_entities, heroes, self.On_update)
 end
 
----@param heroes table
+---@param heroes CDOTA_BaseNPC_Hero[]
 function Python_AI_thinking:Before_world_building(heroes)
     --[[
         Called before building the world data to ensure that
@@ -66,8 +66,9 @@ function Python_AI_thinking:Before_world_building(heroes)
     end
 end
 
----@param radiant_heroes table of radiant hero entities.
----@param dire_heroes table of dire hero entities.
+---@param radiant_heroes CDOTA_BaseNPC_Hero[] radiant hero entities.
+---@param dire_heroes CDOTA_BaseNPC_Hero[] dire hero entities.
+---@param game_number integer
 function Python_AI_thinking:Collect_and_send_statistics(radiant_heroes, dire_heroes, game_number)
     --[[
         Collects game statistics and sends them to the statistics route on the
@@ -78,8 +79,9 @@ function Python_AI_thinking:Collect_and_send_statistics(radiant_heroes, dire_her
 end
 
 
----@param radiant_heroes table of radiant hero entities.
----@param dire_heroes table of dire hero entities.
+---@param radiant_heroes CDOTA_BaseNPC_Hero[] radiant hero entities.
+---@param dire_heroes CDOTA_BaseNPC_Hero[] dire hero entities.
+---@param game_number integer
 function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes, game_number)
     local heroes = Utilities:Concat_lists(radiant_heroes, dire_heroes)
     local stats = {}

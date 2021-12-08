@@ -1,3 +1,5 @@
+-- Table containing names of all items which can be disassembled.
+---@type string[]
 local item_disassemblable = {
     "item_arcane_boots",
     "item_dragon_lance",

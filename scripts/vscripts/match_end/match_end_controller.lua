@@ -43,13 +43,11 @@ end
 
 -- Restart addon without informing server.
 function Match_end_controller:Force_restart()
-    ---@type table
     Restart()
 end
 
 -- Stop game.
 function Match_end_controller:Handle_exit()
-    ---@type table
     Exit()
 end
 

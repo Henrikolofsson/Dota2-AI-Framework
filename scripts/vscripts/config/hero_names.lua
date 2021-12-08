@@ -1,3 +1,4 @@
+---@type string[]
 local hero_names = {
     "npc_dota_hero_abaddon",
     "npc_dota_hero_alchemist",

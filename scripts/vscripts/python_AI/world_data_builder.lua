@@ -8,13 +8,14 @@ local Command_controller = require "python_AI.commands.command_controller"
 local World_data_builder = {}
 World_data_builder.entities = nil
 World_data_builder.all_units = nil
+---@type CDOTA_BaseNPC_Hero
 World_data_builder.requesting_hero = nil
 ---@type integer
 World_data_builder.requesting_team = nil
 
 
 ---@param unit_data table
----@param unit_entity table
+---@param unit_entity CDOTA_BaseNPC
 function World_data_builder:Insert_base_unit_data(unit_data, unit_entity)
     local attackTarget = unit_entity:GetAttackTarget()
     if attackTarget then
@@ -42,7 +43,7 @@ function World_data_builder:Insert_base_unit_data(unit_data, unit_entity)
     unit_data.isAttacking = unit_entity:IsAttacking()
 end
 
----@param unit_entity table
+---@param unit_entity CDOTA_BaseNPC
 ---@return table items
 function World_data_builder:Get_items_data(unit_entity)
     local items = {}
@@ -62,7 +63,7 @@ function World_data_builder:Get_items_data(unit_entity)
     return items
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@return boolean
 function World_data_builder:Has_tower_aggro(hero_entity)
     for _index, unit in ipairs(self.all_units) do
@@ -77,7 +78,7 @@ function World_data_builder:Has_tower_aggro(hero_entity)
     return false
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@return boolean
 function World_data_builder:Has_aggro(hero_entity)
     for _index, unit in ipairs(self.all_units) do
@@ -90,13 +91,13 @@ function World_data_builder:Has_aggro(hero_entity)
     return false
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@return integer
 function World_data_builder:Get_hero_ability_count(hero_entity)
     return hero_entity:GetAbilityCount() - 1 --minus 1 because lua for loops are upper boundary inclusive
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@return table abilities
 function World_data_builder:Get_hero_abilities(hero_entity)
     local abilities = {}
@@ -125,6 +126,8 @@ function World_data_builder:Get_hero_abilities(hero_entity)
     return abilities
 end
 
+---@param hero_data any
+---@param hero_entity CDOTA_BaseNPC_Hero
 function World_data_builder:Insert_tp_scroll_data(hero_data, hero_entity)
     hero_data.tpScrollAvailable = false
     hero_data.tpScrollCooldownTime = 0.
@@ -139,7 +142,7 @@ function World_data_builder:Insert_tp_scroll_data(hero_data, hero_entity)
 end
 
 ---@param hero_data table
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.type = "Hero"
     hero_data.hasTowerAggro = self:Has_tower_aggro(hero_entity)
@@ -147,6 +150,8 @@ function World_data_builder:Insert_base_hero_data(hero_data, hero_entity)
     hero_data.deaths = hero_entity:GetDeaths()
 end
 
+---@param hero_entity CDOTA_BaseNPC_Hero
+---@return table
 function World_data_builder:Get_stash_items_data(hero_entity)
     local items = {}
     for i = DOTA_STASH_SLOT_1, DOTA_STASH_SLOT_6, 1 do
@@ -166,7 +171,7 @@ function World_data_builder:Get_stash_items_data(hero_entity)
 end
 
 ---@param hero_data table
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 function World_data_builder:Insert_player_hero_data(hero_data, hero_entity)
     hero_data.type = "PlayerHero"
 
@@ -186,13 +191,13 @@ function World_data_builder:Insert_player_hero_data(hero_data, hero_entity)
 end
 
 ---@param courier_data table
----@param courier_entity table
+---@param courier_entity CDOTA_BaseNPC
 function World_data_builder:Insert_courier_data(courier_data, courier_entity)
     courier_data.type = "Courier"
     courier_data.items = self:Get_items_data(courier_entity)
 end
 
----@param unit_entity table
+---@param unit_entity CDOTA_BaseNPC
 ---@return table unit_data
 function World_data_builder:Get_unit_data(unit_entity)
     local unit_data = {}
@@ -312,7 +317,7 @@ function World_data_builder:Insert_all_units()
     self:Insert_all_towers()
 end
 
----@param hero_entity table
+---@param hero_entity CDOTA_BaseNPC_Hero
 ---@return table entities
 function World_data_builder:Get_all_entities(hero_entity)
     self.requesting_hero = hero_entity
@@ -326,5 +331,7 @@ function World_data_builder:Get_all_entities(hero_entity)
 
     return self.entities
 end
+
+
 
 return World_data_builder

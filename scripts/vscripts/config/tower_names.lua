@@ -1,3 +1,4 @@
+---@type string[]
 local tower_names = {
     "dota_goodguys_tower1_top",
     "dota_goodguys_tower1_mid",

@@ -12,15 +12,18 @@ local SIGNED_INTEGER_MAX_32_BIT = 2147483647
 
 -- Hero_setup_controller
 local Hero_setup_controller = {}
+
+---@type CDOTA_BaseNPC_Hero[]
 Hero_setup_controller.radiant_heroes = nil
+---@type CDOTA_BaseNPC_Hero[]
 Hero_setup_controller.dire_heroes = nil
 
----@return table
+---@return CDOTA_BaseNPC_Hero[]
 function Hero_setup_controller:Get_radiant_heroes()
     return self.radiant_heroes
 end
 
----@return table
+---@return CDOTA_BaseNPC_Hero[]
 function Hero_setup_controller:Get_dire_heroes()
     return self.dire_heroes
 end
@@ -75,8 +78,9 @@ function Hero_setup_controller:Select_heroes()
     self:Acquire_selected_heroes()
 end
 
--- Builds accessible abilities table for each hero. This table only includes abilities that can be seen, leveled up or used by a player.
----@param heroes table
+-- Builds accessible abilities table for each hero. This table only includes abilities that can be seen, leveled up or used by a player. \
+-- Special abilities that should not be accessible by the bots are filtered out and will never be sent to the python server.
+---@param heroes CDOTA_BaseNPC_Hero[]
 function Hero_setup_controller:Set_accessible_abilities_for_heroes(heroes)
     for _index, hero_entity in ipairs(heroes) do
         local ability_count = hero_entity:GetAbilityCount() - 1

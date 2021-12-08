@@ -1,5 +1,5 @@
 Settings = {
-    ---@type table
+    ---@type table<string, table<integer, CDOTABaseAbility>>
     accessible_abilities = {},
     ---@type boolean
     should_have_pre_game_delay = nil,
@@ -9,12 +9,14 @@ Settings = {
     native_bots_difficulty = nil,
     ---@type boolean
     grant_global_vision = nil,
-    ---@type table
+    ---@type string[]
     radiant_party_names = nil,
-    ---@type table
+    ---@type string[]
     dire_party_names = nil,
     ---@type boolean
     spectator_mode = nil,
     ---@type boolean
     auto_restart_client_on_server_restart = nil,
+    ---@type integer
+    game_number = nil
 }

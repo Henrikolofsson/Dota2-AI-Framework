@@ -19,7 +19,7 @@ local DIRE_UPDATE_ROUTE = "dire_update"
 -- Update_handler
 local Update_handler = {}
 
----@param heroes table
+---@param heroes CDOTA_BaseNPC_Hero[]
 ---@return string
 function Update_handler:Get_route(heroes)
     if heroes[1]:GetTeam() == DOTA_TEAM_GOODGUYS then
@@ -30,8 +30,8 @@ function Update_handler:Get_route(heroes)
 end
 
 ---@param entities table
----@param heroes table
----@param on_update_callback function
+---@param heroes CDOTA_BaseNPC_Hero[]
+---@param on_update_callback fun(heroes: CDOTA_BaseNPC_Hero[], commands: table)
 function Update_handler:Update(entities, heroes, on_update_callback)
     ---@type table
     local body = package.loaded["game/dkjson"].encode(
