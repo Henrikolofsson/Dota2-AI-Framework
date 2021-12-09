@@ -21,7 +21,7 @@ party = {
     ],
 }
 
-class TestBotWard(BaseBot):
+class TestBotItemToggle(BaseBot):
     '''
     Tests:
     - Abyssal Underlord should buy one observer ward and one sentry ward (which combines to one item), move to location and place ward.
