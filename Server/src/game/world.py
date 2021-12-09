@@ -300,6 +300,19 @@ class World:
         
         return runes
 
+    def get_wards(self) -> list[Unit]:
+        '''
+        Returns all wards.
+        '''
+        wards: list[Unit] = []
+
+        for unit in self.get_units():
+            if unit.get_name() == "npc_dota_ward_base" \
+            or unit.get_name() == "npc_dota_ward_base_truesight":
+                wards.append(unit)
+
+        return wards
+
     def get_all_trees(self) -> list[Tree]:
         '''
         Returns all trees.
