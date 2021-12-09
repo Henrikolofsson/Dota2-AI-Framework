@@ -9,6 +9,8 @@ from game.post_data_interfaces.IEntity import IEntity
 
 class Courier(Unit):
 
+    _in_range_of_home_shop: bool
+    _in_range_of_secret_shop: bool
     _items: list[Item]
 
     def get_type(self) -> EntityType:
@@ -17,6 +19,8 @@ class Courier(Unit):
     def update(self, data: IEntity) -> None:
         super().update(data)
         courier_entity_data: ICourier = cast(ICourier, data)
+        self._in_range_of_home_shop = courier_entity_data["inRangeOfHomeShop"]
+        self._in_range_of_secret_shop = courier_entity_data["inRangeOfSecretShop"]
         self._set_items(courier_entity_data)
 
     def _set_items(self, courier_entity_data: ICourier) -> None:
@@ -33,3 +37,9 @@ class Courier(Unit):
 
     def get_items(self) -> list[Item]:
         return self._items
+
+    def is_in_range_of_home_shop(self) -> bool:
+        return self._in_range_of_home_shop
+
+    def is_in_range_of_secret_shop(self) -> bool:
+        return self._in_range_of_secret_shop

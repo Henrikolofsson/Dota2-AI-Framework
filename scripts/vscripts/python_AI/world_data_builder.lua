@@ -184,6 +184,8 @@ function World_data_builder:Insert_player_hero_data(hero_data, hero_entity)
     hero_data.buybackCooldownTime = hero_entity:GetBuybackCooldownTime()
     hero_data.items = self:Get_items_data(hero_entity)
     hero_data.stashItems = self:Get_stash_items_data(hero_entity)
+    hero_data.inRangeOfHomeShop = hero_entity:IsInRangeOfShop(DOTA_SHOP_HOME, true)
+    hero_data.inRangeOfSecretShop = hero_entity:IsInRangeOfShop(DOTA_SHOP_SECRET, true)
 
     self:Insert_tp_scroll_data(hero_data, hero_entity)
 
@@ -195,6 +197,8 @@ end
 function World_data_builder:Insert_courier_data(courier_data, courier_entity)
     courier_data.type = "Courier"
     courier_data.items = self:Get_items_data(courier_entity)
+    courier_data.inRangeOfHomeShop = courier_entity:IsInRangeOfShop(DOTA_SHOP_HOME, true)
+    courier_data.inRangeOfSecretShop = courier_entity:IsInRangeOfShop(DOTA_SHOP_SECRET, true)
 end
 
 ---@param unit_entity CDOTA_BaseNPC
