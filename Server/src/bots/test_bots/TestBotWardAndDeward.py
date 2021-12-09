@@ -1,3 +1,4 @@
+from game.position import Position
 from base_bot import BaseBot
 from game.player_hero import PlayerHero
 from game.world import World
@@ -21,7 +22,7 @@ party = {
     ],
 }
 
-class TestBotObserverWard(BaseBot):
+class TestBotWardAndDeward(BaseBot):
     '''
     Tests:
     - Abyssal Underlord should buy one observer ward, move to location and place ward. 
@@ -53,34 +54,44 @@ class TestBotObserverWard(BaseBot):
                 "npc_dota_hero_abyssal_underlord",
             ]):
                items = hero.get_items()
-               chosen_position = WardSpotPosition.RADIANT_BELOW_MID.value
+               chosen_position = Position(2687.12, -3466.10, 0)
                if len(items) and items[0].get_cast_range() >= self._world.get_distance_between_positions(position1 = hero.get_position(), position2 = chosen_position):
                     hero.use_item(0, position = chosen_position)
                else: 
                     hero.move(*chosen_position)
                     if len(items) == 0:
                         hero.move(-4000, -4000, 0)
-        
+
         if self._world.get_game_ticks() == 5:
             if self._hero_name_equals_any(hero.get_name(), [
                 "npc_dota_hero_bane",
             ]):
-                hero.buy("item_ward_observer")
+                hero.buy("item_tango")
 
-
-        if self._world.get_game_ticks() >= 10:
+        if self._world.get_game_ticks() == 6:
             if self._hero_name_equals_any(hero.get_name(), [
                 "npc_dota_hero_bane",
             ]):
-               items = hero.get_items()
-               chosen_position = WardSpotPosition.RADIANT_BELOW_MID.value
-               if len(items) and items[0].get_cast_range() >= self._world.get_distance_between_positions(position1 = hero.get_position(), position2 = chosen_position):
-                    hero.use_item(0, position = chosen_position)
-               else: 
+                hero.buy("item_ward_sentry")
+            
+        if self._world.get_game_ticks() >= 15:
+            if self._hero_name_equals_any(hero.get_name(), [
+                "npc_dota_hero_bane",
+            ]):
+                items = hero.get_items()
+                chosen_position = Position(2687.12, -3466.10, 0)
+                if len(items) == 2 and items[1].get_cast_range() >= self._world.get_distance_between_positions(position1 = hero.get_position(), position2 = chosen_position):
+                    hero.use_item(items[1].get_slot(), position = chosen_position)
+
+
+                else:
                     hero.move(*chosen_position)
-                    if len(items) == 0:
-                        hero.move(*chosen_position)
-                    
+                    if len(items) == 1:
+                        wards = self._world.get_wards()
+                        for ward in wards:
+                            if ward.get_team() != hero.get_team():
+                                hero.use_item(items[0].get_slot(), ward.get_id())
+
             return
 
 

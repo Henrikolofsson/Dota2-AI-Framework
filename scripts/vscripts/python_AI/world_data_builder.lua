@@ -280,7 +280,8 @@ function World_data_builder:Get_all_units(flags)
         DOTA_UNIT_TARGET_TEAM_BOTH,
         DOTA_UNIT_TARGET_ALL,
         DOTA_UNIT_TARGET_FLAG_FOW_VISIBLE +
-        invulnerable_flag,
+        invulnerable_flag + 
+        DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES,
         FIND_ANY_ORDER,
         true
     )
