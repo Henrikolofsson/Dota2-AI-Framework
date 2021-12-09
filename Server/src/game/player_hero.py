@@ -38,6 +38,8 @@ class PlayerHero(Hero):
     _tp_scroll_available: bool
     _tp_scroll_cooldown_time: float
     _tp_scroll_charges: int
+    _in_range_of_home_shop: bool
+    _in_range_of_secret_shop: bool
     _items: list[Item]
     _stash_items: list[Item]
 
@@ -66,6 +68,8 @@ class PlayerHero(Hero):
         self._tp_scroll_available = player_hero_data["tpScrollAvailable"]
         self._tp_scroll_cooldown_time = player_hero_data["tpScrollCooldownTime"]
         self._tp_scroll_charges = player_hero_data["tpScrollCharges"]
+        self._in_range_of_home_shop = player_hero_data["inRangeOfHomeShop"]
+        self._in_range_of_secret_shop = player_hero_data["inRangeOfSecretShop"]
         self._set_items(player_hero_data)
         self._set_stash_items(player_hero_data)
         self._set_abilities(player_hero_data)
@@ -106,6 +110,12 @@ class PlayerHero(Hero):
 
     def set_time_of_death(self, time: float) -> None:
         self._time_of_death = time
+
+    def is_in_range_of_home_shop(self) -> bool:
+        return self._in_range_of_home_shop
+
+    def is_in_range_of_secret_shop(self) -> bool:
+        return self._in_range_of_secret_shop
 
     def get_buyback_cooldown_time_remaining(self) -> float:
         if self._alive:

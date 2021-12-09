@@ -17,3 +17,5 @@ class IPlayerHero(IHero):
     tpScrollCharges: int
     items: dict[str, Union[IItem, list[Any]]]
     stashItems: dict[str, Union[IItem, list[Any]]]
+    inRangeOfHomeShop: bool
+    inRangeOfSecretShop: bool
