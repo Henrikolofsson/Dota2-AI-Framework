@@ -34,6 +34,9 @@ class World:
         self._game_time = 0.0
 
     def get_team(self) -> int:
+        '''
+        Returns the team that the hero is on (2 for Radiant and 3 for Dire).
+        '''
         return self._team
 
     def get_game_ticks(self) -> int:
