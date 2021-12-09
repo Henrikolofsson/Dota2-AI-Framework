@@ -18,5 +18,7 @@ Settings = {
     ---@type boolean
     auto_restart_client_on_server_restart = nil,
     ---@type integer
-    game_number = nil
+    game_number = nil,
+    ---@type integer
+    max_game_duration = nil,
 }

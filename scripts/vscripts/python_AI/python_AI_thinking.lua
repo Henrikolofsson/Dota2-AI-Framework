@@ -3,6 +3,7 @@ local World_data_builder = require "python_AI.world_data_builder"
 local Update_handler = require "python_AI.update_handler"
 local Command_controller = require "python_AI.commands.command_controller"
 local Utilities = require "utilities.utilities"
+local Match_end_controller = require "match_end.match_end_controller"
 
 
 
@@ -29,9 +30,27 @@ function Python_AI_thinking.On_update(heroes, commands)
     end
 end
 
+-- Checks whether game clock is greater than or equal to Settings.max_game_duration. \
+-- Returns `false` if Settings.max_game_duration is `-1`.
+---@return boolean
+function Python_AI_thinking:Game_should_end()
+    if Settings.max_game_duration == -1 then
+        return false
+    end
+
+    -- Settings.max_game_duration needs to be multiplied by 60 because max_game_duration is
+    -- entered in minutes while GameRules:GetDOTATime(false, true) returns game clock in seconds.
+    return GameRules:GetDOTATime(false, true) >= Settings.max_game_duration * 60
+end
+
 ---@param heroes CDOTA_BaseNPC_Hero[]
 ---@return number
 function Python_AI_thinking:On_think(heroes)
+    if Python_AI_thinking:Game_should_end() then
+        Match_end_controller:Handle_match_end()
+        return
+    end
+
     Python_AI_thinking:Before_world_building(heroes)
 
     local all_entities = World_data_builder:Get_all_entities(heroes[1])

@@ -10,5 +10,6 @@
   "grant_global_vision": false,
   "spectator_mode": true,
   "number_of_games": 2,
-  "auto_restart_client_on_server_restart": true
+  "auto_restart_client_on_server_restart": true,
+  "max_game_duration": -1
 }

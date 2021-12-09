@@ -1,5 +1,10 @@
 local Match_end_controller = {}
 
+-- end_flag is set to `true` when Match_end_controller:Handle_match_end() is called.
+-- If end_flag is `true` then `game_ended` request will not be made,
+-- preventing more than 1 match_end per game.
+local end_flag = false
+
 -- Runs console command "dota_launch_custom_game Dota2-AI-Framework dota", forcing a restart provided Addon has the name "Dota2-AI-Framework".
 local function Restart()
     SendToServerConsole("dota_launch_custom_game Dota2-AI-Framework dota")
@@ -11,8 +16,14 @@ local function Exit()
     SendToServerConsole("kickid 1")
 end
 
--- Asks server whether to restart addon or to exit game.
+-- Informs server of game end. Use server response to determine whether to restart addon or to exit game.
 function Match_end_controller:Handle_match_end()
+    if end_flag then
+        return
+    end
+
+    end_flag = true
+
     ---@type table
     local request = CreateHTTPRequestScriptVM("POST", "http://localhost:8080/api/game_ended")
     request:Send(

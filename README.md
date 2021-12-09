@@ -20,6 +20,7 @@ All of the following settings should be defined in the settings.json file.
 | spectator_mode                        | `true`            | `boolean` | Allows you to run the game as spectator granting you global vision while the bots have normal vision. |
 | number_of_games                       | `1`               | `number`  | Number of times the game will run. While number_of_games is greater than 1 the game will restart when it ends. A game ends when a team wins or the chat command "end" is used. |
 | auto_restart_client_on_server_restart | `true`            | `boolean` | If enabled, the Dota addon will run the console command "dota_launch_custom_game Dota2-AI-Framework dota" when it detects the python server has restarted, effectively restarting the addon. |
+| max_game_duration                     | `-1`              | `number`  | Sets game time limit. Maximum number of in-game clock minutes per game. If the game has not ended naturally before this target is hit, game end will be simulated. |
 
 ### Creating bots
 
