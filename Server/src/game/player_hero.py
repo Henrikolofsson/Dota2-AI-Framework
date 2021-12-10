@@ -371,7 +371,7 @@ class PlayerHero(Hero):
         x, y, z = position
         self._command = {
             self.get_name(): {
-                "command": "CAST_ABILITY_NO_TARGET",
+                "command": "CAST_ABILITY_TARGET_POINT",
                 "ability": ability_index,
                 "x": x,
                 "y": y,
