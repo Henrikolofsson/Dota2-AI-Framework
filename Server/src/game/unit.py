@@ -26,6 +26,7 @@ class Unit(PhysicalEntity):
     _max_health: int
     _team: int
     _forward_vector: Position
+    _magicimmune: bool
 
     def update(self, data: IEntity) -> None:
         super().update(data)
@@ -48,6 +49,7 @@ class Unit(PhysicalEntity):
         self._max_health = unit_data["maxHealth"]
         self._team = unit_data["team"]
         self._forward_vector = Position(*unit_data["forwardVector"])
+        self._magicimmune = unit_data["magicimmune"]
 
     def get_attack_range(self) -> int:
         return self._attack_range
@@ -108,3 +110,6 @@ class Unit(PhysicalEntity):
 
     def set_alive(self, is_alive: bool) -> None:
         self._alive = is_alive
+
+    def is_magic_immune(self) -> bool:
+        return self._magicimmune

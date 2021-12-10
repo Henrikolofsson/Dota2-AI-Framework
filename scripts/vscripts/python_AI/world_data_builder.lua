@@ -41,6 +41,7 @@ function World_data_builder:Insert_base_unit_data(unit_data, unit_entity)
     unit_data.attackDamage = unit_entity:GetAttackDamage()
     unit_data.forwardVector = Utilities:Vector_to_array(unit_entity:GetForwardVector())
     unit_data.isAttacking = unit_entity:IsAttacking()
+    unit_data.magicimmune = unit_entity:IsMagicImmune()
 end
 
 ---@param unit_entity CDOTA_BaseNPC
