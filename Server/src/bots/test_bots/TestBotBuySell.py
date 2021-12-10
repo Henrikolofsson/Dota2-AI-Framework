@@ -44,7 +44,7 @@ class TestBotBuySell(BaseBot):
         self._heroes = heroes
 
     def actions(self, hero: PlayerHero, game_ticks: int) -> None:
-        if self._world.get_game_ticks() >= 1 and self._world.get_game_ticks() <= 5:
+        if game_ticks >= 1 and game_ticks <= 5:
             if self._hero_name_equals_any(hero.get_name(), [
                 "npc_dota_hero_brewmaster",
                 "npc_dota_hero_doom_bringer",
