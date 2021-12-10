@@ -34,6 +34,7 @@ if __name__ == '__main__':
         difficulty = settings['native_bots_difficulty']
         number_of_games = settings['number_of_games']
 
+
         radiant_bot = load_class(base_dir, radiant_bot_filename, radiant_bot_class_name)
         dire_bot = load_class(base_dir, dire_bot_filename, dire_bot_class_name)
 
