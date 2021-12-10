@@ -117,7 +117,7 @@ class TestBotCastOnMagicImmune(BaseBot):
                 "npc_dota_hero_bane"
             ]) :
             
-            if hero.is_attacking() and hero_to_attack is not None:
+            if hero.is_attacking() and hero_to_attack.is_magic_immune():
                 hero.cast_target_unit(2, hero_to_attack.get_id())
                 print("Bane tried to cast spell on target but was magic immune")
 

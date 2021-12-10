@@ -21,3 +21,4 @@ class IUnit(IPhysicalEntity):
     rooted: bool
     name: str
     deniable: bool
+    magicimmune: bool
