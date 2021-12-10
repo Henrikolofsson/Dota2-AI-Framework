@@ -2,6 +2,7 @@
 
 from time import time
 from typing import TypedDict, Union, cast
+from game.physical_entity import PhysicalEntity
 from game.ability import Ability
 from game.post_data_interfaces.IPlayerHero import IPlayerHero
 from game.position import Position
@@ -171,11 +172,14 @@ class PlayerHero(Hero):
             self._commands.append(self._command)
             self._command = None
 
-    def attack(self, target_id: str) -> None:
+    def attack(self, target: Union[str, PhysicalEntity]) -> None:
+        if isinstance(target, PhysicalEntity):
+            target = target.get_id()
+
         self._command = {
             self.get_name(): {
                 "command": "ATTACK",
-                "target": target_id
+                "target": target
             }
         }
 
@@ -196,16 +200,19 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast(self, ability_index: int, target_id: str = "-1", position: Union[Position, None] = None) -> None:
+    def cast(self, ability_index: int, target: Union[str, PhysicalEntity] = "-1", position: Union[Position, None] = None) -> None:
         if position is None:
             position = Position(0, 0, 0)
+
+        if isinstance(target, PhysicalEntity):
+            target = target.get_id()
 
         x, y, z = position
         self._command = {
             self.get_name(): {
                 "command": "CAST",
                 "ability": ability_index,
-                "target": target_id,
+                "target": target,
                 "x": x,
                 "y": y,
                 "z": z
@@ -258,16 +265,19 @@ class PlayerHero(Hero):
             }
         }
 
-    def use_item(self, slot: int, target_id: str = "-1", position: Union[Position, None] = None) -> None:
+    def use_item(self, slot: int, target: Union[str, PhysicalEntity] = "-1", position: Union[Position, None] = None) -> None:
         if position is None:
             position = Position(0, 0, 0)
+
+        if isinstance(target, PhysicalEntity):
+            target = target.get_id()
 
         x, y, z = position
         self._command = {
             self.get_name(): {
                 "command": "USE_ITEM",
                 "slot": slot,
-                "target": target_id,
+                "target": target,
                 "x": x,
                 "y": y,
                 "z": z
@@ -315,11 +325,14 @@ class PlayerHero(Hero):
             }
         }
 
-    def pick_up_rune(self, target_id: str) -> None:
+    def pick_up_rune(self, target: Union[str, PhysicalEntity]) -> None:
+        if isinstance(target, PhysicalEntity):
+            target = target.get_id()
+
         self._command = {
             self.get_name(): {
                 "command": "PICK_UP_RUNE",
-                "target": target_id
+                "target": target
             }
         }
 
@@ -378,12 +391,15 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_unit(self, ability_index: int, target_id: str) -> None:
+    def cast_target_unit(self, ability_index: int, target: Union[str, PhysicalEntity]) -> None:
+        if isinstance(target, PhysicalEntity):
+            target = target.get_id()
+
         self._command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT",
                 "ability": ability_index,
-                "target": target_id
+                "target": target
             }
         }
 
@@ -399,26 +415,32 @@ class PlayerHero(Hero):
             }
         }
 
-    def cast_target_unit_aoe(self, ability_index: int, target_id: str) -> None:
+    def cast_target_unit_aoe(self, ability_index: int, target: Union[str, PhysicalEntity]) -> None:
+        if isinstance(target, PhysicalEntity):
+            target = target.get_id()
+
         self._command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_UNIT_AOE",
                 "ability": ability_index,
-                "target": target_id
+                "target": target
             }
         }
 
-    def cast_combo_target_point_unit(self, ability_index: int, target_id: str = "-1",
+    def cast_combo_target_point_unit(self, ability_index: int, target: Union[str, PhysicalEntity] = "-1",
                                      position: Union[Position, None] = None) -> None:
         if position is None:
             position = Position(0, 0, 0)
+
+        if isinstance(target, PhysicalEntity):
+            target = target.get_id()
 
         x, y, z = position
         self._command = {
             self.get_name(): {
                 "command": "CAST_ABILITY_TARGET_COMBO_TARGET_POINT_UNIT",
                 "ability": ability_index,
-                "target": target_id,
+                "target": target,
                 "x": x,
                 "y": y,
                 "z": z

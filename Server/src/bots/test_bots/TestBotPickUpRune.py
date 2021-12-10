@@ -55,7 +55,7 @@ class TestBotPickUpRune(BaseBot):
                 hero.move(-1900, 1400, 0)
 
         if len(self._world.get_runes()) > 0:
-            hero.pick_up_rune(target_id=self._world.get_runes()[0].get_id())
+            hero.pick_up_rune(target=self._world.get_runes()[0].get_id())
 
     def _hero_name_equals_any(self, to_test: str, to_test_against: list[str]) -> bool:
         for value in to_test_against:

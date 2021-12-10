@@ -159,7 +159,7 @@ class TestBotUseTango(BaseBot):
         if tango_slot >= 0:
             tree: Union[Tree, None] = self.get_closest_tree(hero)
             if tree:
-                hero.use_item(tango_slot, target_id = tree.get_id())
+                hero.use_item(tango_slot, target = tree.get_id())
                 return True
         
         return False

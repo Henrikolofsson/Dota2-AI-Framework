@@ -143,7 +143,7 @@ class TestBotBasicSmart(BaseBot):
         if self.hero_name_match_any(hero, ["pugna"]) \
         and bottle_slot != -1\
         and runes:
-            hero.use_item(bottle_slot, runes[0].get_id())
+            hero.use_item(bottle_slot, runes[0])
             return True
 
         return False
@@ -185,7 +185,7 @@ class TestBotBasicSmart(BaseBot):
             if self._world.get_distance_between_positions(hero.get_position(), rune_position) < 600:
                 runes: list[Rune] = self._world.get_runes()
                 if runes:
-                    hero.pick_up_rune(runes[0].get_id())
+                    hero.pick_up_rune(runes[0])
                 else:
                     hero.use_item(slot=ward_slot, position=rune_position)
             else:
@@ -409,7 +409,7 @@ class TestBotBasicSmart(BaseBot):
                 if ability is not None:
                     behavior: int = ability.get_behavior()
                     if behavior & AbilityBehavior.UNIT_TARGET.value:
-                        hero.cast_target_unit(ability.get_ability_index(), enemy_hero_to_attack.get_id())
+                        hero.cast_target_unit(ability.get_ability_index(), enemy_hero_to_attack)
                     elif behavior & AbilityBehavior.NO_TARGET.value:
                         hero.cast_no_target(ability.get_ability_index())
                     elif behavior & AbilityBehavior.AOE.value:
@@ -419,20 +419,20 @@ class TestBotBasicSmart(BaseBot):
                     elif behavior & AbilityBehavior.CHANNELLED.value:
                         hero.cast(
                             ability_index=ability.get_ability_index(),
-                            target_id=enemy_hero_to_attack.get_id(),
+                            target=enemy_hero_to_attack,
                             position=enemy_hero_to_attack.get_position(),
                         )
                 else:
-                    hero.attack(enemy_hero_to_attack.get_id())
+                    hero.attack(enemy_hero_to_attack)
 
             elif creep_to_last_hit is not None:
-                hero.attack(creep_to_last_hit.get_id())
+                hero.attack(creep_to_last_hit)
             elif creep_to_deny is not None:
-                hero.attack(creep_to_deny.get_id())
+                hero.attack(creep_to_deny)
             elif hero.get_has_aggro():
                 hero.move(*lane_tower_position)
             elif enemy_hero_to_attack is not None:
-                hero.attack(enemy_hero_to_attack.get_id())
+                hero.attack(enemy_hero_to_attack)
             elif self.should_move_closer_to_allied_creeps(hero):
                 self.follow(hero, self.get_closest_allied_creep(hero))
             else:

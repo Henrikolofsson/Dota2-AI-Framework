@@ -162,7 +162,7 @@ class BotExampleDire(BaseBot):
         if (ability.get_behavior()
                 & AbilityBehavior.UNIT_TARGET.value) > 0:
             hero.cast(ability.get_ability_index(),
-                      target_id=enemy.get_id())
+                      target=enemy.get_id())
         else:
             hero.cast(ability.get_ability_index(), position=enemy.get_position().to_list())
 
