@@ -113,9 +113,15 @@ class PlayerHero(Hero):
         self._time_of_death = time
 
     def is_in_range_of_home_shop(self) -> bool:
+        '''
+        Is hero close enough to buy/sell items.
+        '''
         return self._in_range_of_home_shop
 
     def is_in_range_of_secret_shop(self) -> bool:
+        '''
+        Is hero close enough to buy/sell items.
+        '''
         return self._in_range_of_secret_shop
 
     def get_buyback_cooldown_time_remaining(self) -> float:

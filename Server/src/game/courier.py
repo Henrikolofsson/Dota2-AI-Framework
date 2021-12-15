@@ -36,10 +36,19 @@ class Courier(Unit):
             item_id += 1
 
     def get_items(self) -> list[Item]:
+        '''
+        Get items in inventory and backpack of courier.
+        '''
         return self._items
 
     def is_in_range_of_home_shop(self) -> bool:
+        '''
+        Is courier close enough to buy/sell items.
+        '''
         return self._in_range_of_home_shop
 
     def is_in_range_of_secret_shop(self) -> bool:
+        '''
+        Is courier close enough to buy/sell items.
+        '''
         return self._in_range_of_secret_shop
