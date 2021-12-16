@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 
 from datetime import datetime
@@ -28,6 +29,7 @@ class Statistics:
         # to [0_id, 0_team, 1_id, 1_team, ...]
         flattened_hero_fields = chain.from_iterable(all_hero_fields)
 
+        # building fields currently not implemented.
         building_names = (
             'bad_rax_melee_top',
             'bad_rax_melee_mid',
@@ -88,6 +90,9 @@ class Statistics:
         self.filenames = {i: f"statistics/{timestamp}_game_stats_{i}.csv"
                           for i in range(self.number_of_games)}
 
+        self.end_filenames = {i: f"statistics/{timestamp}_game_stats_{i}_end.json"
+                              for i in range(self.number_of_games)}
+
         for filename in self.filenames.values():
             with open(filename, "a", encoding="utf8", newline="") as csv_file:
                 writer = csv.writer(csv_file)
@@ -108,3 +113,12 @@ class Statistics:
 
     def to_csv(self, game_statistics: dict) -> Iterable[str]:
         return [game_statistics['fields'][field_name] for field_name in self.field_names]
+
+    def end_game_stats(self, end_stats: dict) -> bool:
+        game_number = end_stats['game_number']
+        filename = self.end_filenames[game_number]
+
+        with open(filename, 'w', encoding='utf8') as fp:
+            fp.write(json.dumps(end_stats['end_stats'], indent=4))
+
+        return True
