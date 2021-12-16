@@ -66,7 +66,7 @@ end
 ---@return boolean
 function World_data_builder:Has_tower_aggro(hero_entity)
     for _index, unit in ipairs(self.all_units) do
-        if unit:IsTower() then
+        if unit:IsTower() and unit:IsAlive() then
             ---@type table
             local aggro_target = unit:GetAggroTarget()
             if aggro_target == hero_entity then

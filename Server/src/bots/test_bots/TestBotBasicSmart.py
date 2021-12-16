@@ -44,7 +44,7 @@ class TestBotBasicSmart(BaseBot):
     Tests:
     
     Basic AI.
-    - Heroes buy boots of speed at game start.
+    - Heroes buy boots of speed and extra town portal scroll at game start.
     - Heroes level up abilities. Will prioritize ultimates.
     - Heroes moves home when hp is less than 30 % of max hp.
     - Heroes moves back to fight when hp is greater than 90 % of max hp.
@@ -90,21 +90,23 @@ class TestBotBasicSmart(BaseBot):
             self._should_move_home[hero.get_name()] = False
             self._courier_moving_to_secret_shop[hero.get_name()] = False
             self._courier_transferring_items[hero.get_name()] = False
+        self.initialize_lane_tower_positions()
+
+
+    def initialize_lane_tower_positions(self) -> None:
+        for lane_tower_name in [
+            "dota_goodguys_tower1_top",
+            "dota_goodguys_tower1_mid",
+            "dota_goodguys_tower1_bot",
+            "dota_badguys_tower1_top",
+            "dota_badguys_tower1_mid",
+            "dota_badguys_tower1_bot",
+        ]:
+            tower: Union[Unit, None] = self._world.get_unit_by_name(lane_tower_name)
+            if tower is not None:
+                self._lane_tower_positions[lane_tower_name] = tower.get_position()
 
     def actions(self, hero: PlayerHero, game_ticks: int) -> None:
-        if game_ticks == 1 and not self._lane_tower_positions:
-            for lane_tower_name in [
-                "dota_goodguys_tower1_top",
-                "dota_goodguys_tower1_mid",
-                "dota_goodguys_tower1_bot",
-                "dota_badguys_tower1_top",
-                "dota_badguys_tower1_mid",
-                "dota_badguys_tower1_bot",
-            ]:
-                tower: Union[Unit, None] = self._world.get_unit_by_name(lane_tower_name)
-                if tower is not None:
-                    self._lane_tower_positions[lane_tower_name] = tower.get_position()
-
         if game_ticks == 1:
             if self.hero_name_match_any(hero, ["pugna"]):
                 hero.buy("item_ward_observer")
@@ -112,7 +114,7 @@ class TestBotBasicSmart(BaseBot):
                 hero.buy("item_boots")
             return
 
-        if game_ticks == 2:
+        if game_ticks == 2 and not self.hero_name_match_any(hero, ["pugna"]):
             hero.buy("item_tpscroll")
             return
 
@@ -143,7 +145,7 @@ class TestBotBasicSmart(BaseBot):
         if self.hero_name_match_any(hero, ["pugna"]) \
         and bottle_slot != -1\
         and runes:
-            hero.use_item(bottle_slot, runes[0])
+            hero.pick_up_rune(runes[0])
             return True
 
         return False
@@ -225,10 +227,7 @@ class TestBotBasicSmart(BaseBot):
             self.push_lane(hero, "dota_badguys_tower1_bot")
 
     def hero_name_match_any(self, hero: PlayerHero, matches: list[str]) -> bool:
-        for match in matches:
-            if hero.get_name() == "npc_dota_hero_" + match:
-                return True
-        return False
+        return hero.get_name() in ["npc_dota_hero_" + match for match in matches]
 
     def level_up_ability(self, hero: PlayerHero) -> bool:
         if hero.get_ability_points() > 0:
@@ -342,27 +341,22 @@ class TestBotBasicSmart(BaseBot):
         return False
 
     def has_phase_boots(self, hero: PlayerHero) -> bool:
-        for item in hero.get_items():
-            if item.get_name() == "item_phase_boots":
-                return True
-        return False
+        return "item_phase_boots" in [item.get_name() for item in hero.get_items()]
 
     def courier_has_energy_booster(self, hero: PlayerHero) -> bool:
         courier = self._world.get_entity_by_id(hero.get_courier_id())
 
         if isinstance(courier, Courier):
-            for item in courier.get_items():
-                if item.get_name() == "item_energy_booster":
-                    return True
+            return "item_energy_booster" in [item.get_name() for item in courier.get_items()]
+
         return False
 
     def courier_has_blades_of_attack(self, hero: PlayerHero) -> bool:
         courier = self._world.get_entity_by_id(hero.get_courier_id())
 
         if isinstance(courier, Courier):
-            for item in courier.get_items():
-                if item.get_name() == "item_blades_of_attack":
-                    return True
+            return "item_blades_of_attack" in [item.get_name() for item in courier.get_items()]
+
         return False
 
     def courier_has_chainmail(self, hero: PlayerHero) -> bool:
