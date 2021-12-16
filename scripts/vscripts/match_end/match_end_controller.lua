@@ -1,3 +1,5 @@
+local Statistics = require "statistics.statistics"
+
 local Match_end_controller = {}
 
 -- end_flag is set to `true` when Match_end_controller:Handle_match_end() is called.
@@ -24,8 +26,13 @@ function Match_end_controller:Handle_match_end()
 
     end_flag = true
 
+    local end_game_stats = Statistics:Collect_end_game(Settings.game_number)
+    local body = package.loaded["game/dkjson"].encode(end_game_stats)
+
     ---@type table
     local request = CreateHTTPRequestScriptVM("POST", "http://localhost:8080/api/game_ended")
+    request:SetHTTPRequestHeaderValue("Accept", "application/json")
+    request:SetHTTPRequestRawPostBody("application/json", body)
     request:Send(
         ---@param response_json table
         function(response_json)

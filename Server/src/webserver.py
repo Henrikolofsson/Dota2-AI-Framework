@@ -3,12 +3,12 @@ from enum import Enum, auto
 from bot_framework import BotFramework
 from bottle import request, response, Bottle
 from pathlib import Path
-from statistics import  Statistics
+from statistics import Statistics
 from threading import Lock
 
 
 class ServerState(Enum):
-    """"
+    """
     When a new Dota game starts, settings should be loaded from the /api/settings route before
     game state updates are processed. The server therefore starts in the SETTINGS state
     and only moves to the UPDATE state once the settings have been sent. In the UPDATE state the
@@ -67,6 +67,12 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
     def game_ended():
         nonlocal state, games_remaining, radiant_bot_framework, dire_bot_framework
 
+        if request.content_type != 'application/json':
+            response.status = 415
+            return {'status': 'error', 'message': 'This API only understands JSON'}
+
+        statistics.end_game_stats(parse_json_in_req(request))
+
         with radiant_lock, dire_lock:
             state = ServerState.SETTINGS
             games_remaining -= 1
@@ -90,9 +96,11 @@ def setup_web_server(settings_filename: Path, radiant_bot_framework: BotFramewor
 
     @app.post("/api/statistics")
     def collect_statistics():
-        raw_json = request.json
-        parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
-        statistics.save(parsed_json)
+        if request.content_type != 'application/json':
+            response.status = 415
+            return {'status': 'error', 'message': 'This API only understands JSON'}
+
+        statistics.save(parse_json_in_req(request))
 
     @app.post("/api/radiant_update")
     def radiant_update():
@@ -115,10 +123,16 @@ def update_game_state(bot_framework, state, bot_framework_lock):
             response.status = 415
             return {'status': 'error', 'message': 'This API only understands JSON'}
 
-        # If the JSON document is large (bigger than the Bottle constant MEMFILE_MAX) then
-        # requests.json will contain the json as a string and we need a separate parsing step.
-        # Otherwise request.json will already have parsed the JSON into a dict.
-        raw_json = request.json
-        parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
+        parsed_json = parse_json_in_req(request)
         commands = bot_framework.update_and_receive_commands(parsed_json)
         return json.dumps(commands)
+
+
+def parse_json_in_req(req: request) -> dict:
+    """Extracts the JSON content from a Bottle request."""
+    # If the JSON document is large (bigger than the Bottle constant MEMFILE_MAX) then
+    # requests.json will contain the json as a string, and we need a separate parsing step.
+    # Otherwise, request.json will already have parsed the JSON into a dict.
+    raw_json = req.json
+    parsed_json = json.loads(raw_json) if type(raw_json) == str else raw_json
+    return parsed_json
