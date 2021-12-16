@@ -117,17 +117,17 @@ function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes, game
     for i, hero in ipairs(heroes) do
         local player_id = hero:GetPlayerID()
         local team = hero:GetTeam()
+
+        -- GetHeroDamageTaken returns 0 always????
         local dmg_taken_from_hero = PlayerResource:GetHeroDamageTaken(player_id, true)
         local dmg_taken_from_creep = PlayerResource:GetCreepDamageTaken(player_id, true)
         local dmg_taken_from_struct = PlayerResource:GetTowerDamageTaken(player_id, true)
         local total_dmg_taken = dmg_taken_from_hero + dmg_taken_from_creep + dmg_taken_from_struct
 
-        -- If team is 2, the enemy heroes are on Dire.
-        local damage_done_to_heroes = team == 2 and
-            Python_AI_thinking:Damage_done_to_heroes(player_id, dire_heroes) or
-            Python_AI_thinking:Damage_done_to_heroes(player_id, radiant_heroes)
-    
-        -- ????
+        -- GetRawPlayerDamage seems to return the total damage done specifically to enemy heroes.
+        local damage_done_to_heroes = PlayerResource:GetRawPlayerDamage(player_id)
+
+        -- Don't know how to collect these.
         local damage_done_to_struct = 0.0
         local damage_done_to_creeps = 0.0
         local total_damage_dealt = 0.0
@@ -156,16 +156,6 @@ function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes, game
 
     return stats
 end
-
-function Python_AI_thinking:Damage_done_to_heroes(player_id, enemy_heroes)
-    local damage_done = 0.0
-    for _, enemy_hero in pairs(enemy_heroes) do
-        local enemy_id = enemy_hero:GetPlayerID()
-        damage_done = damage_done + PlayerResource:GetDamageDoneToHero(player_id, enemy_id)
-    end
-    return damage_done
-end
-
 
 ---@param statistics table to be sent to the server.
 function Python_AI_thinking:Send_statistics(statistics)
