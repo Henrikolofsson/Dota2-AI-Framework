@@ -34,15 +34,16 @@ if __name__ == '__main__':
         difficulty = settings['native_bots_difficulty']
         number_of_games = settings['number_of_games']
 
-
         radiant_bot = load_class(base_dir, radiant_bot_filename, radiant_bot_class_name)
         dire_bot = load_class(base_dir, dire_bot_filename, dire_bot_class_name)
 
-        radiant_bot_framework = BotFramework(radiant_bot, RADIANT_TEAM)
-        dire_bot_framework = BotFramework(dire_bot, DIRE_TEAM)
+        statistics = Statistics(number_of_games)
+
+        radiant_bot_framework = BotFramework(radiant_bot, RADIANT_TEAM, statistics)
+        dire_bot_framework = BotFramework(dire_bot, DIRE_TEAM, statistics)
 
         webserver = setup_web_server(settings_filename, radiant_bot_framework, dire_bot_framework,
-                                     number_of_games, Statistics(number_of_games))
+                                     number_of_games, statistics)
         webserver.run(server='waitress', host="localhost", port=8080, debug=False, quiet=False)
         webserver.close()
     except KeyError as key_error:
