@@ -117,7 +117,7 @@ The World object is used to provide game state information that the bot writer m
 ### Chat commands
 
 The framework uses in-game chat commands for some functionality. 
-To use a chat command, press enter followed by tab. You should now be in the "all" chat channel. In that channel, type your command and press enter. 
+To use a chat command, press enter followed by tab. You should now be in the "all" chat channel. In that channel, type your command and press enter. For the commands to work properly, it is recommended that you do not minimize or alt-tab out of the the Dota client immediately after entering a command. Instead, keep the game open until the effect of the command has been seen.
 
 
 | command | description |
