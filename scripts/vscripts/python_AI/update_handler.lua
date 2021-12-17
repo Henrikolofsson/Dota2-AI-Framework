@@ -37,7 +37,8 @@ function Update_handler:Update(entities, heroes, on_update_callback)
     local body = package.loaded["game/dkjson"].encode(
         {
             ["entities"] = entities,
-            ["game_time"] = GameRules:GetDOTATime(false, true)
+            ["game_time"] = GameRules:GetDOTATime(false, true),
+            ["game_number"] = Settings.game_number
         }
     )
 

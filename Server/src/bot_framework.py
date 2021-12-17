@@ -5,6 +5,7 @@ from base_bot import BaseBot
 from game.post_data_interfaces.IRoot import IRoot
 from game.world import World
 from game.player_hero import CommandProps
+from statistics import Statistics
 
 
 class BotFramework:
@@ -13,13 +14,15 @@ class BotFramework:
     team: int
     agent: BaseBot
     initialized: bool
+    statistics: Statistics
 
-    def __init__(self, bot_class: type, team: int) -> None:
+    def __init__(self, bot_class: type, team: int, statistics: Statistics) -> None:
         self.bot_class = bot_class
         self.world = World(team)
         self.team = team
         self.agent = bot_class(self.world)
         self.initialized = False
+        self.statistics = statistics
 
     def get_party(self) -> list[str]:
         if len(self.agent.get_party()) > 5:
@@ -32,6 +35,7 @@ class BotFramework:
 
     def update_and_receive_commands(self, data: IRoot) -> list[dict[str, CommandProps]]:
         self.update(data)
+        self.statistics.save_game_state(data, self.world.get_game_ticks(), self.world.get_team())
         self.generate_bot_commands()
         commands = self.receive_bot_commands()
         return commands

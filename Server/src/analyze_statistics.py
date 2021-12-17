@@ -1,4 +1,5 @@
 import csv
+import json
 
 
 # Just experimenting with the csv files that the statistics module is generating.
@@ -36,4 +37,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    with open('statistics/2021_12_17_16_51_14_game_state_dire_0.json') as fp:
+        raw = fp.read()
+
+    state = json.loads(raw)
+
