@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from time import time
 from typing import TypedDict, Union, cast
 from game.physical_entity import PhysicalEntity
