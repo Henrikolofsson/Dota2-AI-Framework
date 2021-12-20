@@ -21,9 +21,15 @@ class Hero(Unit):
         self._deaths = hero_data["deaths"]
 
     def get_has_tower_aggro(self) -> bool:
+        """
+        Whether the hero is being attacked by a tower.
+        """
         return self._has_tower_aggro
 
     def get_has_aggro(self) -> bool:
+        """
+        Whether the hero is being attacked.
+        """
         return self._has_aggro
 
     def get_deaths(self) -> int:

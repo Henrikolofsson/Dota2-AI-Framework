@@ -87,11 +87,10 @@ class Ability(BaseEntity):
         return self._mana_cost
 
     def get_hero_level_required_to_level_up(self) -> int:
-        '''
+        """
         Returns the hero level required to level up this ability. If the hero's level is less than this value, this ability cannot be leveled up.
-        '''
+        """
         return self._hero_level_required_to_level_up
 
     def get_type(self) -> EntityType:
         return EntityType.ABILITY
-        

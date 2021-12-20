@@ -58,6 +58,9 @@ class Unit(PhysicalEntity):
         return self._attack_damage
 
     def get_attack_target(self) -> Union[str, None]:
+        """
+        Returns the entity id of the attack target if unit is attacking, `None` otherwise.
+        """
         return self._attack_target
 
     def is_attacking(self) -> bool:
@@ -67,6 +70,9 @@ class Unit(PhysicalEntity):
         return self._level
 
     def get_mana(self) -> int:
+        """
+        Returns current amount of mana.
+        """
         return self._mana
 
     def get_max_mana(self) -> int:
@@ -91,6 +97,9 @@ class Unit(PhysicalEntity):
         return self._rooted
 
     def get_health(self) -> int:
+        """
+        Returns current amount of hp.
+        """
         return self._health
 
     def get_max_health(self) -> int:
@@ -100,6 +109,9 @@ class Unit(PhysicalEntity):
         return self._name
 
     def get_team(self) -> int:
+        """
+        Returns the team of the unit (2 for Radiant and 3 for Dire).
+        """
         return self._team
 
     def get_forward_vector(self) -> Position:

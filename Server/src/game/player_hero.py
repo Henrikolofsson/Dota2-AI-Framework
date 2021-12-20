@@ -2,6 +2,7 @@
 
 from time import time
 from typing import TypedDict, Union, cast
+from game.rune import Rune
 from game.physical_entity import PhysicalEntity
 from game.ability import Ability
 from game.post_data_interfaces.IPlayerHero import IPlayerHero
@@ -113,15 +114,15 @@ class PlayerHero(Hero):
         self._time_of_death = time
 
     def is_in_range_of_home_shop(self) -> bool:
-        '''
+        """
         Is hero close enough to buy/sell items.
-        '''
+        """
         return self._in_range_of_home_shop
 
     def is_in_range_of_secret_shop(self) -> bool:
-        '''
+        """
         Is hero close enough to buy/sell items.
-        '''
+        """
         return self._in_range_of_secret_shop
 
     def get_buyback_cooldown_time_remaining(self) -> float:
@@ -132,18 +133,34 @@ class PlayerHero(Hero):
         return self._buyback_cooldown_time - time_elapsed_since_death
 
     def get_command(self) -> Union[dict[str, CommandProps], None]:
+        """
+        Returns command of current game tick. Returns `None` if no command has been given.
+
+        The command is reset to `None` after each game tick.
+        """
         return self._command
 
     def get_courier_id(self) -> str:
+        """
+        Returns the entity id of the courier owned by the hero.
+        """
         return self._courier_id
 
     def get_buyback_cost(self) -> int:
         return self._buyback_cost
 
     def get_buyback_cooldown_time(self) -> float:
+        """
+        Returns total cooldown time for buyback.
+        
+        `get_buyback_cooldown_time_remaining()` is usually what you'd want instead.
+        """
         return self._buyback_cooldown_time
 
     def get_ability_points(self) -> int:
+        """
+        Ability points are used to level up abilities.
+        """
         return self._ability_points
 
     def get_abilities(self) -> list[Ability]:
@@ -153,6 +170,13 @@ class PlayerHero(Hero):
         return self._items
 
     def get_stash_items(self) -> list[Item]:
+        """
+        Get a view of the items inside the stash.
+
+        If the courier is attempting to deliver items to the hero while the hero is dead, the items will be delivered to the stash instead.
+
+        Use `courier_retrieve()` method to collect and deliver stash items to the hero.
+        """
         return self._stash_items
 
     def get_denies(self) -> int:
@@ -165,6 +189,9 @@ class PlayerHero(Hero):
         return self._xp
 
     def is_tp_scroll_available(self) -> bool:
+        """
+        Checks both cooldown time remaining and number of charges.
+        """
         return self._tp_scroll_available
 
     def get_tp_scroll_cooldown_time(self) -> float:
@@ -233,13 +260,13 @@ class PlayerHero(Hero):
         }
 
     def use_tp_scroll(self, position: Position) -> bool:
-        '''
+        """
         Use town portal on position.
         If position is not a legitimate teleport location, the closest valid teleport location is used instead.
         
         ---
         Returns `True` if town portal scroll is available, `False` otherwise.
-        '''
+        """
         if not self._tp_scroll_available:
             return False
 
@@ -255,15 +282,25 @@ class PlayerHero(Hero):
 
         return True
 
-    def buy(self, item: str) -> None:
+    def buy(self, item_name: str) -> None:
+        """
+        Buy item by given `item_name`.
+
+        If all buy conditions are not met, the command will fail.
+
+        Will first attempt to buy item for hero, then attempt to buy for courier.
+        """
         self._command = {
             self.get_name(): {
                 "command": "BUY",
-                "item": item
+                "item": item_name
             }
         }
 
     def sell(self, slot: int) -> None:
+        """
+        Sell item in given slot if possible.
+        """
         self._command = {
             self.get_name(): {
                 "command": "SELL",
@@ -272,6 +309,13 @@ class PlayerHero(Hero):
         }
 
     def use_item(self, slot: int, target: Union[str, PhysicalEntity] = "-1", position: Union[Position, None] = None) -> None:
+        """
+        Pass a target or target id for an item with a targeted ability.
+        
+        Pass a position for an item with a target position ability.
+        
+        Pass neither for an item with a non-target ability / target is self.
+        """
         if position is None:
             position = Position(0, 0, 0)
 
@@ -291,6 +335,9 @@ class PlayerHero(Hero):
         }
 
     def swap_item_slots(self, slot1: int, slot2: int) -> None:
+        """
+        Swap items in given slots. Can also be used to move an item to an empty slot.
+        """
         self._command = {
             self.get_name(): {
                 "command": "SWAP_ITEM_SLOTS",
@@ -331,8 +378,8 @@ class PlayerHero(Hero):
             }
         }
 
-    def pick_up_rune(self, target: Union[str, PhysicalEntity]) -> None:
-        if isinstance(target, PhysicalEntity):
+    def pick_up_rune(self, target: Union[str, Rune]) -> None:
+        if isinstance(target, Rune):
             target = target.get_id()
 
         self._command = {
@@ -343,6 +390,12 @@ class PlayerHero(Hero):
         }
 
     def level_up(self, ability_index: int) -> None:
+        """
+        Increase level of ability with given `ability_index`.
+
+        ---
+        Note: The ability_index attribute differ from its list index, remember to use `Ability.get_ability_index()`.
+        """
         self._command = {
             self.get_name(): {
                 "command": "LEVEL_UP",
@@ -509,8 +562,7 @@ class PlayerHero(Hero):
             }
         }
 
-    def courier_move_to_position(self, x: float, y: float, z: float = 384.00) -> None:
-        # 384 is the z value at ground level.
+    def courier_move_to_position(self, x: float, y: float, z: float = 0) -> None:
         self._command = {
             self.get_name(): {
                 "command": "COURIER_MOVE_TO_POSITION",
@@ -521,6 +573,9 @@ class PlayerHero(Hero):
         }
 
     def courier_sell(self, slot: int) -> None:
+        """
+        Sell item in given courier slot if possible.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_SELL",
