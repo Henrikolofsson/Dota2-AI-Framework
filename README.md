@@ -178,7 +178,7 @@ The framework supports restarting the current game with the "restart" chat comma
 
 ### Generating Documentation
 
-The project uses pdoc to generate the API documentation found in the Documentation/api directory. To (re)generate this documentation execute the following command while being located in the Server/src directory:
+The project uses [pdoc](https://github.com/mitmproxy/pdoc) to generate the API documentation found in the Documentation/api directory. To (re)generate this documentation execute the following command while being located in the Server/src directory:
 
 ```
 python -m pdoc -o ../../Documentation/api game/player_hero.py game/world.py
