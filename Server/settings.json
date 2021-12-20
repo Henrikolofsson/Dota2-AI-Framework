@@ -1,9 +1,9 @@
 {
   "base_dir_bots": "bots/test_bots/",
-  "radiant_bot_filename": "TestBotBuySpecialItem.py",
-  "radiant_bot_class_name": "TestBotBuySpecialItem",
-  "dire_bot_filename": "TestBotBuySpecialItem.py",
-  "dire_bot_class_name": "TestBotBuySpecialItem",
+  "radiant_bot_filename": "TestBotCoordinateAttack.py",
+  "radiant_bot_class_name": "TestBotCoordinateAttack",
+  "dire_bot_filename": "TestBotCoordinateAttack.py",
+  "dire_bot_class_name": "TestBotCoordinateAttack",
   "native_bots_difficulty": "easy",
   "should_have_pre_game_delay": false,
   "should_dire_be_native_bots": false,
