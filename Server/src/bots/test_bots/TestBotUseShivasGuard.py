@@ -21,7 +21,7 @@ party = {
 }
 
 
-class TestBotUseShivasGuard(BaseBot):
+class TestBotBuySpecialItem(BaseBot):
 
     '''
     Tests:

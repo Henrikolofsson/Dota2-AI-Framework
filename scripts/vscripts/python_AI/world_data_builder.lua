@@ -19,9 +19,7 @@ World_data_builder.requesting_team = nil
 function World_data_builder:Insert_base_unit_data(unit_data, unit_entity)
     local attackTarget = unit_entity:GetAttackTarget()
     if attackTarget then
-        unit_data.attackTarget = attackTarget:entindex()
-    else
-        unit_data.attackTarget = nil
+        unit_data.attackTarget = tostring(attackTarget:entindex())
     end
     unit_data.level = unit_entity:GetLevel()
     unit_data.origin = Utilities:Vector_to_array(unit_entity:GetOrigin())
@@ -68,7 +66,7 @@ end
 ---@return boolean
 function World_data_builder:Has_tower_aggro(hero_entity)
     for _index, unit in ipairs(self.all_units) do
-        if unit:IsTower() then
+        if unit:IsTower() and unit:IsAlive() then
             ---@type table
             local aggro_target = unit:GetAggroTarget()
             if aggro_target == hero_entity then

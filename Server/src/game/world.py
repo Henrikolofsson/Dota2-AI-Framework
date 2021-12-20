@@ -152,7 +152,7 @@ class World:
 
     def get_enemies_in_attack_range_of(self, unit: Unit) -> list[Unit]:
         '''
-        Returns all enemies in attack range of `unit`.
+        Returns all visible enemies in attack range of `unit`.
         '''
         return self.get_enemies_in_range_of(
             unit,
@@ -161,7 +161,7 @@ class World:
 
     def get_enemies_in_range_of(self, unit: Unit, range: float) -> list[Unit]:
         '''
-        Returns all enemy units in `range` of `unit`.
+        Returns all visible enemy units in `range` of `unit`.
         '''
         enemies: list[Unit] = []
 
@@ -202,7 +202,7 @@ class World:
 
     def get_enemies_of(self, to_get_enemies_of: Unit) -> list[Unit]:
         '''
-        Returns all enemies of given unit.
+        Returns all visible enemies of given unit.
         '''
         enemies: list[Unit] = []
         
@@ -214,7 +214,7 @@ class World:
 
     def get_units(self) -> list[Unit]:
         '''
-        Returns all units.
+        Returns all visible units.
         '''
         units: list[Unit] = []
         
@@ -264,7 +264,7 @@ class World:
 
     def get_enemy_creeps_of(self, unit: Unit) -> list[Unit]:
         '''
-        Returns all enemy creeps of `unit`.
+        Returns all visible enemy creeps of `unit`.
         '''
         enemy_creeps: list[Unit] = []
 
@@ -278,7 +278,7 @@ class World:
 
     def get_enemy_heroes_of(self, unit: Unit) -> list[Hero]:
         '''
-        Returns all enemy heroes of `unit`.
+        Returns all visible enemy heroes of `unit`.
         '''
         enemy_heroes: list[Hero] = []
 
@@ -290,7 +290,7 @@ class World:
 
     def get_runes(self) -> list[Rune]:
         '''
-        Returns all runes.
+        Returns all visible runes.
         '''
         runes: list[Rune] = []
         
@@ -302,7 +302,7 @@ class World:
 
     def get_wards(self) -> list[Unit]:
         '''
-        Returns all wards.
+        Returns all visible observer and sentry wards.
         '''
         wards: list[Unit] = []
 
@@ -315,7 +315,7 @@ class World:
 
     def get_all_trees(self) -> list[Tree]:
         '''
-        Returns all trees.
+        Returns all visible trees.
         '''
         trees: list[Tree] = []
 
@@ -327,7 +327,7 @@ class World:
 
     def get_trees_in_range_of(self, unit: Unit, range: float) -> list[Tree]:
         '''
-        Returns all trees in `range` of `unit`.
+        Returns all visible trees in `range` of `unit`.
         '''
         trees: list[Tree] = []
 

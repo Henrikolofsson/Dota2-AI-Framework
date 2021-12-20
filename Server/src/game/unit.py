@@ -10,7 +10,7 @@ class Unit(PhysicalEntity):
 
     _attack_range: int
     _attack_damage: int
-    _attack_target: Union[int, None]
+    _attack_target: Union[str, None]
     _is_attacking: bool
     _level: int
     _mana: int
@@ -57,7 +57,7 @@ class Unit(PhysicalEntity):
     def get_attack_damage(self) -> int:
         return self._attack_damage
 
-    def get_attack_target(self) -> Union[int, None]:
+    def get_attack_target(self) -> Union[str, None]:
         return self._attack_target
 
     def is_attacking(self) -> bool:

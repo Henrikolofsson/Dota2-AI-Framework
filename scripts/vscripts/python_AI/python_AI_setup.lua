@@ -1,5 +1,6 @@
 -- imports
 local Python_AI_thinking = require "python_AI.python_AI_thinking"
+local Statistics         = require "statistics.statistics"
 
 
 
@@ -31,20 +32,11 @@ function Python_AI_setup:Initialize_bot_thinking(radiant_heroes, dire_heroes)
     if not Settings.should_dire_be_native_bots then
         self:Set_context_think_for_heroes(dire_heroes)
     end
-
-    for i = 0, 10 do
-        print(i)
-        PlayerResource:SetGold(i, 10000, true)
-    end
 end
 
 ---@param radiant_heroes CDOTA_BaseNPC_Hero[]
 ---@param dire_heroes CDOTA_BaseNPC_Hero[]
 function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
-    --[[
-        Creates a timer that runs the Python_AI_thinking:Collect_and_send_statistics
-        function once every @collection_interval seconds.
-    ]]
     local collection_interval = 5
 
     -- To keep track of which game these statistics are part of when running
@@ -56,7 +48,7 @@ function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
         {
             ---@return number
             callback = function()
-                Python_AI_thinking:Collect_and_send_statistics(radiant_heroes, dire_heroes, game_number)
+                Statistics:Collect_and_send_statistics(radiant_heroes, dire_heroes, game_number)
                 return collection_interval
             end
         }

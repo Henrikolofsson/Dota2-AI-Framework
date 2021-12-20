@@ -15,7 +15,7 @@ class IUnit(IPhysicalEntity):
     level: int
     attackRange: int
     attackDamage: int
-    attackTarget: int
+    attackTarget: str
     alive: bool
     forwardVector: IPosition
     rooted: bool
