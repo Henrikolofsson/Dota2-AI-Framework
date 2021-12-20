@@ -176,3 +176,10 @@ Example:
 
 The framework supports restarting the current game with the "restart" chat command (sent to the "all" chat channel in-game). If this chat command is used, the statistics for the new game will be appended to the same file as the previous game. If this happens, and you still want to save the resulting data, the csv file must be manually processed and split based on the game time timestamps. Moving to the next game with the "end" command will however save the statistics to the next numbered file. 
 
+### Generating Documentation
+
+The project uses pdoc to generate the API documentation found in the Documentation/api directory. To (re)generate this documentation execute the following command while being located in the Server/src directory:
+
+```
+python -m pdoc -o ../../Documentation/api game/player_hero.py game/world.py
+```
