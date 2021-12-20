@@ -128,32 +128,28 @@ To use a chat command, press enter followed by tab. You should now be in the "al
 
 ### Statistics
 
-The framework collects statistics from the game as it is running. The statistics are saved to timestamped csv files in the Server/src/statistics folder. 
+The framework collects statistics from the game as it is running. There are three separate collection steps:
 
-It's possible to run multiple consecutive games without restarting Dota (defined in settings.json). To account for that possibility, each csv file has a suffix indicating which game it belongs to for that particular instance of Dota.
+1. CSV statistics. Some data is suitable for continuous collection to a csv file, such as each hero's current kills, deaths and current gold during the course of the game.
+2. End screen statistics. When a game of Dota 2 ends, there's an end screen with information about the game and each hero. The framework collects similar data and saves it to a JSON file when the game ends.
+3. Saving the state of the game entities each game tick.
 
-#### Statistics: defining the collection interval
+All three types of statistics are handled by Statistics.py and saved to files in the Server/statistics folder, which is created automatically if it doesn't exist. 
 
-You can adjust how often statistics are collected by setting the collection_interval variable in the function Python_AI_setup:Set_statistics_collection.
+Timestamps...
 
-```lua
-function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
-    --[[
-        Creates a timer that runs the Python_AI_thinking:Collect_and_send_statistics
-        function once every @collection_interval seconds.
-    ]]
-    local collection_interval = 5
-end
-```
+Filenames...
 
-#### Statistics: defining what statistics to collect
+The Dota game clock...
+
+#### CSV Statistics: defining what statistics to collect
 
 To collect statistics that are not currently collected you must do the following:
 1. (Re)define the column names for the csv file in Statistics.py.
 2. Collect the appropriate statistics and add them to the stats table in the Collect_statistics function in the Lua addon.
 
 ```lua
-function Python_AI_thinking:Collect_statistics(radiant_heroes, dire_heroes, game_number)
+function Statistics:Collect_statistics(radiant_heroes, dire_heroes, game_number)
     local heroes = Utilities:Concat_lists(radiant_heroes, dire_heroes)
     local stats = {}
     local fields = {}
@@ -163,7 +159,25 @@ end
 ```
 3. The statistics are sent as a JSON document to the Python server. You must ensure that the to_csv method in Statistics.py correctly translates the statistics that you've gathered into csv that matches the columns that you have defined. 
 
-#### Statistics: hero order
+#### CSV Statistics: defining the collection interval
+
+It's possible to run multiple consecutive games without restarting Dota (defined in settings.json). To account for that possibility, each csv file has a suffix indicating which game it belongs to for that particular instance of Dota.
+
+You can adjust how often statistics are collected by setting the collection_interval variable in the function Python_AI_setup:Set_statistics_collection.
+
+```lua
+function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
+    --[[
+        Creates a timer that runs the 
+        Statistics:Collect_and_send_statistics
+        function once every @collection_interval seconds.
+    ]]
+    local collection_interval = 5
+end
+```
+
+
+#### CSV Statistics: hero order
 
 Heroes are ordered within a particular game but not between games. 
 
@@ -172,9 +186,21 @@ Example:
 - In the next game (either through a complete restart of the Dota client or via the restart chat command), 'npc_dota_hero_queenofpain' could be in a different position in the hero list.
 - This means that you cannot rely on hero order when analyzing statistics from multiple games.
 
-#### Statistics: restarting the game with the chat command
+#### CSV Statistics: restarting the game with the chat command
 
 The framework supports restarting the current game with the "restart" chat command (sent to the "all" chat channel in-game). If this chat command is used, the statistics for the new game will be appended to the same file as the previous game. If this happens, and you still want to save the resulting data, the csv file must be manually processed and split based on the game time timestamps. Moving to the next game with the "end" command will however save the statistics to the next numbered file. 
+
+#### End Screen Statistics: Not Implemented
+
+foo
+
+#### Game Entity Statitics: Shape of the JSON document
+
+bar
+
+#### Game Entity Statistics: Size
+
+baz
 
 ### Generating Documentation
 
