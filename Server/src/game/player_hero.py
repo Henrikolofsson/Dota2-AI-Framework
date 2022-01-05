@@ -1,4 +1,3 @@
-from time import time
 from typing import TypedDict, Union, cast
 from game.rune import Rune
 from game.physical_entity import PhysicalEntity
@@ -26,7 +25,6 @@ class CommandProps(TypedDict, total=False):
 
 
 class PlayerHero(Hero):
-    _time_of_death: float
     _ability_points: int
     _abilities: list[Ability]
     _denies: int
@@ -54,9 +52,6 @@ class PlayerHero(Hero):
     def update(self, data: IEntity) -> None:
         super().update(data)
         player_hero_data: IHero = cast(IPlayerHero, data)
-
-        if player_hero_data["alive"]:
-            self._time_of_death = 0
 
         self._ability_points = player_hero_data["abilityPoints"]
         self._denies = player_hero_data["denies"]
@@ -108,9 +103,6 @@ class PlayerHero(Hero):
             self._abilities.append(ability)
             ability_id += 1
 
-    def set_time_of_death(self, time: float) -> None:
-        self._time_of_death = time
-
     def is_in_range_of_home_shop(self) -> bool:
         """
         Is hero close enough to buy/sell items.
@@ -123,12 +115,11 @@ class PlayerHero(Hero):
         """
         return self._in_range_of_secret_shop
 
-    def get_buyback_cooldown_time_remaining(self) -> float:
+    def get_buyback_cooldown_time(self) -> float:
         if self._alive:
             return 0
 
-        time_elapsed_since_death = time() - self._time_of_death
-        return self._buyback_cooldown_time - time_elapsed_since_death
+        return self._buyback_cooldown_time
 
     def get_command(self) -> Union[dict[str, CommandProps], None]:
         """
@@ -146,14 +137,6 @@ class PlayerHero(Hero):
 
     def get_buyback_cost(self) -> int:
         return self._buyback_cost
-
-    def get_buyback_cooldown_time(self) -> float:
-        """
-        Returns total cooldown time for buyback.
-        
-        `get_buyback_cooldown_time_remaining()` is usually what you'd want instead.
-        """
-        return self._buyback_cooldown_time
 
     def get_ability_points(self) -> int:
         """

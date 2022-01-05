@@ -15,7 +15,6 @@ from game.player_hero import PlayerHero
 from game.tree import Tree
 from game.courier import Courier
 from game.rune import Rune
-from time import time
 
 
 class World:
@@ -71,7 +70,6 @@ class World:
         if isinstance(entity, PlayerHero):
             if entity.is_alive():
                 entity.set_alive(False)
-                entity.set_time_of_death(time())
         else:
             self._entities.remove(entity)
 

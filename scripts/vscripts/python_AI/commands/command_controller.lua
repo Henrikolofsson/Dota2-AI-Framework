@@ -18,7 +18,7 @@ local Command_controller = {}
 ---@param hero_entity CDOTA_BaseNPC_Hero
 ---@return boolean
 function Command_controller:Hero_has_active_ability(hero_entity)
-    return Utilities:To_bool(hero_entity:GetCurrentActiveAbility())
+    return hero_entity:IsAlive() and Utilities:To_bool(hero_entity:GetCurrentActiveAbility())
 end
 
 -- Delegate to appropriate function according to command.

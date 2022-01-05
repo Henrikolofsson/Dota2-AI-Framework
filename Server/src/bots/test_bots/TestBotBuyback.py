@@ -50,4 +50,4 @@ class TestBotBuyback(BaseBot):
             if not hero.is_alive():
                 hero.buyback()
             else:
-                assert hero.get_buyback_cooldown_time_remaining() == 0
+                assert hero.get_buyback_cooldown_time() == 0
