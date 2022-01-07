@@ -128,21 +128,29 @@ To use a chat command, press enter followed by tab. You should now be in the "al
 
 ### Statistics
 
-The framework collects statistics from the game as it is running. There are three separate collection steps:
+The framework collects statistics from the game as it is running. There are three separate collection steps that can be utilized. All three types of statistics are handled by Statistics.py and saved to files in the Server/statistics folder, which is created automatically if it doesn't exist. 
 
-1. CSV statistics. Some data is suitable for continuous collection to a csv file, such as each hero's current kills, deaths and current gold during the course of the game.
+The three types of statistics that can be collected are: 
+1. Time series data. Some data is suitable for continuous collection to a csv file at predetermined intervals, such as each hero's current kills, deaths and current gold.
 2. End screen statistics. When a game of Dota 2 ends, there's an end screen with information about the game and each hero. The framework collects similar data and saves it to a JSON file when the game ends.
-3. Saving the state of the game entities each game tick.
+3. The state of the game entities at each game tick. This data is already produced during normal operation of the framework and the statistics module is simply saving it to make post-game analysis of the data possible. This data could be used to analyze, for example, the locations of heroes during the game.
 
-All three types of statistics are handled by Statistics.py and saved to files in the Server/statistics folder, which is created automatically if it doesn't exist. 
+Each type of statistics correspond to a single file in the statistics folder. They always have the following names:
 
-Timestamps...
+| type | identifier | example filename |
+|------|----------|---------|
+| time series | statistics | 2021_12_20_14_46_4_statistics_0.csv
+| end screen  | end_screen | 2021_12_17_16_51_14_end_screen_0.json
+| game entities | game_state_dire | 2021_12_20_14_46_4_game_state_dire_0.json
+|               | game_state_radiant | 2021_12_20_14_46_4_game_state_radiant_0.json
 
-Filenames...
+Timestamps and game numbers are added to each file to create unique file names.
 
-The Dota game clock...
+The Dota API allows you to poll the state of the in-game clock. The value of the game clock is always included in the collected data to make it possible to correlate data from different sources. For example, you might find that a particular hero has a lot of gold in the first five minutes of the game by looking at the time series data. You could then look at the game entity data for that same hero during the same time interval. 
 
-#### CSV Statistics: defining what statistics to collect
+Note however that the three types of data collection are performed independently, and the game clock is saved as a float (in seconds). This means that you are unlikely to see the same exact time in any data point. Some kind of processing of the game clock values would therefore be needed to work across files in this manner.
+
+#### CSV Time Series Data: Defining what statistics to collect
 
 To collect statistics that are not currently collected you must do the following:
 1. (Re)define the column names for the csv file in Statistics.py.
@@ -159,7 +167,7 @@ end
 ```
 3. The statistics are sent as a JSON document to the Python server. You must ensure that the to_csv method in Statistics.py correctly translates the statistics that you've gathered into csv that matches the columns that you have defined. 
 
-#### CSV Statistics: defining the collection interval
+#### CSV Time Series Data: Defining the collection interval
 
 It's possible to run multiple consecutive games without restarting Dota (defined in settings.json). To account for that possibility, each csv file has a suffix indicating which game it belongs to for that particular instance of Dota.
 
@@ -176,8 +184,7 @@ function Python_AI_setup:Set_statistics_collection(radiant_heroes, dire_heroes)
 end
 ```
 
-
-#### CSV Statistics: hero order
+#### CSV Time Series Data: Hero order
 
 Heroes are ordered within a particular game but not between games. 
 
@@ -186,21 +193,58 @@ Example:
 - In the next game (either through a complete restart of the Dota client or via the restart chat command), 'npc_dota_hero_queenofpain' could be in a different position in the hero list.
 - This means that you cannot rely on hero order when analyzing statistics from multiple games.
 
-#### CSV Statistics: restarting the game with the chat command
+#### CSV Time Series Data: Restarting the game with the chat command
 
 The framework supports restarting the current game with the "restart" chat command (sent to the "all" chat channel in-game). If this chat command is used, the statistics for the new game will be appended to the same file as the previous game. If this happens, and you still want to save the resulting data, the csv file must be manually processed and split based on the game time timestamps. Moving to the next game with the "end" command will however save the statistics to the next numbered file. 
 
-#### End Screen Statistics: Not Implemented
+#### End Screen Statistics: "not implemented"
 
-foo
+The data collected to the endscreen JSON file has keys for most things that are found on the real Dota 2 endscreen.
+However, due to time constraints, some of them have been given the value "not implemented" to indicate that the actual data is not being gathered from the Dota API. To implement the missing data points, modify this function:
 
-#### Game Entity Statitics: Shape of the JSON document
+```lua
+--[[
+    Collects end game statistics for a specific hero.
+    These are intended to match what is shown on the actual end-game screen.
+]]
+---@param hero CDOTA_BaseNPC_Hero
+---@return table
+function Statistics:Hero_end_game_stats(hero)
+    local stats = {}
+    stats["id"] = hero:GetPlayerID()
+    stats["net_worth"] = "not implemented"
+    --[[..]]
+    return stats
+end
+```
 
-bar
+#### Game Entity Data: Shape of the JSON document
 
-#### Game Entity Statistics: Size
+```json
+{
+    "123": {
+        "game_number": 0,
+        "game_time": 0.0,
+        "entities": "object with game entities"
+    },
+    "124": {
+        "game_number": 0,
+        "game_time": 1.0,
+        "entities": "object with game entities"
+    },
+    "125": {
+        "game_number": 0,
+        "game_time": 2.0,
+        "entities": "object with game entities"
+    }
+}
+```
 
-baz
+The string integer key is the game tick where the entities were saved.
+
+#### Game Entity Data: Size
+
+Since the game entities are saved every game tick, the corresponding JSON files can grow quite large. Expect their size to end up being around 100 MB per 10 minutes of game play. Each record is appeneded its JSON file, which should prevent slow down as these files grow large. See the code comments in statistics.py for details on how this is done.
 
 ### Generating Documentation
 
