@@ -495,6 +495,9 @@ class PlayerHero(Hero):
         }
 
     def courier_stop(self) -> None:
+        """
+        Stops the courier at its current position.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_STOP"
@@ -502,6 +505,10 @@ class PlayerHero(Hero):
         }
 
     def courier_retrieve(self) -> None:
+        """
+        Uses the courier's retrieve items ability.
+        Equivalent to activating the same ability on the courier's hotbar in-game.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_RETRIEVE"
@@ -509,6 +516,10 @@ class PlayerHero(Hero):
         }
 
     def courier_secret_shop(self) -> None:
+        """
+        Moves the courier to the secret shop.
+        Equivalent to activating the same ability on the courier's hotbar in-game.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_SECRET_SHOP"
@@ -516,6 +527,10 @@ class PlayerHero(Hero):
         }
 
     def courier_return_items(self) -> None:
+        """
+        Uses the courier's return items ability.
+        Equivalent to activating the same ability on the courier's hotbar in-game.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_RETURN_ITEMS"
@@ -523,6 +538,11 @@ class PlayerHero(Hero):
         }
 
     def courier_speed_burst(self) -> None:
+        """
+        Uses the courier's speed burst ability.
+        Requires level 10.
+        Will silently fail if the ability is on cooldown.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_SPEED_BURST"
@@ -530,6 +550,10 @@ class PlayerHero(Hero):
         }
 
     def courier_transfer_items(self) -> None:
+        """
+        Uses the courier transfer item ability.
+        Equivalent to activating the same ability on the courier's hotbar in-game.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_TRANSFER_ITEMS"
@@ -537,6 +561,11 @@ class PlayerHero(Hero):
         }
 
     def courier_shield(self) -> None:
+        """
+        Uses the courier's shield ability.
+        Requires level 20.
+        Will silently fail if the ability is on cooldown.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_SHIELD"
@@ -544,6 +573,9 @@ class PlayerHero(Hero):
         }
 
     def courier_move_to_position(self, x: float, y: float, z: float = 0) -> None:
+        """
+        Move the courier to position (x, y) on the map.
+        """
         self._command = {
             self.get_name(): {
                 "command": "COURIER_MOVE_TO_POSITION",
