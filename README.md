@@ -67,10 +67,10 @@ In the above code, all heroes on this bot's team will move to position (0, 0) on
 
 However, keep in mind that a single command could have effects in-game beyond the immediate game tick. E.g., a hero will keep moving to its designated position independently of the game ticks until it reaches its position, a different command is issued that stops it from moving to the position in question, or it's killed.
 
-| method | description |
-| ---------------|------------------------------------------------------------------------------------------------------------|
+| example methods |
+| ---------------|
 | attack |                                                                                        |
-| move  | The hero moves to x, y. Equivalent to a human player right clicking on a position on the map |
+| move  |
 | stop      |         |
 | cast |    |
 | use_glyph_of_fortification |             |
@@ -80,7 +80,7 @@ However, keep in mind that a single command could have effects in-game beyond th
 
 The World object is used to provide game state information that the bot writer might need to make appropriate decisions.
 
-| method | description |
+| example methods | description |
 |-------------------------------------|-----------------------------------------------------------------------------------------|
 | get_team                          | Returns the team that the hero is on (2 for Radiant and 3 for Dire). |
 | get_game_time()                   | Returns the current game time in seconds to support taking actions that depend on the game clock. |
