@@ -101,7 +101,7 @@ To use a chat command, press enter followed by tab. You should now be in the "al
 
 ### Statistics
 
-The framework collects statistics from the game as it is running. There are three separate collection steps that can be utilized. All three types of statistics are handled by Statistics.py and saved to files in the Server/statistics folder, which is created automatically if it doesn't exist. 
+The framework collects statistics from the game as it is running. There are three separate collection steps that can be utilized. All three types of statistics are handled by statistics.py and saved to files in the Server/statistics folder, which is created automatically if it doesn't exist. 
 
 The three types of statistics that can be collected are: 
 1. Time series data. Some data is suitable for continuous collection to a csv file at predetermined intervals, such as each hero's current kills, deaths and current gold.
