@@ -77,35 +77,6 @@ However, keep in mind that a single command could have effects in-game beyond th
 | use_tp_scroll |                 |
 | buy     |                           |
 | sell    |                           |
-| use_item |                          |
-| swap_item_slots |                   |
-| toggle_item |         |
-| disassemble_item | 
-| unlock_item |     |
-| lock_item |       |
-| pick_up_rune |    |
-| level_up |   |
-| noop |    |
-| cast_toggle |  |
-| cast_no_target |  |
-| cast_target_point | |
-| cast_target_area |  |
-| cast_target_unit |  |
-| cast_vector_targeting | |
-| cast_target_unit_aoe |  |
-| cast_combo_target_point_unit |  |
-| buyback |  |
-| courier_stop | |
-| courier_retrieve | |
-| courier_secret_shop |  |
-| courier_return_items |  |
-| courier_speed_burst |   |
-| courier_transfer_items | |
-| courier_shield |  |
-| courier_move_to_position |  |
-| courier_sell |  |
-
-For full API documentation see: ...
 
 The World object is used to provide game state information that the bot writer might need to make appropriate decisions.
 
@@ -113,6 +84,8 @@ The World object is used to provide game state information that the bot writer m
 |-------------------------------------|-----------------------------------------------------------------------------------------|
 | get_team                          | Returns the team that the hero is on (2 for Radiant and 3 for Dire). |
 | get_game_time()                   | Returns the current game time in seconds to support taking actions that depend on the game clock. |
+
+For full API documentation see: Documentation/api
 
 ### Chat commands
 
